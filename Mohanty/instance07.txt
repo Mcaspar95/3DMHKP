@@ -1,0 +1,11 @@
+# Instance 7 (Table 1)
+# Format: BOXES rows = type_id count length width height cost
+#         CONTAINERS rows = type_id count length width height
+BOXES
+1 15 7 4 10 1.2
+2 12 3 5 11 1.0
+3 20 6 9 12 1.5
+
+CONTAINERS
+1 1 20 15 29
+2 1 17 12 24

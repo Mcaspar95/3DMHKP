@@ -1,0 +1,108 @@
+
+======================================================================
+instance01: 70 boxes (2 types), 4 containers (2 types)
+  continuous-knapsack bound: 11112.0
+  greedy warm start: value 7680.0 (32/70 boxes, 0.0s)
+  building MILP ...
+Set parameter Username
+Set parameter LicenseID to value 2847717
+Academic license - for non-commercial use only - expires 2027-07-23
+  model: 15470 vars (15260 binary), 27198 constraints  [0.7s]
+  MILP: value 8640.0, bound 10368.0, gap 16.67% [time limit]
+  report -> C:\Users\Marvin\3DMHKP\results_3DMHKP\instance01-3DMHKP.txt
+
+======================================================================
+instance02: 180 boxes (4 types), 15 containers (3 types)
+  continuous-knapsack bound: 86016.0
+  greedy warm start: value 76019.2 (107/180 boxes, 0.0s)
+  building MILP ...
+  model: 100635 vars (100095 binary), 356525 constraints  [7.7s]
+  MILP: value 76019.2, bound 85836.8, gap 11.44% [time limit]
+  report -> C:\Users\Marvin\3DMHKP\results_3DMHKP\instance02-3DMHKP.txt
+
+======================================================================
+instance03: 103 boxes (3 types), 4 containers (3 types)
+  continuous-knapsack bound: 53500.0
+  greedy warm start: value 51625.0 (59/103 boxes, 0.0s)
+  building MILP ...
+  model: 32771 vars (32462 binary), 58504 constraints  [1.5s]
+  MILP: value 51625.0, bound 53262.5, gap 3.07% [time limit]
+  report -> C:\Users\Marvin\3DMHKP\results_3DMHKP\instance03-3DMHKP.txt
+
+======================================================================
+instance04: 110 boxes (2 types), 15 containers (3 types)
+  continuous-knapsack bound: 2720640.0
+  greedy warm start: value 2077440.0 (65/110 boxes, 0.0s)
+  building MILP ...
+  model: 38720 vars (38390 binary), 132984 constraints  [3.0s]
+  MILP: value 2077440.0, bound 2691840.0, gap 22.82% [time limit]
+  report -> C:\Users\Marvin\3DMHKP\results_3DMHKP\instance04-3DMHKP.txt
+
+======================================================================
+instance05: 95 boxes (3 types), 8 containers (3 types)
+  continuous-knapsack bound: 653750.0
+  greedy warm start: value 487500.0 (49/95 boxes, 0.0s)
+  building MILP ...
+  model: 28410 vars (28125 binary), 67923 constraints  [1.6s]
+  MILP: value 550000.0, bound 619000.0, gap 11.15% [time limit]
+  report -> C:\Users\Marvin\3DMHKP\results_3DMHKP\instance05-3DMHKP.txt
+
+======================================================================
+instance06: 95 boxes (3 types), 9 containers (3 types)
+  continuous-knapsack bound: 143424.0
+  greedy warm start: value 123840.0 (68/95 boxes, 0.0s)
+  building MILP ...
+  model: 28595 vars (28310 binary), 72255 constraints  [1.9s]
+  MILP: value 123840.0, bound 143232.0, gap 13.54% [time limit]
+  report -> C:\Users\Marvin\3DMHKP\results_3DMHKP\instance06-3DMHKP.txt
+
+======================================================================
+instance07: 47 boxes (3 types), 2 containers (2 types)
+  continuous-knapsack bound: 20203.2
+  greedy warm start: value 16437.0 (27/47 boxes, 0.0s)
+  building MILP ...
+  model: 7050 vars (6909 binary), 10055 constraints  [0.3s]
+  MILP: value 17055.0, bound 19941.0, gap 14.47% [time limit]
+  report -> C:\Users\Marvin\3DMHKP\results_3DMHKP\instance07-3DMHKP.txt
+
+======================================================================
+instance08: 175 boxes (6 types), 5 containers (3 types)
+  continuous-knapsack bound: 77986.8
+  greedy warm start: value 60661.2 (105/175 boxes, 0.1s)
+  building MILP ...
+  model: 93975 vars (93450 binary), 183996 constraints  [5.0s]
+  MILP: value 60661.2, bound 77847.6, gap 22.08% [time limit]
+  report -> C:\Users\Marvin\3DMHKP\results_3DMHKP\instance08-3DMHKP.txt
+
+======================================================================
+instance09: 72 boxes (4 types), 3 containers (3 types)
+  continuous-knapsack bound: 139356.0
+  greedy warm start: value 97596.0 (52/72 boxes, 0.0s)
+  building MILP ...
+  model: 16272 vars (16056 binary), 26060 constraints  [0.7s]
+  MILP: value 114228.0, bound 139176.0, gap 17.93% [time limit]
+  report -> C:\Users\Marvin\3DMHKP\results_3DMHKP\instance09-3DMHKP.txt
+
+======================================================================
+instance10: 200 boxes (3 types), 3 containers (2 types)
+  continuous-knapsack bound: 15360.0
+  greedy warm start: value 15360.0 (40/200 boxes, 0.0s)
+  building MILP ...
+  model: 122000 vars (121400 binary), 200639 constraints  [5.9s]
+  MILP: value 15360.0, bound 15360.0, gap 0.00% [optimal]
+  report -> C:\Users\Marvin\3DMHKP\results_3DMHKP\instance10-3DMHKP.txt
+
+======================================================================
+instance11: 118 boxes (4 types), 4 containers (3 types)
+  continuous-knapsack bound: 68353.2
+  greedy warm start: value 48943.6 (21/118 boxes, 0.0s)
+  building MILP ...
+  model: 43001 vars (42647 binary), 76794 constraints  [2.1s]
+  MILP: value 48943.6, bound 65149.2, gap 24.87% [time limit]
+  report -> C:\Users\Marvin\3DMHKP\results_3DMHKP\instance11-3DMHKP.txt
+
+======================================================================
+instance12: 90 boxes (3 types), 3 containers (3 types)
+  continuous-knapsack bound: 24964.0
+  greedy warm start: value 20232.0 (77/90 boxes, 0.0s)
+  building MILP ...

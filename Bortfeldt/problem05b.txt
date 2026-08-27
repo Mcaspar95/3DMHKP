@@ -1,0 +1,31 @@
+# Ivancic, Mathur & Mohanty (1989) benchmark problem 05b
+# -- WITH DESTINATION RESTRICTION (Bortfeldt 2000, OR Spektrum 22:239-261, Sec. 6/7) --
+# Restricted to container type 1 only (homogeneous container supply)
+#
+# Destination restriction rule (from Bortfeldt Sec. 6):
+#   Each box TYPE is assigned its own unique destination (here: destination
+#   id = type_id). Only boxes with the SAME destination may be packed
+#   together into the same container instance - i.e. a single container may
+#   only hold boxes of one box type at a time. This is the extension
+#   Bortfeldt applied to all 64 base Ivancic et al. problems (Sec. 7: "Die 64
+#   erweiterten Probleme von Ivancic et al. werden aus den Originalproblemen
+#   gewonnen, indem den Kisten eines Kistentyps jeweils ein einheitlicher und
+#   von den uebrigen Kisten abweichender Bestimmungsort zugeordnet wird.").
+#   Reported result: mean volume utilization 67.5% (std. dev. 14.9%) with
+#   Bortfeldt's MCL heuristic on this restricted variant.
+#
+# NOTE: as with the unrestricted set, only 15 of the 17 base problems
+# (groups 1-15) have known box/container dimensions - groups 16 and 17 are
+# NOT included here. This folder therefore holds 56 of the 64
+# destination-restricted instances.
+#
+# Format: BOXES rows = type_id count length width height destination
+#         CONTAINERS rows = type_id length width height cost
+
+BOXES
+1 25 15 20 25 1
+2 30 10 15 10 2
+3 40 20 25 35 3
+
+CONTAINERS
+1 35 30 20 2100.0

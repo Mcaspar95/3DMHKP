@@ -1,0 +1,43 @@
+Instance: instance11
+Value model: v_i = c_i * volume_i (volume)
+Boxes: 118 (4 types)
+Containers: 4 (3 types)
+
+Status: time limit
+Runtime: 122.24 s
+Packed value (incumbent / lower bound): 48943.6
+Dual bound (MILP): 65149.2
+Continuous-knapsack bound: 68353.2
+Optimality gap: 24.87%
+Greedy warm-start value: 48943.6
+
+Boxes packed: 21 / 118
+Volume utilization: 28662 / 37974 = 75.5%
+
+Container 0 (type 1, 21x18x24): 5 boxes, value 11908.4, utilization 76.7%
+Container 1 (type 1, 21x18x24): 5 boxes, value 11908.4, utilization 76.7%
+Container 2 (type 2, 19x15x26): 4 boxes, value 9123.8, utilization 73.0%
+Container 3 (type 3, 23x20x27): 7 boxes, value 16003.0, utilization 75.2%
+
+Placements (box, type, container, position, oriented dims):
+  box    0 type 1 -> container 0 pos (0, 13, 0) dims (11, 5, 14)
+  box    1 type 1 -> container 1 pos (0, 13, 0) dims (11, 5, 14)
+  box    2 type 1 -> container 2 pos (14, 0, 0) dims (5, 11, 14)
+  box   58 type 3 -> container 3 pos (0, 0, 0) dims (7, 13, 17)
+  box   59 type 3 -> container 3 pos (7, 0, 0) dims (7, 13, 17)
+  box   60 type 3 -> container 3 pos (14, 0, 0) dims (7, 13, 17)
+  box   61 type 3 -> container 3 pos (0, 13, 0) dims (13, 7, 17)
+  box   62 type 3 -> container 3 pos (0, 0, 17) dims (13, 17, 7)
+  box   63 type 3 -> container 0 pos (0, 0, 0) dims (7, 13, 17)
+  box   64 type 3 -> container 0 pos (7, 0, 0) dims (7, 13, 17)
+  box   65 type 3 -> container 0 pos (14, 0, 0) dims (7, 13, 17)
+  box   66 type 3 -> container 0 pos (0, 0, 17) dims (13, 17, 7)
+  box   67 type 3 -> container 1 pos (0, 0, 0) dims (7, 13, 17)
+  box   68 type 3 -> container 1 pos (7, 0, 0) dims (7, 13, 17)
+  box   69 type 3 -> container 1 pos (14, 0, 0) dims (7, 13, 17)
+  box   70 type 3 -> container 1 pos (0, 0, 17) dims (13, 17, 7)
+  box   71 type 3 -> container 2 pos (0, 0, 0) dims (7, 13, 17)
+  box   72 type 3 -> container 2 pos (7, 0, 0) dims (7, 13, 17)
+  box   73 type 3 -> container 2 pos (0, 0, 17) dims (17, 13, 7)
+  box   95 type 4 -> container 3 pos (13, 0, 17) dims (10, 10, 8)
+  box   96 type 4 -> container 3 pos (13, 10, 17) dims (10, 10, 8)

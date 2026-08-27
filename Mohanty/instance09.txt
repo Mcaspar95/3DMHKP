@@ -1,0 +1,17 @@
+# Instance 9 (Table 1)
+# Format: BOXES rows = type_id count length width height cost
+#         CONTAINERS rows = type_id count length width height
+#
+# Box type 1 (10x13x11) confirmed against Ivancic (1989) thesis Table 4.3,
+# problem 9, and verified numerically: this instance reproduces Bortfeldt
+# (2000) Table 2's published upper bound of 139356.0 exactly.
+BOXES
+1 18 10 13 11 1.8
+2 20 8 9 10 1.6
+3 12 7 12 15 1.5
+4 22 14 15 11 1.2
+
+CONTAINERS
+1 1 40 22 26
+2 1 30 30 30
+3 1 35 32 40

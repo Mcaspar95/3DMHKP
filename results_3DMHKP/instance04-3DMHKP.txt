@@ -1,0 +1,98 @@
+Instance: instance04
+Value model: v_i = c_i * volume_i (volume)
+Boxes: 110 (2 types)
+Containers: 15 (3 types)
+
+Status: time limit
+Runtime: 123.15 s
+Packed value (incumbent / lower bound): 2077440.0
+Dual bound (MILP): 2691840.0
+Continuous-knapsack bound: 2720640.0
+Optimality gap: 22.82%
+Greedy warm-start value: 2077440.0
+
+Boxes packed: 65 / 110
+Volume utilization: 1593600 / 2236800 = 71.2%
+
+Container 0 (type 1, 60x40x72): 5 boxes, value 169344.0, utilization 70.0%
+Container 1 (type 1, 60x40x72): 5 boxes, value 169344.0, utilization 70.0%
+Container 2 (type 1, 60x40x72): 5 boxes, value 169344.0, utilization 70.0%
+Container 3 (type 1, 60x40x72): 5 boxes, value 169344.0, utilization 70.0%
+Container 4 (type 1, 60x40x72): 5 boxes, value 128000.0, utilization 74.1%
+Container 5 (type 2, 40x36x52): 2 boxes, value 51200.0, utilization 68.4%
+Container 6 (type 2, 40x36x52): 2 boxes, value 51200.0, utilization 68.4%
+Container 7 (type 2, 40x36x52): 2 boxes, value 51200.0, utilization 68.4%
+Container 8 (type 2, 40x36x52): 2 boxes, value 51200.0, utilization 68.4%
+Container 9 (type 2, 40x36x52): 2 boxes, value 51200.0, utilization 68.4%
+Container 10 (type 3, 60x52x64): 6 boxes, value 203212.8, utilization 72.7%
+Container 11 (type 3, 60x52x64): 6 boxes, value 203212.8, utilization 72.7%
+Container 12 (type 3, 60x52x64): 6 boxes, value 203212.8, utilization 72.7%
+Container 13 (type 3, 60x52x64): 6 boxes, value 203212.8, utilization 72.7%
+Container 14 (type 3, 60x52x64): 6 boxes, value 203212.8, utilization 72.7%
+
+Placements (box, type, container, position, oriented dims):
+  box    0 type 1 -> container 10 pos (0, 0, 0) dims (36, 28, 24)
+  box    1 type 1 -> container 10 pos (36, 0, 0) dims (24, 36, 28)
+  box    2 type 1 -> container 10 pos (0, 28, 0) dims (36, 24, 28)
+  box    3 type 1 -> container 10 pos (0, 0, 24) dims (36, 28, 24)
+  box    4 type 1 -> container 10 pos (36, 0, 28) dims (24, 36, 28)
+  box    5 type 1 -> container 10 pos (0, 28, 28) dims (36, 24, 28)
+  box    6 type 1 -> container 11 pos (0, 0, 0) dims (36, 28, 24)
+  box    7 type 1 -> container 11 pos (36, 0, 0) dims (24, 36, 28)
+  box    8 type 1 -> container 11 pos (0, 28, 0) dims (36, 24, 28)
+  box    9 type 1 -> container 11 pos (0, 0, 24) dims (36, 28, 24)
+  box   10 type 1 -> container 11 pos (36, 0, 28) dims (24, 36, 28)
+  box   11 type 1 -> container 11 pos (0, 28, 28) dims (36, 24, 28)
+  box   12 type 1 -> container 12 pos (0, 0, 0) dims (36, 28, 24)
+  box   13 type 1 -> container 12 pos (36, 0, 0) dims (24, 36, 28)
+  box   14 type 1 -> container 12 pos (0, 28, 0) dims (36, 24, 28)
+  box   15 type 1 -> container 12 pos (0, 0, 24) dims (36, 28, 24)
+  box   16 type 1 -> container 12 pos (36, 0, 28) dims (24, 36, 28)
+  box   17 type 1 -> container 12 pos (0, 28, 28) dims (36, 24, 28)
+  box   18 type 1 -> container 13 pos (0, 0, 0) dims (36, 28, 24)
+  box   19 type 1 -> container 13 pos (36, 0, 0) dims (24, 36, 28)
+  box   20 type 1 -> container 13 pos (0, 28, 0) dims (36, 24, 28)
+  box   21 type 1 -> container 13 pos (0, 0, 24) dims (36, 28, 24)
+  box   22 type 1 -> container 13 pos (36, 0, 28) dims (24, 36, 28)
+  box   23 type 1 -> container 13 pos (0, 28, 28) dims (36, 24, 28)
+  box   24 type 1 -> container 14 pos (0, 0, 0) dims (36, 28, 24)
+  box   25 type 1 -> container 14 pos (36, 0, 0) dims (24, 36, 28)
+  box   26 type 1 -> container 14 pos (0, 28, 0) dims (36, 24, 28)
+  box   27 type 1 -> container 14 pos (0, 0, 24) dims (36, 28, 24)
+  box   28 type 1 -> container 14 pos (36, 0, 28) dims (24, 36, 28)
+  box   29 type 1 -> container 14 pos (0, 28, 28) dims (36, 24, 28)
+  box   30 type 1 -> container 0 pos (0, 0, 0) dims (36, 28, 24)
+  box   31 type 1 -> container 0 pos (36, 0, 0) dims (24, 36, 28)
+  box   32 type 1 -> container 0 pos (0, 0, 24) dims (36, 28, 24)
+  box   33 type 1 -> container 0 pos (36, 0, 28) dims (24, 36, 28)
+  box   34 type 1 -> container 0 pos (0, 0, 48) dims (36, 28, 24)
+  box   35 type 1 -> container 1 pos (0, 0, 0) dims (36, 28, 24)
+  box   36 type 1 -> container 1 pos (36, 0, 0) dims (24, 36, 28)
+  box   37 type 1 -> container 1 pos (0, 0, 24) dims (36, 28, 24)
+  box   38 type 1 -> container 1 pos (36, 0, 28) dims (24, 36, 28)
+  box   39 type 1 -> container 1 pos (0, 0, 48) dims (36, 28, 24)
+  box   40 type 1 -> container 2 pos (0, 0, 0) dims (36, 28, 24)
+  box   41 type 1 -> container 2 pos (36, 0, 0) dims (24, 36, 28)
+  box   42 type 1 -> container 2 pos (0, 0, 24) dims (36, 28, 24)
+  box   43 type 1 -> container 2 pos (36, 0, 28) dims (24, 36, 28)
+  box   44 type 1 -> container 2 pos (0, 0, 48) dims (36, 28, 24)
+  box   45 type 1 -> container 3 pos (0, 0, 0) dims (36, 28, 24)
+  box   46 type 1 -> container 3 pos (36, 0, 0) dims (24, 36, 28)
+  box   47 type 1 -> container 3 pos (0, 0, 24) dims (36, 28, 24)
+  box   48 type 1 -> container 3 pos (36, 0, 28) dims (24, 36, 28)
+  box   49 type 1 -> container 3 pos (0, 0, 48) dims (36, 28, 24)
+  box   50 type 2 -> container 4 pos (0, 0, 0) dims (40, 32, 20)
+  box   51 type 2 -> container 4 pos (40, 0, 0) dims (20, 40, 32)
+  box   52 type 2 -> container 4 pos (0, 0, 20) dims (40, 32, 20)
+  box   53 type 2 -> container 4 pos (40, 0, 32) dims (20, 40, 32)
+  box   54 type 2 -> container 4 pos (0, 0, 40) dims (40, 32, 20)
+  box   55 type 2 -> container 5 pos (0, 0, 0) dims (40, 32, 20)
+  box   56 type 2 -> container 5 pos (0, 0, 20) dims (40, 32, 20)
+  box   57 type 2 -> container 6 pos (0, 0, 0) dims (40, 32, 20)
+  box   58 type 2 -> container 6 pos (0, 0, 20) dims (40, 32, 20)
+  box   59 type 2 -> container 7 pos (0, 0, 0) dims (40, 32, 20)
+  box   60 type 2 -> container 7 pos (0, 0, 20) dims (40, 32, 20)
+  box   61 type 2 -> container 8 pos (0, 0, 0) dims (40, 32, 20)
+  box   62 type 2 -> container 8 pos (0, 0, 20) dims (40, 32, 20)
+  box   63 type 2 -> container 9 pos (0, 0, 0) dims (40, 32, 20)
+  box   64 type 2 -> container 9 pos (0, 0, 20) dims (40, 32, 20)

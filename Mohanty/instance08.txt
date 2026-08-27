@@ -1,0 +1,20 @@
+# Instance 8 (Table 1)
+# Format: BOXES rows = type_id count length width height cost
+#         CONTAINERS rows = type_id count length width height
+#
+# NOTE: the source table's 6th box-type row printed its type index as
+# "3" (repeating the index already used by the 3rd row) instead of a
+# sequential "6". Treated here as a typo/OCR artifact and renumbered to
+# type 6 - verify against the original source if precision matters.
+BOXES
+1 20 6 8 11 1.2
+2 17 5 15 9 1.0
+3 13 4 13 7 1.7
+4 24 12 13 8 1.3
+5 21 10 14 11 2.0
+6 80 8 2 4 1.0
+
+CONTAINERS
+1 2 17 16 20
+2 2 23 18 30
+3 1 15 12 30

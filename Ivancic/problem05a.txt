@@ -1,0 +1,23 @@
+# Ivancic, Mathur & Mohanty (1989) benchmark problem 05a
+# All container types available (heterogeneous container supply)
+# Cross-referenced against Bortfeldt (2000), OR Spektrum 22:239-261, Table 1,
+# where this is problem "5a". Bortfeldt confirms the full Ivancic
+# benchmark has 64 instances: 17 base problems with heterogeneous (2- or
+# 3-type) container supply, each expanded into single-container-type
+# variants (4 problems x 2 + 13 problems x 3 = 47 derived + 17 base = 64).
+# NOTE: only 15 of the 17 base problems (groups 1-15) have their box/container
+# dimensions available from the sources reviewed so far - groups 16 and 17
+# are NOT included here (only aggregated results, no raw dimensions, were
+# available for them). This folder therefore holds 56 of the 64 instances.
+# Format: BOXES rows = type_id count length width height
+#         CONTAINERS rows = type_id length width height cost
+
+BOXES
+1 25 15 20 25
+2 30 10 15 10
+3 40 20 25 35
+
+CONTAINERS
+1 35 30 20 2100.0
+2 35 35 40 4900.0
+3 35 25 40 3500.0
