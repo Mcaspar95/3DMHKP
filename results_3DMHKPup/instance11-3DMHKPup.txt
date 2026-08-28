@@ -1,0 +1,47 @@
+Instance: instance11
+Orientation constraint: THIS WAY UP - boxes may only rotate about the vertical axis
+Value model: v_i = c_i * volume_i (volume)
+Boxes: 118 (4 types)
+Containers: 4 (3 types)
+
+Status: time limit
+Runtime: 302.72 s
+Packed value (incumbent / lower bound): 42620.0
+Dual bound (MILP): 65149.2
+Continuous-knapsack bound: 68353.2
+Optimality gap: 34.58%
+Greedy warm-start value: 40925.2
+
+Boxes packed: 24 / 118
+Volume utilization: 27700 / 37974 = 72.9%
+
+Container 0 (type 1, 21x18x24): 6 boxes, value 9459.2, utilization 69.0%
+Container 1 (type 1, 21x18x24): 4 boxes, value 9123.8, utilization 59.6%
+Container 2 (type 2, 19x15x26): 6 boxes, value 7970.6, utilization 78.2%
+Container 3 (type 3, 23x20x27): 8 boxes, value 16066.4, utilization 82.4%
+
+Placements (box, type, container, position, oriented dims):
+  box    0 type 1 -> container 0 pos (10.0, 0.0, 10.0) dims (11, 5, 14)
+  box    1 type 1 -> container 1 pos (7.0, 13.0, 10.0) dims (11, 5, 14)
+  box    2 type 1 -> container 2 pos (7.0, 0.0, 10.0) dims (11, 5, 14)
+  box   30 type 2 -> container 2 pos (10.0, 0.0, 0.0) dims (9, 12, 10)
+  box   31 type 2 -> container 3 pos (0.0, 0.0, 0.0) dims (9, 12, 10)
+  box   32 type 2 -> container 3 pos (7.0, 7.0, 17.0) dims (9, 12, 10)
+  box   33 type 2 -> container 3 pos (11.0, 0.0, 0.0) dims (12, 9, 10)
+  box   58 type 3 -> container 0 pos (0.0, 11.0, 0.0) dims (13, 7, 17)
+  box   59 type 3 -> container 0 pos (14.0, 5.0, 0.0) dims (7, 13, 17)
+  box   60 type 3 -> container 1 pos (7.0, 0.0, 0.0) dims (7, 13, 17)
+  box   61 type 3 -> container 1 pos (0.0, 0.0, 0.0) dims (7, 13, 17)
+  box   62 type 3 -> container 1 pos (14.0, 0.0, 0.0) dims (7, 13, 17)
+  box   63 type 3 -> container 2 pos (0.0, 0.0, 9.0) dims (7, 13, 17)
+  box   64 type 3 -> container 3 pos (0.0, 13.0, 0.0) dims (13, 7, 17)
+  box   65 type 3 -> container 3 pos (10.0, 0.0, 10.0) dims (13, 7, 17)
+  box   66 type 3 -> container 3 pos (0.0, 0.0, 10.0) dims (7, 13, 17)
+  box   67 type 3 -> container 3 pos (16.0, 7.0, 10.0) dims (7, 13, 17)
+  box   95 type 4 -> container 0 pos (0.0, 0.0, 0.0) dims (10, 10, 8)
+  box   96 type 4 -> container 0 pos (0.0, 0.0, 8.0) dims (10, 10, 8)
+  box   97 type 4 -> container 0 pos (0.0, 0.0, 16.0) dims (10, 10, 8)
+  box   98 type 4 -> container 2 pos (0.0, 0.0, 0.0) dims (10, 10, 8)
+  box   99 type 4 -> container 2 pos (7.0, 5.0, 10.0) dims (10, 10, 8)
+  box  100 type 4 -> container 2 pos (7.0, 5.0, 18.0) dims (10, 10, 8)
+  box  101 type 4 -> container 3 pos (13.0, 10.0, 0.0) dims (10, 10, 8)
