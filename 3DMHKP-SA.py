@@ -27,7 +27,7 @@
 # -------------------------------------------------------------------------
 # In the 3DP-CPTP the packing was a CONSTRAINT: SA searched over routes and a
 # Gurobi sub-model answered "does this load fit?" for the routes a move
-# touched. In the 3DMHKP the packing IS the problem — there are no routes, and
+# touched. In the 3DMHKP — there are no routes, and
 # calling Gurobi once per iteration would cost more than the MILP in 3DMHKP.py
 # is worth. So the Gurobi sub-model is replaced by a deterministic constructive
 # DECODER, and SA searches over the decoder's input:

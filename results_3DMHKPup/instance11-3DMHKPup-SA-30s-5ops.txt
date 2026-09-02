@@ -1,0 +1,51 @@
+Instance: instance11
+Solver: simulated annealing (sequence decoder)
+Orientation constraint: THIS WAY UP - boxes may only rotate about the vertical axis
+Value model: v_i = c_i * volume_i (volume)
+Boxes: 118 (4 types)
+Containers: 4 (3 types)
+
+Runtime: 30.00 s
+Packed value (SA incumbent / lower bound): 41437.2
+Continuous-knapsack bound: 68353.2
+Gap to that bound: 39.38%
+Greedy (initial decode) value: 40925.2
+SA improvement over greedy: +512.0
+
+SA parameters and statistics:
+  T0: 2162.22
+  alpha: 0.999, reheat threshold: 5753
+  iterations: 352342 (11745 it/s)
+  accepted: 263013, rejected: 89328, no-move draws: 0, reheats: 61
+  seed: 1
+  verification: ok
+
+Boxes packed: 20 / 118
+Volume utilization: 25434 / 37974 = 67.0%
+
+Container 0 (type 1, 21x18x24): 4 boxes, value 9123.8, utilization 59.6%
+Container 1 (type 1, 21x18x24): 4 boxes, value 9123.8, utilization 59.6%
+Container 2 (type 2, 19x15x26): 4 boxes, value 7379.2, utilization 62.9%
+Container 3 (type 3, 23x20x27): 8 boxes, value 15810.4, utilization 80.1%
+
+Placements (box, type, container, position, oriented dims):
+  box    9 type 1 -> container 1 pos (0, 13, 0) dims (11, 5, 14)
+  box   17 type 1 -> container 0 pos (0, 13, 0) dims (11, 5, 14)
+  box   19 type 1 -> container 2 pos (14, 0, 0) dims (5, 11, 14)
+  box   49 type 2 -> container 3 pos (0, 9, 17) dims (12, 9, 10)
+  box   51 type 2 -> container 3 pos (0, 0, 17) dims (12, 9, 10)
+  box   59 type 3 -> container 1 pos (14, 0, 0) dims (7, 13, 17)
+  box   64 type 3 -> container 1 pos (0, 0, 0) dims (7, 13, 17)
+  box   67 type 3 -> container 0 pos (7, 0, 0) dims (7, 13, 17)
+  box   71 type 3 -> container 1 pos (7, 0, 0) dims (7, 13, 17)
+  box   72 type 3 -> container 0 pos (0, 0, 0) dims (7, 13, 17)
+  box   76 type 3 -> container 2 pos (7, 0, 0) dims (7, 13, 17)
+  box   78 type 3 -> container 3 pos (7, 0, 0) dims (13, 7, 17)
+  box   79 type 3 -> container 3 pos (7, 7, 0) dims (7, 13, 17)
+  box   80 type 3 -> container 3 pos (14, 7, 0) dims (7, 13, 17)
+  box   81 type 3 -> container 2 pos (0, 0, 0) dims (7, 13, 17)
+  box   87 type 3 -> container 0 pos (14, 0, 0) dims (7, 13, 17)
+  box   88 type 3 -> container 3 pos (0, 0, 0) dims (7, 13, 17)
+  box   99 type 4 -> container 3 pos (12, 10, 17) dims (10, 10, 8)
+  box  103 type 4 -> container 3 pos (12, 0, 17) dims (10, 10, 8)
+  box  117 type 4 -> container 2 pos (0, 0, 17) dims (10, 10, 8)

@@ -1,0 +1,79 @@
+Instance: instance05
+Solver: simulated annealing (sequence decoder)
+Orientation constraint: THIS WAY UP - boxes may only rotate about the vertical axis
+Value model: v_i = c_i * volume_i (volume)
+Boxes: 95 (3 types)
+Containers: 8 (3 types)
+
+Runtime: 30.00 s
+Packed value (SA incumbent / lower bound): 340000.0
+Continuous-knapsack bound: 653750.0
+Gap to that bound: 47.99%
+Greedy (initial decode) value: 288750.0
+SA improvement over greedy: +51250.0
+
+SA parameters and statistics:
+  T0: 3606.74
+  alpha: 0.999, reheat threshold: 5753
+  iterations: 236578 (7886 it/s)
+  accepted: 193467, rejected: 43110, no-move draws: 0, reheats: 40
+  seed: 1
+  verification: ok
+
+Boxes packed: 44 / 95
+Volume utilization: 170000 / 280000 = 60.7%
+
+Container 0 (type 1, 35x30x20): 0 boxes, value 0.0, utilization 0.0%
+Container 1 (type 1, 35x30x20): 12 boxes, value 18000.0, utilization 85.7%
+Container 2 (type 1, 35x30x20): 0 boxes, value 0.0, utilization 0.0%
+Container 3 (type 2, 35x35x40): 12 boxes, value 69750.0, utilization 73.5%
+Container 4 (type 2, 35x35x40): 3 boxes, value 56250.0, utilization 45.9%
+Container 5 (type 2, 35x35x40): 10 boxes, value 84000.0, utilization 79.6%
+Container 6 (type 3, 35x25x40): 4 boxes, value 56750.0, utilization 80.0%
+Container 7 (type 3, 35x25x40): 3 boxes, value 55250.0, utilization 75.7%
+
+Placements (box, type, container, position, oriented dims):
+  box    1 type 1 -> container 7 pos (0, 0, 0) dims (15, 20, 25)
+  box    8 type 1 -> container 3 pos (0, 20, 0) dims (20, 15, 25)
+  box   11 type 1 -> container 5 pos (0, 0, 10) dims (15, 20, 25)
+  box   12 type 1 -> container 3 pos (0, 0, 0) dims (15, 20, 25)
+  box   14 type 1 -> container 5 pos (20, 15, 0) dims (15, 20, 25)
+  box   15 type 1 -> container 3 pos (15, 0, 0) dims (15, 20, 25)
+  box   17 type 1 -> container 4 pos (15, 0, 0) dims (15, 20, 25)
+  box   18 type 1 -> container 5 pos (0, 20, 10) dims (20, 15, 25)
+  box   19 type 1 -> container 4 pos (0, 20, 0) dims (20, 15, 25)
+  box   21 type 1 -> container 4 pos (0, 0, 0) dims (15, 20, 25)
+  box   22 type 1 -> container 6 pos (20, 0, 0) dims (15, 20, 25)
+  box   24 type 1 -> container 5 pos (15, 0, 10) dims (20, 15, 25)
+  box   25 type 2 -> container 5 pos (0, 15, 0) dims (10, 15, 10)
+  box   26 type 2 -> container 6 pos (20, 15, 25) dims (15, 10, 10)
+  box   27 type 2 -> container 1 pos (0, 0, 10) dims (10, 15, 10)
+  box   28 type 2 -> container 3 pos (20, 0, 25) dims (10, 15, 10)
+  box   29 type 2 -> container 3 pos (0, 0, 25) dims (10, 15, 10)
+  box   30 type 2 -> container 5 pos (20, 0, 0) dims (10, 15, 10)
+  box   31 type 2 -> container 1 pos (0, 15, 10) dims (10, 15, 10)
+  box   32 type 2 -> container 3 pos (20, 20, 0) dims (10, 15, 10)
+  box   33 type 2 -> container 1 pos (20, 0, 0) dims (10, 15, 10)
+  box   34 type 2 -> container 3 pos (20, 20, 20) dims (10, 15, 10)
+  box   35 type 2 -> container 3 pos (20, 20, 30) dims (10, 15, 10)
+  box   36 type 2 -> container 7 pos (0, 0, 25) dims (10, 15, 10)
+  box   37 type 2 -> container 1 pos (10, 15, 0) dims (10, 15, 10)
+  box   38 type 2 -> container 5 pos (20, 15, 25) dims (10, 15, 10)
+  box   39 type 2 -> container 1 pos (0, 0, 0) dims (10, 15, 10)
+  box   40 type 2 -> container 1 pos (10, 0, 0) dims (10, 15, 10)
+  box   41 type 2 -> container 1 pos (20, 15, 10) dims (10, 15, 10)
+  box   42 type 2 -> container 3 pos (10, 0, 25) dims (10, 15, 10)
+  box   43 type 2 -> container 1 pos (10, 0, 10) dims (10, 15, 10)
+  box   44 type 2 -> container 1 pos (0, 15, 0) dims (10, 15, 10)
+  box   45 type 2 -> container 5 pos (10, 15, 0) dims (10, 15, 10)
+  box   46 type 2 -> container 3 pos (20, 20, 10) dims (10, 15, 10)
+  box   47 type 2 -> container 5 pos (10, 0, 0) dims (10, 15, 10)
+  box   48 type 2 -> container 6 pos (20, 0, 25) dims (10, 15, 10)
+  box   49 type 2 -> container 1 pos (20, 15, 0) dims (10, 15, 10)
+  box   50 type 2 -> container 1 pos (20, 0, 10) dims (10, 15, 10)
+  box   51 type 2 -> container 1 pos (10, 15, 10) dims (10, 15, 10)
+  box   52 type 2 -> container 3 pos (0, 15, 25) dims (10, 15, 10)
+  box   53 type 2 -> container 3 pos (10, 15, 25) dims (10, 15, 10)
+  box   54 type 2 -> container 5 pos (0, 0, 0) dims (10, 15, 10)
+  box   65 type 3 -> container 6 pos (0, 0, 0) dims (20, 25, 35)
+  box   90 type 3 -> container 7 pos (15, 0, 0) dims (20, 25, 35)

@@ -158,9 +158,9 @@ REHEAT_THRESHOLD = None    # None = max(200, 0.5 * sweep length at ALPHA)
 # to 0 to disable that operator. These are weights, not probabilities — they are
 # normalised.
 MOVE_WEIGHTS = {
-    "relocate":  1.0,
+    "relocate":  0.0,   # disabled: 5-operator run (swap, promote, demote, orient, container)
     "swap":      1.0,
-    "2opt":      1.0,
+    "2opt":      0.0,   # disabled: 5-operator run (swap, promote, demote, orient, container)
     "promote":   1.5,   # slightly favoured: these two are the operators that
     "demote":    1.0,   # actually exchange packed against unpacked cargo
     "orient":    1.0,

@@ -1,0 +1,811 @@
+======================================================================
+3DMHKPup Simulated Annealing (random single-neighbour, sequence decoder, 'this way up')
+SA params: T0=auto, alpha=0.999, T_min=0.001, reheat_threshold=5753, reheat_fraction=0.25
+Move weights: {'relocate': 1.0, 'swap': 1.0, '2opt': 1.0, 'promote': 0.0, 'demote': 0.0, 'orient': 0.0, 'container': 0.0}
+Time limit: 30.0s per instance, seed 1
+======================================================================
+
+======================================================================
+instance01: 70 boxes (2 types), 4 containers (2 types)
+  continuous-knapsack bound: 11112.0
+  initial (value-density) decode: value 6528.0 (28/70 boxes)
+  calibrated T0 = 877.2 (an average worsening move starts out accepted with probability 50%)
+    [iter 5753] reheat + diversify: T=219.3, value=6528.0
+    [iter 11506] reheat + diversify: T=219.3, value=6528.0
+    [iter 17259] reheat + diversify: T=219.3, value=6528.0
+    [iter 23012] reheat + diversify: T=219.3, value=6528.0
+    [iter 28765] reheat + diversify: T=219.3, value=6528.0
+    [iter 34518] reheat + diversify: T=219.3, value=6528.0
+    [iter 40271] reheat + diversify: T=219.3, value=6528.0
+    [iter 46024] reheat + diversify: T=219.3, value=6528.0
+    [iter 51777] reheat + diversify: T=219.3, value=6528.0
+    [iter 57530] reheat + diversify: T=219.3, value=6528.0
+    [iter 63283] reheat + diversify: T=219.3, value=6528.0
+    [iter 69036] reheat + diversify: T=219.3, value=6528.0
+    [iter 74789] reheat + diversify: T=219.3, value=6528.0
+    [iter 80542] reheat + diversify: T=219.3, value=6528.0
+    [iter 86295] reheat + diversify: T=219.3, value=6528.0
+    [iter 92048] reheat + diversify: T=219.3, value=6528.0
+    [iter 97801] reheat + diversify: T=219.3, value=6528.0
+    [iter 103554] reheat + diversify: T=219.3, value=6528.0
+    [iter 109307] reheat + diversify: T=219.3, value=6528.0
+    [iter 115060] reheat + diversify: T=219.3, value=6528.0
+    [iter 120813] reheat + diversify: T=219.3, value=6528.0
+    [iter 126566] reheat + diversify: T=219.3, value=6528.0
+    [iter 132319] reheat + diversify: T=219.3, value=6528.0
+    [iter 138072] reheat + diversify: T=219.3, value=6528.0
+    [iter 143825] reheat + diversify: T=219.3, value=6528.0
+    [iter 149578] reheat + diversify: T=219.3, value=6528.0
+    [iter 155331] reheat + diversify: T=219.3, value=6528.0
+    [iter 161084] reheat + diversify: T=219.3, value=6528.0
+    [iter 166837] reheat + diversify: T=219.3, value=6528.0
+    [iter 172590] reheat + diversify: T=219.3, value=6528.0
+    [iter 178343] reheat + diversify: T=219.3, value=6528.0
+    [iter 184096] reheat + diversify: T=219.3, value=6528.0
+    [iter 189849] reheat + diversify: T=219.3, value=6528.0
+    [iter 195602] reheat + diversify: T=219.3, value=6528.0
+    [iter 201355] reheat + diversify: T=219.3, value=6528.0
+    [iter 207108] reheat + diversify: T=219.3, value=6528.0
+    [iter 212861] reheat + diversify: T=219.3, value=6528.0
+    [iter 218614] reheat + diversify: T=219.3, value=6528.0
+    [iter 224367] reheat + diversify: T=219.3, value=6528.0
+    [iter 230120] reheat + diversify: T=219.3, value=6528.0
+    [iter 235873] reheat + diversify: T=219.3, value=6528.0
+    [iter 241626] reheat + diversify: T=219.3, value=6528.0
+    [iter 247379] reheat + diversify: T=219.3, value=6528.0
+    [iter 253132] reheat + diversify: T=219.3, value=6528.0
+    [iter 258885] reheat + diversify: T=219.3, value=6528.0
+    [iter 264638] reheat + diversify: T=219.3, value=6528.0
+    [iter 270391] reheat + diversify: T=219.3, value=6528.0
+    [iter 276144] reheat + diversify: T=219.3, value=6528.0
+    [iter 281897] reheat + diversify: T=219.3, value=6528.0
+    [iter 287650] reheat + diversify: T=219.3, value=6528.0
+    [iter 293403] reheat + diversify: T=219.3, value=6528.0
+    [iter 299156] reheat + diversify: T=219.3, value=6528.0
+    [iter 304909] reheat + diversify: T=219.3, value=6528.0
+    [iter 310662] reheat + diversify: T=219.3, value=6528.0
+    [iter 316415] reheat + diversify: T=219.3, value=6528.0
+    [iter 322168] reheat + diversify: T=219.3, value=6528.0
+    [iter 327921] reheat + diversify: T=219.3, value=6528.0
+    [iter 333674] reheat + diversify: T=219.3, value=6528.0
+    [iter 339427] reheat + diversify: T=219.3, value=6528.0
+    [iter 345180] reheat + diversify: T=219.3, value=6528.0
+    [iter 350933] reheat + diversify: T=219.3, value=6528.0
+    [iter 356686] reheat + diversify: T=219.3, value=6528.0
+    [iter 362439] reheat + diversify: T=219.3, value=6528.0
+    [iter 368192] reheat + diversify: T=219.3, value=6528.0
+    [iter 373945] reheat + diversify: T=219.3, value=6528.0
+    [iter 379698] reheat + diversify: T=219.3, value=6240.0
+    [iter 385451] reheat + diversify: T=219.3, value=6528.0
+    [iter 391204] reheat + diversify: T=219.3, value=6528.0
+    [iter 396957] reheat + diversify: T=219.3, value=6528.0
+    [iter 402710] reheat + diversify: T=219.3, value=6528.0
+    [iter 408463] reheat + diversify: T=219.3, value=6240.0
+    [iter 414216] reheat + diversify: T=219.3, value=6528.0
+    [iter 419969] reheat + diversify: T=219.3, value=6528.0
+    [iter 425722] reheat + diversify: T=219.3, value=6528.0
+    [iter 431475] reheat + diversify: T=219.3, value=6528.0
+    [iter 437228] reheat + diversify: T=219.3, value=6528.0
+    [iter 442981] reheat + diversify: T=219.3, value=6528.0
+    [iter 448734] reheat + diversify: T=219.3, value=6528.0
+    [iter 454487] reheat + diversify: T=219.3, value=6528.0
+    [iter 460240] reheat + diversify: T=219.3, value=6528.0
+    [iter 465993] reheat + diversify: T=219.3, value=6528.0
+    [iter 471746] reheat + diversify: T=219.3, value=6528.0
+    [iter 477499] reheat + diversify: T=219.3, value=6528.0
+    [iter 483252] reheat + diversify: T=219.3, value=6240.0
+    [iter 489005] reheat + diversify: T=219.3, value=6528.0
+  time limit reached at iteration 491913
+  SA finished: 491913 iterations in 30.0s (16397 it/s), accepted 486446 (98.9%), rejected 5466, no-move draws 0, reheats 85
+  SA: value 6528.0 (greedy 6528.0, +0.0), bound 11112.0, gap 41.25%, util 66.5%
+  report -> /Users/marvincaspar/3DMHKP/results_3DMHKPup/instance01-3DMHKPup-SA-30s-3ops.txt
+
+======================================================================
+instance02: 180 boxes (4 types), 15 containers (3 types)
+  continuous-knapsack bound: 86016.0
+  initial (value-density) decode: value 72230.4 (103/180 boxes)
+  calibrated T0 = 5298.2 (an average worsening move starts out accepted with probability 50%)
+    [iter 2] *** NEW BEST: value 72588.8, boxes 102/180, T=5292.9, elapsed=0.0s
+    [iter 13] *** NEW BEST: value 72896.0, boxes 103/180, T=5235.0, elapsed=0.0s
+    [iter 2872] *** NEW BEST: value 72908.8, boxes 102/180, T=299.7, elapsed=0.9s
+    [iter 3146] *** NEW BEST: value 72998.4, boxes 101/180, T=227.8, elapsed=0.9s
+    [iter 3227] *** NEW BEST: value 73203.2, boxes 101/180, T=210.1, elapsed=1.0s
+    [iter 3269] *** NEW BEST: value 73408.0, boxes 101/180, T=201.4, elapsed=1.0s
+    [iter 3301] *** NEW BEST: value 73664.0, boxes 102/180, T=195.1, elapsed=1.0s
+    [iter 3980] *** NEW BEST: value 73766.4, boxes 103/180, T=98.9, elapsed=1.2s
+    [iter 4273] *** NEW BEST: value 73817.6, boxes 104/180, T=73.8, elapsed=1.3s
+    [iter 4340] *** NEW BEST: value 73971.2, boxes 103/180, T=69.0, elapsed=1.3s
+    [iter 4362] *** NEW BEST: value 74176.0, boxes 103/180, T=67.5, elapsed=1.3s
+    [iter 4497] *** NEW BEST: value 74329.6, boxes 102/180, T=59.0, elapsed=1.3s
+    [iter 4719] *** NEW BEST: value 74534.4, boxes 102/180, T=47.2, elapsed=1.4s
+    [iter 5125] *** NEW BEST: value 74585.6, boxes 103/180, T=31.5, elapsed=1.5s
+    [iter 5838] *** NEW BEST: value 74790.4, boxes 103/180, T=15.4, elapsed=1.7s
+    [iter 6025] *** NEW BEST: value 74995.2, boxes 103/180, T=12.8, elapsed=1.8s
+    [iter 6142] *** NEW BEST: value 75200.0, boxes 103/180, T=11.4, elapsed=1.8s
+    [iter 6709] *** NEW BEST: value 75251.2, boxes 104/180, T=6.4, elapsed=2.0s
+    [iter 6803] *** NEW BEST: value 75456.0, boxes 104/180, T=5.9, elapsed=2.0s
+    [iter 12556] reheat + diversify: T=1324.6, value=67366.4
+    [iter 17377] *** NEW BEST: value 75660.8, boxes 103/180, T=10.7, elapsed=5.1s
+    [iter 18173] *** NEW BEST: value 75865.6, boxes 103/180, T=4.8, elapsed=5.3s
+    [iter 18464] *** NEW BEST: value 75916.8, boxes 104/180, T=3.6, elapsed=5.4s
+    [iter 18956] *** NEW BEST: value 76121.6, boxes 104/180, T=2.2, elapsed=5.5s
+    [iter 19649] *** NEW BEST: value 76326.4, boxes 104/180, T=1.1, elapsed=5.7s
+    [iter 21159] *** NEW BEST: value 76531.2, boxes 104/180, T=0.2, elapsed=6.2s
+    [iter 22729] *** NEW BEST: value 76684.8, boxes 103/180, T=0.1, elapsed=6.6s
+    [iter 22813] *** NEW BEST: value 76889.6, boxes 103/180, T=0.0, elapsed=6.7s
+    [iter 24532] *** NEW BEST: value 77094.4, boxes 103/180, T=0.0, elapsed=7.1s
+    [iter 27847] *** NEW BEST: value 77414.4, boxes 103/180, T=0.0, elapsed=8.1s
+    [iter 33600] reheat + diversify: T=1324.6, value=68339.2
+    [iter 39353] reheat + diversify: T=1324.6, value=67878.4
+    [iter 45106] reheat + diversify: T=1324.6, value=66496.0
+    [iter 50859] reheat + diversify: T=1324.6, value=69414.4
+    [iter 56612] reheat + diversify: T=1324.6, value=65216.0
+    [iter 62365] reheat + diversify: T=1324.6, value=65984.0
+    [iter 68118] reheat + diversify: T=1324.6, value=68236.8
+    [iter 73871] reheat + diversify: T=1324.6, value=68492.8
+    [iter 79624] reheat + diversify: T=1324.6, value=66905.6
+    [iter 85377] reheat + diversify: T=1324.6, value=67264.0
+    [iter 91130] reheat + diversify: T=1324.6, value=66803.2
+    [iter 96883] reheat + diversify: T=1324.6, value=65830.4
+  time limit reached at iteration 102019
+  SA finished: 102019 iterations in 30.0s (3401 it/s), accepted 49535 (48.6%), rejected 52483, no-move draws 0, reheats 13
+  SA: value 77414.4 (greedy 72230.4, +5184.0), bound 86016.0, gap 10.00%, util 92.8%
+  report -> /Users/marvincaspar/3DMHKP/results_3DMHKPup/instance02-3DMHKPup-SA-30s-3ops.txt
+
+======================================================================
+instance03: 103 boxes (3 types), 4 containers (3 types)
+  continuous-knapsack bound: 53500.0
+  initial (value-density) decode: value 43750.0 (61/103 boxes)
+  calibrated T0 = 1307.4 (an average worsening move starts out accepted with probability 50%)
+    [iter 1] *** NEW BEST: value 43937.5, boxes 60/103, T=1307.4, elapsed=0.0s
+    [iter 3] *** NEW BEST: value 44500.0, boxes 57/103, T=1304.8, elapsed=0.0s
+    [iter 12] *** NEW BEST: value 49825.0, boxes 54/103, T=1293.1, elapsed=0.0s
+    [iter 23] *** NEW BEST: value 50150.0, boxes 54/103, T=1279.0, elapsed=0.0s
+    [iter 2315] *** NEW BEST: value 50162.5, boxes 57/103, T=129.1, elapsed=0.8s
+    [iter 2319] *** NEW BEST: value 50587.5, boxes 58/103, T=128.6, elapsed=0.8s
+    [iter 2329] *** NEW BEST: value 50687.5, boxes 59/103, T=127.3, elapsed=0.8s
+    [iter 2340] *** NEW BEST: value 51200.0, boxes 58/103, T=125.9, elapsed=0.8s
+    [iter 2503] *** NEW BEST: value 51625.0, boxes 59/103, T=107.0, elapsed=0.8s
+    [iter 8256] reheat + diversify: T=326.9, value=45900.0
+    [iter 11541] *** NEW BEST: value 51712.5, boxes 57/103, T=12.2, elapsed=3.2s
+    [iter 11590] *** NEW BEST: value 51812.5, boxes 58/103, T=11.6, elapsed=3.2s
+    [iter 11744] *** NEW BEST: value 52137.5, boxes 58/103, T=10.0, elapsed=3.3s
+    [iter 12123] *** NEW BEST: value 52225.0, boxes 56/103, T=6.8, elapsed=3.4s
+    [iter 12223] *** NEW BEST: value 52325.0, boxes 57/103, T=6.2, elapsed=3.4s
+    [iter 17976] reheat + diversify: T=326.9, value=46337.5
+    [iter 23729] reheat + diversify: T=326.9, value=47262.5
+    [iter 29482] reheat + diversify: T=326.9, value=44375.0
+    [iter 35235] reheat + diversify: T=326.9, value=47287.5
+    [iter 40988] reheat + diversify: T=326.9, value=47387.5
+    [iter 46741] reheat + diversify: T=326.9, value=49525.0
+    [iter 52494] reheat + diversify: T=326.9, value=46100.0
+    [iter 58247] reheat + diversify: T=326.9, value=46950.0
+    [iter 64000] reheat + diversify: T=326.9, value=45287.5
+    [iter 69753] reheat + diversify: T=326.9, value=47375.0
+    [iter 75506] reheat + diversify: T=326.9, value=44050.0
+    [iter 81259] reheat + diversify: T=326.9, value=47987.5
+    [iter 87012] reheat + diversify: T=326.9, value=47362.5
+    [iter 92765] reheat + diversify: T=326.9, value=45925.0
+    [iter 98518] reheat + diversify: T=326.9, value=45900.0
+    [iter 104271] reheat + diversify: T=326.9, value=48687.5
+    [iter 110024] reheat + diversify: T=326.9, value=46762.5
+  time limit reached at iteration 111771
+  SA finished: 111771 iterations in 30.0s (3726 it/s), accepted 69862 (62.5%), rejected 41908, no-move draws 0, reheats 18
+  SA: value 52325.0 (greedy 43750.0, +8575.0), bound 53500.0, gap 2.20%, util 98.6%
+  report -> /Users/marvincaspar/3DMHKP/results_3DMHKPup/instance03-3DMHKPup-SA-30s-3ops.txt
+
+======================================================================
+instance04: 110 boxes (2 types), 15 containers (3 types)
+  continuous-knapsack bound: 2720640.0
+  initial (value-density) decode: value 1185408.0 (35/110 boxes)
+  calibrated T0 = 54882.4 (an average worsening move starts out accepted with probability 50%)
+    [iter 26] *** NEW BEST: value 1186995.2, boxes 37/110, T=53526.7, elapsed=0.0s
+    [iter 79] *** NEW BEST: value 1189376.0, boxes 40/110, T=50762.3, elapsed=0.0s
+    [iter 104] *** NEW BEST: value 1197644.8, boxes 40/110, T=49508.4, elapsed=0.0s
+    [iter 932] *** NEW BEST: value 1205913.6, boxes 40/110, T=21622.3, elapsed=0.1s
+    [iter 1718] *** NEW BEST: value 1214182.4, boxes 40/110, T=9848.6, elapsed=0.3s
+    [iter 1750] *** NEW BEST: value 1222451.2, boxes 40/110, T=9538.3, elapsed=0.3s
+    [iter 1834] *** NEW BEST: value 1230720.0, boxes 40/110, T=8769.5, elapsed=0.3s
+    [iter 2470] *** NEW BEST: value 1238988.8, boxes 40/110, T=4641.1, elapsed=0.4s
+    [iter 2476] *** NEW BEST: value 1247257.6, boxes 40/110, T=4613.4, elapsed=0.4s
+    [iter 2499] *** NEW BEST: value 1255526.4, boxes 40/110, T=4508.4, elapsed=0.4s
+    [iter 2648] *** NEW BEST: value 1263795.2, boxes 40/110, T=3884.0, elapsed=0.4s
+    [iter 3412] *** NEW BEST: value 1272064.0, boxes 40/110, T=1808.5, elapsed=0.5s
+    [iter 9165] reheat + diversify: T=13720.6, value=1122432.0
+    [iter 14918] reheat + diversify: T=13720.6, value=1172044.8
+    [iter 20671] reheat + diversify: T=13720.6, value=1122432.0
+    [iter 26424] reheat + diversify: T=13720.6, value=1154713.6
+    [iter 32177] reheat + diversify: T=13720.6, value=1104307.2
+    [iter 37930] reheat + diversify: T=13720.6, value=1172044.8
+    [iter 43683] reheat + diversify: T=13720.6, value=1172044.8
+    [iter 49436] reheat + diversify: T=13720.6, value=1113369.6
+    [iter 55189] reheat + diversify: T=13720.6, value=1087769.6
+    [iter 60942] reheat + diversify: T=13720.6, value=1138969.6
+    [iter 66695] reheat + diversify: T=13720.6, value=1113369.6
+    [iter 72448] reheat + diversify: T=13720.6, value=1130700.8
+    [iter 78201] reheat + diversify: T=13720.6, value=1180313.6
+    [iter 83954] reheat + diversify: T=13720.6, value=1188582.4
+    [iter 89707] reheat + diversify: T=13720.6, value=1180313.6
+    [iter 95460] reheat + diversify: T=13720.6, value=1214182.4
+    [iter 101213] reheat + diversify: T=13720.6, value=1189376.0
+    [iter 106966] reheat + diversify: T=13720.6, value=1138176.0
+    [iter 112719] reheat + diversify: T=13720.6, value=1171251.2
+    [iter 118472] reheat + diversify: T=13720.6, value=1188582.4
+    [iter 124225] reheat + diversify: T=13720.6, value=1105100.8
+    [iter 129978] reheat + diversify: T=13720.6, value=1122432.0
+    [iter 135731] reheat + diversify: T=13720.6, value=1121638.4
+    [iter 141484] reheat + diversify: T=13720.6, value=1138176.0
+    [iter 147237] reheat + diversify: T=13720.6, value=1189376.0
+    [iter 152990] reheat + diversify: T=13720.6, value=1147238.4
+    [iter 158743] reheat + diversify: T=13720.6, value=1205913.6
+    [iter 164496] reheat + diversify: T=13720.6, value=1162982.4
+    [iter 170249] reheat + diversify: T=13720.6, value=1163776.0
+    [iter 176002] reheat + diversify: T=13720.6, value=1155507.2
+    [iter 181755] reheat + diversify: T=13720.6, value=1146444.8
+    [iter 187508] reheat + diversify: T=13720.6, value=1154713.6
+    [iter 193261] reheat + diversify: T=13720.6, value=1121638.4
+    [iter 199014] reheat + diversify: T=13720.6, value=1113369.6
+    [iter 204767] reheat + diversify: T=13720.6, value=1155507.2
+  time limit reached at iteration 206240
+  SA finished: 206240 iterations in 30.0s (6875 it/s), accepted 115819 (56.2%), rejected 90420, no-move draws 0, reheats 35
+  SA: value 1272064.0 (greedy 1185408.0, +86656.0), bound 2720640.0, gap 53.24%, util 43.9%
+  report -> /Users/marvincaspar/3DMHKP/results_3DMHKPup/instance04-3DMHKPup-SA-30s-3ops.txt
+
+======================================================================
+instance05: 95 boxes (3 types), 8 containers (3 types)
+  continuous-knapsack bound: 653750.0
+  initial (value-density) decode: value 288750.0 (43/95 boxes)
+  calibrated T0 = 3606.7 (an average worsening move starts out accepted with probability 50%)
+    [iter 1] *** NEW BEST: value 321250.0, boxes 43/95, T=3606.7, elapsed=0.0s
+    [iter 5754] reheat + diversify: T=901.7, value=316250.0
+    [iter 11507] reheat + diversify: T=901.7, value=300000.0
+    [iter 17260] reheat + diversify: T=901.7, value=281250.0
+    [iter 23013] reheat + diversify: T=901.7, value=316250.0
+    [iter 28766] reheat + diversify: T=901.7, value=297500.0
+    [iter 34519] reheat + diversify: T=901.7, value=316250.0
+    [iter 40272] reheat + diversify: T=901.7, value=313750.0
+    [iter 46025] reheat + diversify: T=901.7, value=316250.0
+    [iter 51778] reheat + diversify: T=901.7, value=297500.0
+    [iter 57531] reheat + diversify: T=901.7, value=318750.0
+    [iter 63284] reheat + diversify: T=901.7, value=313750.0
+    [iter 69037] reheat + diversify: T=901.7, value=316250.0
+    [iter 74790] reheat + diversify: T=901.7, value=300000.0
+    [iter 80543] reheat + diversify: T=901.7, value=297500.0
+    [iter 86296] reheat + diversify: T=901.7, value=316250.0
+    [iter 92049] reheat + diversify: T=901.7, value=313750.0
+    [iter 97802] reheat + diversify: T=901.7, value=318750.0
+    [iter 103555] reheat + diversify: T=901.7, value=281250.0
+    [iter 109308] reheat + diversify: T=901.7, value=318750.0
+    [iter 115061] reheat + diversify: T=901.7, value=316250.0
+    [iter 120814] reheat + diversify: T=901.7, value=297500.0
+    [iter 122943] *** NEW BEST: value 335000.0, boxes 42/95, T=107.3, elapsed=15.9s
+    [iter 123839] *** NEW BEST: value 337500.0, boxes 43/95, T=43.8, elapsed=16.0s
+    [iter 125706] *** NEW BEST: value 340000.0, boxes 44/95, T=6.8, elapsed=16.3s
+    [iter 131459] reheat + diversify: T=901.7, value=316250.0
+    [iter 137212] reheat + diversify: T=901.7, value=313750.0
+    [iter 142965] reheat + diversify: T=901.7, value=313750.0
+    [iter 148718] reheat + diversify: T=901.7, value=283750.0
+    [iter 154471] reheat + diversify: T=901.7, value=313750.0
+    [iter 160224] reheat + diversify: T=901.7, value=313750.0
+    [iter 165977] reheat + diversify: T=901.7, value=313750.0
+    [iter 171730] reheat + diversify: T=901.7, value=313750.0
+    [iter 177483] reheat + diversify: T=901.7, value=300000.0
+    [iter 183236] reheat + diversify: T=901.7, value=297500.0
+    [iter 188989] reheat + diversify: T=901.7, value=316250.0
+    [iter 194742] reheat + diversify: T=901.7, value=313750.0
+    [iter 200495] reheat + diversify: T=901.7, value=316250.0
+    [iter 206248] reheat + diversify: T=901.7, value=300000.0
+    [iter 212001] reheat + diversify: T=901.7, value=316250.0
+    [iter 217754] reheat + diversify: T=901.7, value=313750.0
+    [iter 223507] reheat + diversify: T=901.7, value=297500.0
+    [iter 229260] reheat + diversify: T=901.7, value=318750.0
+    [iter 235013] reheat + diversify: T=901.7, value=300000.0
+  time limit reached at iteration 236578
+  SA finished: 236578 iterations in 30.0s (7886 it/s), accepted 193467 (81.8%), rejected 43110, no-move draws 0, reheats 40
+  SA: value 340000.0 (greedy 288750.0, +51250.0), bound 653750.0, gap 47.99%, util 60.7%
+  report -> /Users/marvincaspar/3DMHKP/results_3DMHKPup/instance05-3DMHKPup-SA-30s-3ops.txt
+
+======================================================================
+instance06: 95 boxes (3 types), 9 containers (3 types)
+  continuous-knapsack bound: 143424.0
+  initial (value-density) decode: value 117792.0 (65/95 boxes)
+  calibrated T0 = 4726.3 (an average worsening move starts out accepted with probability 50%)
+    [iter 13] *** NEW BEST: value 119040.0, boxes 65/95, T=4669.9, elapsed=0.0s
+    [iter 2268] *** NEW BEST: value 119520.0, boxes 68/95, T=489.2, elapsed=0.4s
+    [iter 2359] *** NEW BEST: value 120096.0, boxes 67/95, T=446.6, elapsed=0.5s
+    [iter 2374] *** NEW BEST: value 120576.0, boxes 66/95, T=440.0, elapsed=0.5s
+    [iter 2415] *** NEW BEST: value 121344.0, boxes 67/95, T=422.3, elapsed=0.5s
+    [iter 2447] *** NEW BEST: value 124128.0, boxes 69/95, T=409.0, elapsed=0.5s
+    [iter 2941] *** NEW BEST: value 124992.0, boxes 69/95, T=249.5, elapsed=0.6s
+    [iter 4080] *** NEW BEST: value 125856.0, boxes 69/95, T=79.8, elapsed=0.8s
+    [iter 9324] *** NEW BEST: value 126336.0, boxes 68/95, T=0.4, elapsed=1.7s
+    [iter 15077] reheat + diversify: T=1181.6, value=113760.0
+    [iter 20830] reheat + diversify: T=1181.6, value=103392.0
+    [iter 26583] reheat + diversify: T=1181.6, value=109632.0
+    [iter 32336] reheat + diversify: T=1181.6, value=110880.0
+    [iter 38089] reheat + diversify: T=1181.6, value=110016.0
+    [iter 43842] reheat + diversify: T=1181.6, value=110016.0
+    [iter 49595] reheat + diversify: T=1181.6, value=111744.0
+    [iter 55348] reheat + diversify: T=1181.6, value=101664.0
+    [iter 61101] reheat + diversify: T=1181.6, value=104832.0
+    [iter 66854] reheat + diversify: T=1181.6, value=116256.0
+    [iter 72607] reheat + diversify: T=1181.6, value=105984.0
+    [iter 78360] reheat + diversify: T=1181.6, value=107232.0
+    [iter 84113] reheat + diversify: T=1181.6, value=105120.0
+    [iter 89866] reheat + diversify: T=1181.6, value=103392.0
+    [iter 95619] reheat + diversify: T=1181.6, value=103392.0
+    [iter 101372] reheat + diversify: T=1181.6, value=114624.0
+    [iter 107125] reheat + diversify: T=1181.6, value=105408.0
+    [iter 112878] reheat + diversify: T=1181.6, value=108864.0
+    [iter 118631] reheat + diversify: T=1181.6, value=106656.0
+    [iter 124384] reheat + diversify: T=1181.6, value=110880.0
+    [iter 130137] reheat + diversify: T=1181.6, value=104640.0
+    [iter 135890] reheat + diversify: T=1181.6, value=108000.0
+    [iter 141643] reheat + diversify: T=1181.6, value=104256.0
+    [iter 147396] reheat + diversify: T=1181.6, value=107520.0
+    [iter 153149] reheat + diversify: T=1181.6, value=107136.0
+    [iter 158902] reheat + diversify: T=1181.6, value=109152.0
+    [iter 164655] reheat + diversify: T=1181.6, value=107136.0
+    [iter 170408] reheat + diversify: T=1181.6, value=113760.0
+  time limit reached at iteration 172271
+  SA finished: 172271 iterations in 30.0s (5742 it/s), accepted 77174 (44.8%), rejected 95096, no-move draws 0, reheats 28
+  SA: value 126336.0 (greedy 117792.0, +8544.0), bound 143424.0, gap 11.91%, util 84.2%
+  report -> /Users/marvincaspar/3DMHKP/results_3DMHKPup/instance06-3DMHKPup-SA-30s-3ops.txt
+
+======================================================================
+instance07: 47 boxes (3 types), 2 containers (2 types)
+  continuous-knapsack bound: 20203.2
+  initial (value-density) decode: value 15270.0 (22/47 boxes)
+  calibrated T0 = 1777.6 (an average worsening move starts out accepted with probability 50%)
+    [iter 5753] reheat + diversify: T=444.4, value=14340.0
+    [iter 11506] reheat + diversify: T=444.4, value=12144.0
+    [iter 17259] reheat + diversify: T=444.4, value=13056.0
+    [iter 23012] reheat + diversify: T=444.4, value=13851.0
+    [iter 28765] reheat + diversify: T=444.4, value=14799.0
+    [iter 34518] reheat + diversify: T=444.4, value=13092.0
+    [iter 40271] reheat + diversify: T=444.4, value=14199.0
+    [iter 46024] reheat + diversify: T=444.4, value=13386.0
+    [iter 51777] reheat + diversify: T=444.4, value=13857.0
+    [iter 57530] reheat + diversify: T=444.4, value=13998.0
+    [iter 63283] reheat + diversify: T=444.4, value=13116.0
+    [iter 69036] reheat + diversify: T=444.4, value=13086.0
+    [iter 74789] reheat + diversify: T=444.4, value=12420.0
+    [iter 80542] reheat + diversify: T=444.4, value=13857.0
+    [iter 86295] reheat + diversify: T=444.4, value=13563.0
+    [iter 92048] reheat + diversify: T=444.4, value=13062.0
+    [iter 97801] reheat + diversify: T=444.4, value=14034.0
+    [iter 103554] reheat + diversify: T=444.4, value=14199.0
+    [iter 109307] reheat + diversify: T=444.4, value=14664.0
+    [iter 115060] reheat + diversify: T=444.4, value=14328.0
+    [iter 120813] reheat + diversify: T=444.4, value=14670.0
+    [iter 126566] reheat + diversify: T=444.4, value=13893.0
+    [iter 132319] reheat + diversify: T=444.4, value=13080.0
+    [iter 138072] reheat + diversify: T=444.4, value=14322.0
+    [iter 143825] reheat + diversify: T=444.4, value=15270.0
+    [iter 149578] reheat + diversify: T=444.4, value=13551.0
+    [iter 155331] reheat + diversify: T=444.4, value=14022.0
+    [iter 161084] reheat + diversify: T=444.4, value=14193.0
+    [iter 166837] reheat + diversify: T=444.4, value=14799.0
+    [iter 172590] reheat + diversify: T=444.4, value=12408.0
+    [iter 178343] reheat + diversify: T=444.4, value=13527.0
+    [iter 184096] reheat + diversify: T=444.4, value=14199.0
+    [iter 189849] reheat + diversify: T=444.4, value=14193.0
+    [iter 195602] reheat + diversify: T=444.4, value=15099.0
+    [iter 201355] reheat + diversify: T=444.4, value=12597.0
+    [iter 207108] reheat + diversify: T=444.4, value=13386.0
+    [iter 212861] reheat + diversify: T=444.4, value=13569.0
+    [iter 218614] reheat + diversify: T=444.4, value=13086.0
+    [iter 224367] reheat + diversify: T=444.4, value=13662.0
+    [iter 230120] reheat + diversify: T=444.4, value=14328.0
+    [iter 235873] reheat + diversify: T=444.4, value=14199.0
+    [iter 241626] reheat + diversify: T=444.4, value=14328.0
+    [iter 247379] reheat + diversify: T=444.4, value=12921.0
+    [iter 253132] reheat + diversify: T=444.4, value=13386.0
+    [iter 258885] reheat + diversify: T=444.4, value=13692.0
+    [iter 264638] reheat + diversify: T=444.4, value=13386.0
+    [iter 270391] reheat + diversify: T=444.4, value=14328.0
+    [iter 276144] reheat + diversify: T=444.4, value=13722.0
+    [iter 281897] reheat + diversify: T=444.4, value=14010.0
+    [iter 287650] reheat + diversify: T=444.4, value=12420.0
+    [iter 293403] reheat + diversify: T=444.4, value=14322.0
+    [iter 299156] reheat + diversify: T=444.4, value=13686.0
+    [iter 304909] reheat + diversify: T=444.4, value=14499.0
+    [iter 310662] reheat + diversify: T=444.4, value=13416.0
+    [iter 316415] reheat + diversify: T=444.4, value=14328.0
+    [iter 322168] reheat + diversify: T=444.4, value=13899.0
+  time limit reached at iteration 325626
+  SA finished: 325626 iterations in 30.0s (10854 it/s), accepted 201182 (61.8%), rejected 124443, no-move draws 0, reheats 56
+  SA: value 15270.0 (greedy 15270.0, +0.0), bound 20203.2, gap 24.42%, util 78.1%
+  report -> /Users/marvincaspar/3DMHKP/results_3DMHKPup/instance07-3DMHKPup-SA-30s-3ops.txt
+
+======================================================================
+instance08: 175 boxes (6 types), 5 containers (3 types)
+  continuous-knapsack bound: 77986.8
+  initial (value-density) decode: value 59154.4 (94/175 boxes)
+  calibrated T0 = 3003.3 (an average worsening move starts out accepted with probability 50%)
+    [iter 54] *** NEW BEST: value 59501.8, boxes 92/175, T=2848.2, elapsed=0.1s
+    [iter 87] *** NEW BEST: value 59539.2, boxes 93/175, T=2755.7, elapsed=0.1s
+    [iter 5840] reheat + diversify: T=750.8, value=52817.6
+    [iter 11593] reheat + diversify: T=750.8, value=52717.4
+    [iter 14535] *** NEW BEST: value 59778.8, boxes 102/175, T=39.6, elapsed=15.0s
+    [iter 14629] *** NEW BEST: value 59842.8, boxes 103/175, T=36.0, elapsed=15.0s
+    [iter 14648] *** NEW BEST: value 59914.6, boxes 105/175, T=35.4, elapsed=15.1s
+    [iter 15039] *** NEW BEST: value 59978.6, boxes 106/175, T=23.9, elapsed=15.4s
+    [iter 15107] *** NEW BEST: value 60042.6, boxes 107/175, T=22.3, elapsed=15.5s
+    [iter 15135] *** NEW BEST: value 60277.4, boxes 102/175, T=21.7, elapsed=15.5s
+    [iter 19177] *** NEW BEST: value 60485.8, boxes 100/175, T=0.4, elapsed=18.9s
+    [iter 24930] reheat + diversify: T=750.8, value=57093.0
+    [iter 30683] reheat + diversify: T=750.8, value=55996.6
+  time limit reached at iteration 33266
+  SA finished: 33266 iterations in 30.0s (1109 it/s), accepted 22319 (67.1%), rejected 10946, no-move draws 0, reheats 4
+  SA: value 60485.8 (greedy 59154.4, +1331.4), bound 77986.8, gap 22.44%, util 88.5%
+  report -> /Users/marvincaspar/3DMHKP/results_3DMHKPup/instance08-3DMHKPup-SA-30s-3ops.txt
+
+======================================================================
+instance09: 72 boxes (4 types), 3 containers (3 types)
+  continuous-knapsack bound: 139356.0
+  initial (value-density) decode: value 90036.0 (48/72 boxes)
+  calibrated T0 = 3903.9 (an average worsening move starts out accepted with probability 50%)
+    [iter 1] *** NEW BEST: value 92808.0, boxes 49/72, T=3903.9, elapsed=0.0s
+    [iter 4] *** NEW BEST: value 95580.0, boxes 50/72, T=3892.2, elapsed=0.0s
+    [iter 5] *** NEW BEST: value 95778.0, boxes 50/72, T=3888.3, elapsed=0.0s
+    [iter 10] *** NEW BEST: value 97542.0, boxes 50/72, T=3868.9, elapsed=0.0s
+    [iter 75] *** NEW BEST: value 98028.0, boxes 51/72, T=3625.3, elapsed=0.0s
+    [iter 305] *** NEW BEST: value 98514.0, boxes 49/72, T=2880.1, elapsed=0.1s
+    [iter 361] *** NEW BEST: value 98838.0, boxes 48/72, T=2723.2, elapsed=0.1s
+    [iter 366] *** NEW BEST: value 99252.0, boxes 49/72, T=2709.6, elapsed=0.1s
+    [iter 407] *** NEW BEST: value 99540.0, boxes 51/72, T=2600.7, elapsed=0.1s
+    [iter 411] *** NEW BEST: value 100278.0, boxes 51/72, T=2590.3, elapsed=0.1s
+    [iter 417] *** NEW BEST: value 101016.0, boxes 51/72, T=2574.8, elapsed=0.1s
+    [iter 436] *** NEW BEST: value 103392.0, boxes 52/72, T=2526.3, elapsed=0.1s
+    [iter 512] *** NEW BEST: value 103806.0, boxes 53/72, T=2341.4, elapsed=0.2s
+    [iter 514] *** NEW BEST: value 105894.0, boxes 54/72, T=2336.7, elapsed=0.2s
+    [iter 661] *** NEW BEST: value 106092.0, boxes 54/72, T=2017.1, elapsed=0.2s
+    [iter 1995] *** NEW BEST: value 106416.0, boxes 53/72, T=531.0, elapsed=0.7s
+    [iter 2253] *** NEW BEST: value 107370.0, boxes 54/72, T=410.2, elapsed=0.8s
+    [iter 2549] *** NEW BEST: value 108054.0, boxes 54/72, T=305.0, elapsed=0.9s
+    [iter 6145] *** NEW BEST: value 109692.0, boxes 55/72, T=8.4, elapsed=2.1s
+    [iter 6213] *** NEW BEST: value 110376.0, boxes 55/72, T=7.8, elapsed=2.1s
+    [iter 11966] reheat + diversify: T=976.0, value=94842.0
+    [iter 17719] reheat + diversify: T=976.0, value=90252.0
+    [iter 21302] *** NEW BEST: value 110700.0, boxes 56/72, T=27.1, elapsed=6.9s
+    [iter 21474] *** NEW BEST: value 111852.0, boxes 57/72, T=22.8, elapsed=7.0s
+    [iter 27227] reheat + diversify: T=976.0, value=88740.0
+    [iter 27717] *** NEW BEST: value 112248.0, boxes 57/72, T=598.4, elapsed=9.1s
+    [iter 28661] *** NEW BEST: value 112806.0, boxes 56/72, T=232.7, elapsed=9.4s
+    [iter 28695] *** NEW BEST: value 113220.0, boxes 57/72, T=224.9, elapsed=9.4s
+    [iter 28723] *** NEW BEST: value 113274.0, boxes 57/72, T=218.7, elapsed=9.4s
+    [iter 29062] *** NEW BEST: value 114426.0, boxes 58/72, T=155.8, elapsed=9.5s
+    [iter 34815] reheat + diversify: T=976.0, value=99954.0
+    [iter 40568] reheat + diversify: T=976.0, value=85572.0
+    [iter 46321] reheat + diversify: T=976.0, value=95184.0
+    [iter 52074] reheat + diversify: T=976.0, value=91080.0
+    [iter 57827] reheat + diversify: T=976.0, value=91476.0
+    [iter 63580] reheat + diversify: T=976.0, value=95274.0
+    [iter 69333] reheat + diversify: T=976.0, value=84906.0
+    [iter 75086] reheat + diversify: T=976.0, value=97722.0
+    [iter 80839] reheat + diversify: T=976.0, value=79884.0
+    [iter 86592] reheat + diversify: T=976.0, value=88758.0
+  time limit reached at iteration 91510
+  SA finished: 91510 iterations in 30.0s (3050 it/s), accepted 28547 (31.2%), rejected 62962, no-move draws 0, reheats 13
+  SA: value 114426.0 (greedy 90036.0, +24390.0), bound 139356.0, gap 17.89%, util 78.8%
+  report -> /Users/marvincaspar/3DMHKP/results_3DMHKPup/instance09-3DMHKPup-SA-30s-3ops.txt
+
+======================================================================
+instance10: 200 boxes (3 types), 3 containers (2 types)
+  continuous-knapsack bound: 15360.0
+  initial (value-density) decode: value 11264.0 (96/200 boxes)
+  calibrated T0 = 1144.9 (an average worsening move starts out accepted with probability 50%)
+    [iter 5753] reheat + diversify: T=286.2, value=11033.6
+    [iter 11506] reheat + diversify: T=286.2, value=9804.8
+    [iter 17259] reheat + diversify: T=286.2, value=11033.6
+    [iter 23012] reheat + diversify: T=286.2, value=11110.4
+    [iter 28765] reheat + diversify: T=286.2, value=11033.6
+    [iter 34518] reheat + diversify: T=286.2, value=11110.4
+    [iter 40271] reheat + diversify: T=286.2, value=11110.4
+    [iter 46024] reheat + diversify: T=286.2, value=10956.8
+    [iter 51777] reheat + diversify: T=286.2, value=11110.4
+    [iter 57530] reheat + diversify: T=286.2, value=9958.4
+    [iter 63283] reheat + diversify: T=286.2, value=11033.6
+    [iter 69036] reheat + diversify: T=286.2, value=10112.0
+    [iter 74789] reheat + diversify: T=286.2, value=11187.2
+    [iter 80542] reheat + diversify: T=286.2, value=11033.6
+    [iter 86295] reheat + diversify: T=286.2, value=11110.4
+    [iter 92048] reheat + diversify: T=286.2, value=11033.6
+    [iter 97801] reheat + diversify: T=286.2, value=11187.2
+    [iter 103554] reheat + diversify: T=286.2, value=10956.8
+    [iter 109307] reheat + diversify: T=286.2, value=11110.4
+    [iter 115060] reheat + diversify: T=286.2, value=10956.8
+    [iter 120813] reheat + diversify: T=286.2, value=10880.0
+    [iter 126566] reheat + diversify: T=286.2, value=10880.0
+    [iter 132319] reheat + diversify: T=286.2, value=11033.6
+    [iter 138072] reheat + diversify: T=286.2, value=9881.6
+    [iter 143825] reheat + diversify: T=286.2, value=11187.2
+    [iter 149578] reheat + diversify: T=286.2, value=10956.8
+  time limit reached at iteration 150469
+  SA finished: 150469 iterations in 30.0s (5016 it/s), accepted 136523 (90.7%), rejected 13945, no-move draws 0, reheats 26
+  SA: value 11264.0 (greedy 11264.0, +0.0), bound 15360.0, gap 26.67%, util 90.0%
+  report -> /Users/marvincaspar/3DMHKP/results_3DMHKPup/instance10-3DMHKPup-SA-30s-3ops.txt
+
+======================================================================
+instance11: 118 boxes (4 types), 4 containers (3 types)
+  continuous-knapsack bound: 68353.2
+  initial (value-density) decode: value 40925.2 (20/118 boxes)
+  calibrated T0 = 3329.0 (an average worsening move starts out accepted with probability 50%)
+    [iter 45] *** NEW BEST: value 41181.2, boxes 20/118, T=3185.6, elapsed=0.0s
+    [iter 5798] reheat + diversify: T=832.2, value=34367.4
+    [iter 11551] reheat + diversify: T=832.2, value=39680.6
+    [iter 17304] reheat + diversify: T=832.2, value=36510.8
+    [iter 23057] reheat + diversify: T=832.2, value=34930.8
+    [iter 28810] reheat + diversify: T=832.2, value=39166.6
+    [iter 34563] reheat + diversify: T=832.2, value=35947.4
+    [iter 40316] reheat + diversify: T=832.2, value=31646.2
+    [iter 46069] reheat + diversify: T=832.2, value=38718.0
+    [iter 51822] reheat + diversify: T=832.2, value=32047.0
+    [iter 57575] reheat + diversify: T=832.2, value=32430.2
+    [iter 63328] reheat + diversify: T=832.2, value=31711.6
+    [iter 69081] reheat + diversify: T=832.2, value=32970.2
+    [iter 74834] reheat + diversify: T=832.2, value=34226.2
+    [iter 80587] reheat + diversify: T=832.2, value=33648.8
+    [iter 86340] reheat + diversify: T=832.2, value=34444.8
+    [iter 92093] reheat + diversify: T=832.2, value=40925.2
+    [iter 97846] reheat + diversify: T=832.2, value=32878.8
+    [iter 103599] reheat + diversify: T=832.2, value=37882.6
+    [iter 109352] reheat + diversify: T=832.2, value=32122.8
+    [iter 115105] reheat + diversify: T=832.2, value=34240.2
+    [iter 120858] reheat + diversify: T=832.2, value=34932.8
+    [iter 126611] reheat + diversify: T=832.2, value=34970.8
+    [iter 132364] reheat + diversify: T=832.2, value=34109.4
+    [iter 138117] reheat + diversify: T=832.2, value=37150.0
+    [iter 143870] reheat + diversify: T=832.2, value=32944.2
+    [iter 149623] reheat + diversify: T=832.2, value=36189.4
+    [iter 155376] reheat + diversify: T=832.2, value=33353.4
+    [iter 161129] reheat + diversify: T=832.2, value=36882.0
+    [iter 166882] reheat + diversify: T=832.2, value=32108.8
+    [iter 172635] reheat + diversify: T=832.2, value=35738.8
+    [iter 178388] reheat + diversify: T=832.2, value=33916.8
+    [iter 184141] reheat + diversify: T=832.2, value=35726.8
+    [iter 189894] reheat + diversify: T=832.2, value=35472.8
+    [iter 195647] reheat + diversify: T=832.2, value=27450.4
+    [iter 201400] reheat + diversify: T=832.2, value=33305.6
+    [iter 207153] reheat + diversify: T=832.2, value=32622.8
+    [iter 212906] reheat + diversify: T=832.2, value=32174.2
+    [iter 218659] reheat + diversify: T=832.2, value=37934.0
+    [iter 224412] reheat + diversify: T=832.2, value=37743.4
+    [iter 230165] reheat + diversify: T=832.2, value=31852.8
+    [iter 235918] reheat + diversify: T=832.2, value=32890.8
+    [iter 241671] reheat + diversify: T=832.2, value=35919.4
+    [iter 247424] reheat + diversify: T=832.2, value=34637.4
+    [iter 253177] reheat + diversify: T=832.2, value=32829.0
+    [iter 258930] reheat + diversify: T=832.2, value=35328.0
+    [iter 264683] reheat + diversify: T=832.2, value=33597.4
+    [iter 270436] reheat + diversify: T=832.2, value=39166.6
+    [iter 276189] reheat + diversify: T=832.2, value=38718.0
+    [iter 281942] reheat + diversify: T=832.2, value=37868.6
+    [iter 287695] reheat + diversify: T=832.2, value=36368.0
+    [iter 293448] reheat + diversify: T=832.2, value=30634.2
+    [iter 299201] reheat + diversify: T=832.2, value=35919.4
+    [iter 304954] reheat + diversify: T=832.2, value=35726.8
+    [iter 310707] reheat + diversify: T=832.2, value=35945.4
+    [iter 316460] reheat + diversify: T=832.2, value=35214.8
+    [iter 322213] reheat + diversify: T=832.2, value=38382.6
+    [iter 327966] reheat + diversify: T=832.2, value=33162.8
+    [iter 333719] reheat + diversify: T=832.2, value=36124.0
+    [iter 339472] reheat + diversify: T=832.2, value=33214.2
+    [iter 345225] reheat + diversify: T=832.2, value=39258.0
+    [iter 350978] reheat + diversify: T=832.2, value=34496.2
+    [iter 356731] reheat + diversify: T=832.2, value=34430.8
+    [iter 362484] reheat + diversify: T=832.2, value=30223.0
+    [iter 368237] reheat + diversify: T=832.2, value=35919.4
+  time limit reached at iteration 369278
+  SA finished: 369278 iterations in 30.0s (12309 it/s), accepted 305822 (82.8%), rejected 63455, no-move draws 0, reheats 64
+  SA: value 41181.2 (greedy 40925.2, +256.0), bound 68353.2, gap 39.75%, util 66.2%
+  report -> /Users/marvincaspar/3DMHKP/results_3DMHKPup/instance11-3DMHKPup-SA-30s-3ops.txt
+
+======================================================================
+instance12: 90 boxes (3 types), 3 containers (3 types)
+  continuous-knapsack bound: 24964.0
+  initial (value-density) decode: value 18504.0 (75/90 boxes)
+  calibrated T0 = 0.0 (an average worsening move starts out accepted with probability 50%)
+    [iter 28] *** NEW BEST: value 19368.0, boxes 76/90, T=0.0, elapsed=0.0s
+    [iter 218] *** NEW BEST: value 19915.2, boxes 75/90, T=0.0, elapsed=0.2s
+    [iter 252] *** NEW BEST: value 20073.6, boxes 76/90, T=0.0, elapsed=0.2s
+    [iter 353] *** NEW BEST: value 20232.0, boxes 77/90, T=0.0, elapsed=0.2s
+    [iter 418] *** NEW BEST: value 20772.0, boxes 77/90, T=0.0, elapsed=0.3s
+    [iter 563] *** NEW BEST: value 20779.2, boxes 76/90, T=0.0, elapsed=0.3s
+    [iter 569] *** NEW BEST: value 20937.6, boxes 77/90, T=0.0, elapsed=0.3s
+    [iter 829] *** NEW BEST: value 21096.0, boxes 78/90, T=0.0, elapsed=0.5s
+    [iter 6582] reheat + diversify: T=0.0, value=19972.8
+    [iter 12335] reheat + diversify: T=0.0, value=20779.2
+    [iter 18088] reheat + diversify: T=0.0, value=19800.0
+    [iter 23841] reheat + diversify: T=0.0, value=20613.6
+    [iter 29594] reheat + diversify: T=0.0, value=19368.0
+    [iter 35347] reheat + diversify: T=0.0, value=20131.2
+    [iter 41100] reheat + diversify: T=0.0, value=20145.6
+    [iter 46853] reheat + diversify: T=0.0, value=20304.0
+    [iter 52606] reheat + diversify: T=0.0, value=20289.6
+    [iter 58359] reheat + diversify: T=0.0, value=20304.0
+    [iter 64112] reheat + diversify: T=0.0, value=19800.0
+  time limit reached at iteration 64134
+  SA finished: 64134 iterations in 30.0s (2138 it/s), accepted 24338 (37.9%), rejected 39795, no-move draws 0, reheats 11
+  SA: value 21096.0 (greedy 18504.0, +2592.0), bound 24964.0, gap 15.49%, util 79.3%
+  report -> /Users/marvincaspar/3DMHKP/results_3DMHKPup/instance12-3DMHKPup-SA-30s-3ops.txt
+
+======================================================================
+instance13: 84 boxes (2 types), 4 containers (2 types)
+  continuous-knapsack bound: 36556.8
+  initial (value-density) decode: value 27686.4 (70/84 boxes)
+  calibrated T0 = 3482.3 (an average worsening move starts out accepted with probability 50%)
+    [iter 5] *** NEW BEST: value 28320.0, boxes 71/84, T=3468.3, elapsed=0.0s
+    [iter 9] *** NEW BEST: value 28953.6, boxes 72/84, T=3454.5, elapsed=0.0s
+    [iter 11] *** NEW BEST: value 30854.4, boxes 75/84, T=3447.6, elapsed=0.0s
+    [iter 12] *** NEW BEST: value 31785.6, boxes 76/84, T=3444.1, elapsed=0.0s
+    [iter 14] *** NEW BEST: value 32121.6, boxes 77/84, T=3437.3, elapsed=0.0s
+    [iter 18] *** NEW BEST: value 33388.8, boxes 79/84, T=3423.5, elapsed=0.0s
+    [iter 19] *** NEW BEST: value 34022.4, boxes 80/84, T=3420.1, elapsed=0.0s
+    [iter 27] *** NEW BEST: value 34656.0, boxes 81/84, T=3392.8, elapsed=0.0s
+    [iter 650] *** NEW BEST: value 35289.6, boxes 82/84, T=1819.1, elapsed=0.6s
+    [iter 664] *** NEW BEST: value 35587.2, boxes 82/84, T=1793.8, elapsed=0.6s
+    [iter 3129] *** NEW BEST: value 35923.2, boxes 83/84, T=152.3, elapsed=2.7s
+    [iter 8882] reheat + diversify: T=870.6, value=35289.6
+    [iter 14635] reheat + diversify: T=870.6, value=32755.2
+    [iter 20388] reheat + diversify: T=870.6, value=32755.2
+    [iter 26141] reheat + diversify: T=870.6, value=31593.6
+    [iter 31894] reheat + diversify: T=870.6, value=33609.6
+  time limit reached at iteration 36466
+  SA finished: 36466 iterations in 30.0s (1216 it/s), accepted 18934 (51.9%), rejected 17531, no-move draws 0, reheats 5
+  SA: value 35923.2 (greedy 27686.4, +8236.8), bound 36556.8, gap 1.73%, util 76.1%
+  report -> /Users/marvincaspar/3DMHKP/results_3DMHKPup/instance13-3DMHKPup-SA-30s-3ops.txt
+
+======================================================================
+instance14: 102 boxes (3 types), 6 containers (3 types)
+  continuous-knapsack bound: 71552.0
+  initial (value-density) decode: value 58531.2 (60/102 boxes)
+  calibrated T0 = 5920.8 (an average worsening move starts out accepted with probability 50%)
+    [iter 2] *** NEW BEST: value 59201.6, boxes 60/102, T=5914.9, elapsed=0.0s
+    [iter 5755] reheat + diversify: T=1480.2, value=52977.6
+    [iter 11508] reheat + diversify: T=1480.2, value=46808.0
+    [iter 17261] reheat + diversify: T=1480.2, value=46780.8
+    [iter 20210] *** NEW BEST: value 59844.8, boxes 59/102, T=77.5, elapsed=2.8s
+    [iter 23491] *** NEW BEST: value 61212.8, boxes 60/102, T=2.9, elapsed=3.3s
+    [iter 29244] reheat + diversify: T=1480.2, value=46137.6
+    [iter 33861] *** NEW BEST: value 61910.4, boxes 61/102, T=14.6, elapsed=4.7s
+    [iter 39614] reheat + diversify: T=1480.2, value=47478.4
+    [iter 45367] reheat + diversify: T=1480.2, value=46808.0
+    [iter 51120] reheat + diversify: T=1480.2, value=46137.6
+    [iter 56873] reheat + diversify: T=1480.2, value=46780.8
+    [iter 62626] reheat + diversify: T=1480.2, value=45440.0
+    [iter 68379] reheat + diversify: T=1480.2, value=51664.0
+    [iter 74132] reheat + diversify: T=1480.2, value=47478.4
+    [iter 79885] reheat + diversify: T=1480.2, value=46164.8
+    [iter 85638] reheat + diversify: T=1480.2, value=47505.6
+    [iter 91391] reheat + diversify: T=1480.2, value=46137.6
+    [iter 97144] reheat + diversify: T=1480.2, value=47478.4
+    [iter 102897] reheat + diversify: T=1480.2, value=48176.0
+    [iter 108650] reheat + diversify: T=1480.2, value=46808.0
+    [iter 114403] reheat + diversify: T=1480.2, value=54345.6
+    [iter 120156] reheat + diversify: T=1480.2, value=48176.0
+    [iter 125909] reheat + diversify: T=1480.2, value=53675.2
+    [iter 131662] reheat + diversify: T=1480.2, value=46780.8
+    [iter 137415] reheat + diversify: T=1480.2, value=51664.0
+    [iter 143168] reheat + diversify: T=1480.2, value=46780.8
+    [iter 148921] reheat + diversify: T=1480.2, value=46110.4
+    [iter 154674] reheat + diversify: T=1480.2, value=53648.0
+    [iter 160427] reheat + diversify: T=1480.2, value=46110.4
+    [iter 166180] reheat + diversify: T=1480.2, value=46808.0
+    [iter 171933] reheat + diversify: T=1480.2, value=47478.4
+    [iter 177686] reheat + diversify: T=1480.2, value=46835.2
+    [iter 183439] reheat + diversify: T=1480.2, value=46137.6
+    [iter 189192] reheat + diversify: T=1480.2, value=48176.0
+    [iter 194945] reheat + diversify: T=1480.2, value=46835.2
+    [iter 200698] reheat + diversify: T=1480.2, value=49544.0
+    [iter 206451] reheat + diversify: T=1480.2, value=46808.0
+    [iter 212204] reheat + diversify: T=1480.2, value=52280.0
+    [iter 217957] reheat + diversify: T=1480.2, value=53004.8
+  time limit reached at iteration 219250
+  SA finished: 219250 iterations in 30.0s (7308 it/s), accepted 170525 (77.8%), rejected 48724, no-move draws 0, reheats 36
+  SA: value 61910.4 (greedy 58531.2, +3379.2), bound 71552.0, gap 13.47%, util 84.1%
+  report -> /Users/marvincaspar/3DMHKP/results_3DMHKPup/instance14-3DMHKPup-SA-30s-3ops.txt
+
+======================================================================
+instance15: 85 boxes (4 types), 4 containers (2 types)
+  continuous-knapsack bound: 42922.8
+  initial (value-density) decode: value 31014.8 (43/85 boxes)
+  calibrated T0 = 2608.4 (an average worsening move starts out accepted with probability 50%)
+    [iter 4423] *** NEW BEST: value 31296.2, boxes 38/85, T=31.3, elapsed=0.7s
+    [iter 4475] *** NEW BEST: value 31405.1, boxes 39/85, T=29.7, elapsed=0.7s
+    [iter 5254] *** NEW BEST: value 31649.8, boxes 43/85, T=13.6, elapsed=0.8s
+    [iter 5312] *** NEW BEST: value 31758.7, boxes 44/85, T=12.8, elapsed=0.8s
+    [iter 5365] *** NEW BEST: value 32016.2, boxes 44/85, T=12.2, elapsed=0.8s
+    [iter 5467] *** NEW BEST: value 32296.2, boxes 46/85, T=11.0, elapsed=0.8s
+    [iter 5612] *** NEW BEST: value 32515.4, boxes 41/85, T=9.5, elapsed=0.8s
+    [iter 11365] reheat + diversify: T=652.1, value=24602.1
+    [iter 17118] reheat + diversify: T=652.1, value=26125.2
+    [iter 22871] reheat + diversify: T=652.1, value=23382.9
+    [iter 28624] reheat + diversify: T=652.1, value=25385.7
+    [iter 34377] reheat + diversify: T=652.1, value=25809.9
+    [iter 40130] reheat + diversify: T=652.1, value=26713.8
+    [iter 45883] reheat + diversify: T=652.1, value=23176.5
+    [iter 51636] reheat + diversify: T=652.1, value=27138.0
+    [iter 57389] reheat + diversify: T=652.1, value=26016.3
+    [iter 63142] reheat + diversify: T=652.1, value=26109.9
+    [iter 68895] reheat + diversify: T=652.1, value=25288.2
+    [iter 74648] reheat + diversify: T=652.1, value=24864.0
+    [iter 80401] reheat + diversify: T=652.1, value=24080.4
+    [iter 86154] reheat + diversify: T=652.1, value=24493.2
+    [iter 91907] reheat + diversify: T=652.1, value=23971.5
+    [iter 97660] reheat + diversify: T=652.1, value=25232.7
+    [iter 103413] reheat + diversify: T=652.1, value=24808.5
+    [iter 109166] reheat + diversify: T=652.1, value=23780.4
+    [iter 114919] reheat + diversify: T=652.1, value=22545.9
+    [iter 120672] reheat + diversify: T=652.1, value=26682.7
+    [iter 126425] reheat + diversify: T=652.1, value=25014.9
+    [iter 132178] reheat + diversify: T=652.1, value=23176.5
+    [iter 137931] reheat + diversify: T=652.1, value=24177.9
+    [iter 143684] reheat + diversify: T=652.1, value=24493.2
+    [iter 149437] reheat + diversify: T=652.1, value=23176.5
+    [iter 155190] reheat + diversify: T=652.1, value=24699.6
+    [iter 160943] reheat + diversify: T=652.1, value=24177.9
+    [iter 166696] reheat + diversify: T=652.1, value=25918.8
+    [iter 172449] reheat + diversify: T=652.1, value=24069.0
+    [iter 178202] reheat + diversify: T=652.1, value=25918.8
+    [iter 183955] reheat + diversify: T=652.1, value=25701.0
+    [iter 189708] reheat + diversify: T=652.1, value=24177.9
+    [iter 195461] reheat + diversify: T=652.1, value=26920.2
+    [iter 201214] reheat + diversify: T=652.1, value=23176.5
+    [iter 206967] reheat + diversify: T=652.1, value=26207.4
+  time limit reached at iteration 207272
+  SA finished: 207272 iterations in 30.0s (6909 it/s), accepted 117056 (56.5%), rejected 90215, no-move draws 0, reheats 35
+  SA: value 32515.4 (greedy 31014.8, +1500.6), bound 42922.8, gap 24.25%, util 78.6%
+  report -> /Users/marvincaspar/3DMHKP/results_3DMHKPup/instance15-3DMHKPup-SA-30s-3ops.txt
+
+======================================================================
+instance16: 90 boxes (3 types), 3 containers (3 types)
+  continuous-knapsack bound: 666829.6
+  initial (value-density) decode: value 505770.0 (75/90 boxes)
+  calibrated T0 = 58842.6 (an average worsening move starts out accepted with probability 50%)
+    [iter 11] *** NEW BEST: value 510594.0, boxes 75/90, T=58256.8, elapsed=0.0s
+    [iter 36] *** NEW BEST: value 512682.0, boxes 72/90, T=56817.7, elapsed=0.1s
+    [iter 53] *** NEW BEST: value 520026.0, boxes 73/90, T=55859.5, elapsed=0.1s
+    [iter 682] *** NEW BEST: value 534714.0, boxes 75/90, T=29770.7, elapsed=0.5s
+    [iter 6435] reheat + diversify: T=14710.6, value=481002.0
+    [iter 7590] *** NEW BEST: value 537234.0, boxes 76/90, T=4636.7, elapsed=4.9s
+    [iter 9884] *** NEW BEST: value 542058.0, boxes 76/90, T=467.1, elapsed=6.3s
+    [iter 10315] *** NEW BEST: value 549402.0, boxes 77/90, T=303.5, elapsed=6.6s
+    [iter 16068] reheat + diversify: T=14710.6, value=490650.0
+    [iter 21821] reheat + diversify: T=14710.6, value=502818.0
+    [iter 27574] reheat + diversify: T=14710.6, value=505338.0
+    [iter 33327] reheat + diversify: T=14710.6, value=495690.0
+    [iter 39080] reheat + diversify: T=14710.6, value=500298.0
+    [iter 44833] reheat + diversify: T=14710.6, value=512466.0
+  time limit reached at iteration 46419
+  SA finished: 46419 iterations in 30.0s (1547 it/s), accepted 22086 (47.6%), rejected 24332, no-move draws 0, reheats 7
+  SA: value 549402.0 (greedy 505770.0, +43632.0), bound 666829.6, gap 17.61%, util 79.9%
+  report -> /Users/marvincaspar/3DMHKP/results_3DMHKPup/instance16-3DMHKPup-SA-30s-3ops.txt
+
+================================================================================================
+SUMMARY
+================================================================================================
+instance      boxes  packed       greedy     SA value        bound      gap    util    iters    time
+------------------------------------------------------------------------------------------------
+instance01       70      28       6528.0       6528.0      11112.0   41.3%   66.5%   491913   30.0s
+instance02      180     103      72230.4      77414.4      86016.0   10.0%   92.8%   102019   30.0s
+instance03      103      57      43750.0      52325.0      53500.0    2.2%   98.6%   111771   30.0s
+instance04      110      40    1185408.0    1272064.0    2720640.0   53.2%   43.9%   206240   30.0s
+instance05       95      44     288750.0     340000.0     653750.0   48.0%   60.7%   236578   30.0s
+instance06       95      68     117792.0     126336.0     143424.0   11.9%   84.2%   172271   30.0s
+instance07       47      22      15270.0      15270.0      20203.2   24.4%   78.1%   325626   30.0s
+instance08      175     100      59154.4      60485.8      77986.8   22.4%   88.5%    33266   30.0s
+instance09       72      58      90036.0     114426.0     139356.0   17.9%   78.8%    91510   30.0s
+instance10      200      96      11264.0      11264.0      15360.0   26.7%   90.0%   150469   30.0s
+instance11      118      20      40925.2      41181.2      68353.2   39.8%   66.2%   369278   30.0s
+instance12       90      78      18504.0      21096.0      24964.0   15.5%   79.3%    64134   30.0s
+instance13       84      83      27686.4      35923.2      36556.8    1.7%   76.1%    36466   30.0s
+instance14      102      61      58531.2      61910.4      71552.0   13.5%   84.1%   219250   30.0s
+instance15       85      41      31014.8      32515.4      42922.8   24.2%   78.6%   207272   30.0s
+instance16       90      77     505770.0     549402.0     666829.6   17.6%   79.9%    46419   30.0s
+------------------------------------------------------------------------------------------------
+proven optimal (value reaches the upper bound): 0/16
+improved over greedy: 13/16 (total value 2572614.4 -> 2818141.4, +9.54%)
+mean gap to continuous-knapsack bound: 23.1%
+mean volume utilization: 77.9%

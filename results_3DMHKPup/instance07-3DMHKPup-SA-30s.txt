@@ -1,0 +1,47 @@
+Instance: instance07
+Solver: simulated annealing (sequence decoder)
+Orientation constraint: THIS WAY UP - boxes may only rotate about the vertical axis
+Value model: v_i = c_i * volume_i (volume)
+Boxes: 47 (3 types)
+Containers: 2 (2 types)
+
+Runtime: 30.00 s
+Packed value (SA incumbent / lower bound): 15882.0
+Continuous-knapsack bound: 20203.2
+Gap to that bound: 21.39%
+Greedy (initial decode) value: 15270.0
+SA improvement over greedy: +612.0
+
+SA parameters and statistics:
+  T0: 1402.61
+  alpha: 0.999, reheat threshold: 5753
+  iterations: 298417 (9947 it/s)
+  accepted: 155873, rejected: 142543, no-move draws: 0, reheats: 49
+  seed: 1
+  verification: ok
+
+Boxes packed: 18 / 47
+Volume utilization: 10698 / 13596 = 78.7%
+
+Container 0 (type 1, 20x15x29): 10 boxes, value 9720.0, utilization 74.5%
+Container 1 (type 2, 17x12x24): 8 boxes, value 6162.0, utilization 86.2%
+
+Placements (box, type, container, position, oriented dims):
+  box   22 type 2 -> container 1 pos (9, 0, 0) dims (5, 3, 11)
+  box   26 type 2 -> container 1 pos (9, 0, 11) dims (5, 3, 11)
+  box   27 type 3 -> container 1 pos (0, 6, 12) dims (9, 6, 12)
+  box   28 type 3 -> container 0 pos (6, 0, 12) dims (6, 9, 12)
+  box   29 type 3 -> container 1 pos (9, 3, 12) dims (6, 9, 12)
+  box   30 type 3 -> container 1 pos (9, 3, 0) dims (6, 9, 12)
+  box   32 type 3 -> container 1 pos (0, 6, 0) dims (9, 6, 12)
+  box   33 type 3 -> container 1 pos (0, 0, 12) dims (9, 6, 12)
+  box   34 type 3 -> container 0 pos (6, 0, 0) dims (6, 9, 12)
+  box   35 type 3 -> container 0 pos (9, 9, 12) dims (9, 6, 12)
+  box   36 type 3 -> container 0 pos (12, 0, 0) dims (6, 9, 12)
+  box   37 type 3 -> container 0 pos (12, 0, 12) dims (6, 9, 12)
+  box   38 type 3 -> container 0 pos (0, 0, 12) dims (6, 9, 12)
+  box   39 type 3 -> container 1 pos (0, 0, 0) dims (9, 6, 12)
+  box   41 type 3 -> container 0 pos (0, 9, 0) dims (9, 6, 12)
+  box   42 type 3 -> container 0 pos (0, 0, 0) dims (6, 9, 12)
+  box   44 type 3 -> container 0 pos (0, 9, 12) dims (9, 6, 12)
+  box   46 type 3 -> container 0 pos (9, 9, 0) dims (9, 6, 12)
