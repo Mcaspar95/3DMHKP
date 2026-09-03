@@ -4,7 +4,7 @@ Value model: v_i = c_i * volume_i (volume)
 Boxes: 70 (2 types)
 Containers: 4 (2 types)
 
-Runtime: 15.00 s
+Runtime: 120.00 s
 Packed value (SA incumbent / lower bound): 8640.0
 Continuous-knapsack bound: 11112.0
 Gap to that bound: 22.25%
@@ -14,8 +14,8 @@ SA improvement over greedy: +960.0
 SA parameters and statistics:
   T0: 384.00
   alpha: 0.999, reheat threshold: 5753
-  iterations: 38081 (2539 it/s)
-  accepted: 27228, rejected: 10852, no-move draws: 0, reheats: 6
+  iterations: 351676 (2931 it/s)
+  accepted: 247584, rejected: 104091, no-move draws: 0, reheats: 61
   seed: 1
   verification: ok
 

@@ -118,28 +118,34 @@ from pathlib import Path
 INSTANCE_DIR = Path(__file__).parent / "Mohanty"
 RESULTS_DIR = Path(__file__).parent / "results_3DMHKPup"
 
-T_INIT = None              # initial temperature; None = calibrate it (see below)
-ACCEPT_0 = 0.5             # target acceptance probability of an average worsening
-                           # move at T_INIT; used only when T_INIT is None
+T_INIT = None              # initial temperature; None = T_INIT_FRACTION * f(S_0)
+T_INIT_FRACTION = 0.05     # T_INIT as a fraction of the initial objective value
 ALPHA = 0.999              # geometric cooling factor (T *= ALPHA each iteration)
 T_MIN = 1e-3               # minimum temperature
 MAX_ITERATIONS = 50000000  # maximum SA iterations
 TIME_LIMIT = 300.0         # total wall-clock seconds per instance
 EP_LIMIT = 0               # max extreme points scanned per box, 0 = unlimited
-CALIB_SAMPLES = 40         # random neighbours drawn to calibrate T_INIT
 
-# Why T_INIT is calibrated rather than fixed at 100 as in 3dp-cptp-SA.py: there
-# the objective was revenue minus travel cost, of order 1e2. Here the objective
-# is stowed VALUE, which spans three orders of magnitude across the 16 instances
-# (~1e3 to ~1e5) because it scales with the box volumes. A fixed T would be
-# scalding on one instance and frozen on the next. The calibration draws
-# CALIB_SAMPLES random neighbours from the initial solution, averages the
-# magnitude of the worsening deltas and inverts the Metropolis criterion:
-#       T_INIT = -mean_worsening / ln(ACCEPT_0)
-# so an average worsening move starts out accepted with probability ACCEPT_0.
+# Why T_INIT is derived from the objective rather than fixed at 100 as in
+# 3dp-cptp-SA.py: there the objective was revenue minus travel cost, of order
+# 1e2. Here the objective is stowed VALUE, which spans more than two orders of
+# magnitude across the 16 instances because it scales with the box volumes, and
+# the deltas scale with it. A fixed T would be scalding on one instance and
+# frozen on the next. The orientation constraint of this variant lowers the
+# attainable values but does not change that spread, so the rule is the one of
+# 3DMHKP-SA.py unchanged.
+#
+# An earlier version estimated T_INIT by sampling 40 random neighbours of the
+# initial solution and inverting the Metropolis criterion on the mean worsening
+# delta. It is replaced by a flat fraction of the initial objective, which the
+# estimate was tracking anyway: across the logged runs it landed between 1% and
+# 20% of that objective, and on several instances it found no worsening draw at
+# all and fell back to a flat fraction. Being off by a factor of three is
+# harmless: geometric cooling absorbs it in ln(3)/ln(ALPHA) ~ 1100 iterations of
+# a ~11.5k-iteration sweep, against the 1e5 iterations a run performs.
 # Pass --t-init to override with a fixed value.
 
-REHEAT_FRACTION = 0.25     # T is reset to REHEAT_FRACTION * T_INIT on a reheat.
+REHEAT_FRACTION = 0.25     # T is reset to REHEAT_FRACTION * T_0 on a reheat.
                            # Same rationale as in 3dp-cptp-SA.py: after a long
                            # stagnation T has annealed close to T_MIN, so a reheat
                            # has to RESET the temperature, not scale it.
@@ -810,43 +816,14 @@ def _diversify(sol, inst, ep_limit=EP_LIMIT):
     evaluate(sol, inst, ep_limit=ep_limit)
 
 
-# -------------------------
-# Temperature calibration
-# -------------------------
-def calibrate_temperature(sol, inst, samples=CALIB_SAMPLES, accept0=ACCEPT_0,
-                          ep_limit=EP_LIMIT, deadline=None):
-    """T such that an average worsening neighbour is accepted with prob accept0.
-
-    Draws `samples` random neighbours from `sol`, averages the magnitude of the
-    worsening deltas and inverts the Metropolis criterion. Falls back to a small
-    fraction of the current objective if every draw happens to improve.
-    """
-    deltas = []
-    for _ in range(samples):
-        if deadline is not None and time.time() >= deadline:
-            break
-        move = sample_random_move(sol, inst)
-        if move is None:
-            break
-        trial = copy_solution(sol)
-        apply_move(trial, move, inst)
-        delta = evaluate(trial, inst, ep_limit=ep_limit) - sol["value"]
-        if delta < 0:
-            deltas.append(-delta)
-
-    if not deltas:
-        return max(1e-6, 0.01 * max(sol["value"], 1.0))
-    mean_worsening = sum(deltas) / len(deltas)
-    return max(1e-6, -mean_worsening / math.log(accept0))
-
-
 # =========================================================================
 # Simulated Annealing main loop
 # =========================================================================
 def simulated_annealing(inst, max_iterations=MAX_ITERATIONS, time_limit=TIME_LIMIT,
                         t_init=T_INIT, alpha=ALPHA, t_min=T_MIN,
                         reheat_threshold=None, reheat_fraction=REHEAT_FRACTION,
-                        accept0=ACCEPT_0, ep_limit=EP_LIMIT, verbose=True):
+                        t_init_fraction=T_INIT_FRACTION, ep_limit=EP_LIMIT,
+                        verbose=True):
     """Simulated Annealing for the 3DMHKP over decoder inputs.
 
     Per iteration exactly ONE random neighbour is drawn (random operator +
@@ -857,6 +834,7 @@ def simulated_annealing(inst, max_iterations=MAX_ITERATIONS, time_limit=TIME_LIM
       - Improving moves (delta > 0): always accepted
       - Worsening moves: accepted with probability exp(delta / T)
     Temperature schedule:
+      - T0 = t_init_fraction * f(S_0) unless t_init is given explicitly
       - Geometric cooling: T *= alpha every iteration (also on rejection)
       - Reheating to reheat_fraction * t_init after prolonged stagnation,
         combined with a diversification shake
@@ -877,11 +855,10 @@ def simulated_annealing(inst, max_iterations=MAX_ITERATIONS, time_limit=TIME_LIM
 
     # ---- Temperature ----
     if t_init is None:
-        t_init = calibrate_temperature(current, inst, accept0=accept0,
-                                       ep_limit=ep_limit, deadline=deadline)
+        t_init = max(1e-6, t_init_fraction * current["value"])
         if verbose:
-            print(f"  calibrated T0 = {t_init:.1f} (an average worsening move "
-                  f"starts out accepted with probability {accept0:.0%})")
+            print(f"  T0 = {t_init:.1f} "
+                  f"({t_init_fraction:.0%} of the initial objective)")
     t_reheat = reheat_fraction * t_init
 
     T = t_init
@@ -1091,7 +1068,7 @@ def solve_instance(path, args):
             t_min=args.t_min,
             reheat_threshold=args.reheat_threshold,
             reheat_fraction=args.reheat_fraction,
-            accept0=args.accept0,
+            t_init_fraction=args.t_init_fraction,
             ep_limit=args.ep_limit,
             verbose=not args.quiet,
         )
@@ -1155,9 +1132,11 @@ def main(argv=None):
     parser.add_argument("--max-iterations", type=int, default=MAX_ITERATIONS,
                         help="maximum SA iterations per instance")
     parser.add_argument("--t-init", type=float, default=T_INIT,
-                        help="initial temperature (default: calibrated per instance)")
-    parser.add_argument("--accept0", type=float, default=ACCEPT_0,
-                        help="target acceptance rate used to calibrate T0")
+                        help="initial temperature (default: a fraction of the "
+                             "initial objective, see --t-init-fraction)")
+    parser.add_argument("--t-init-fraction", type=float, default=T_INIT_FRACTION,
+                        help=f"T0 as a fraction of the initial objective value "
+                             f"(default: {T_INIT_FRACTION})")
     parser.add_argument("--alpha", type=float, default=ALPHA,
                         help=f"geometric cooling factor (default: {ALPHA})")
     parser.add_argument("--t-min", type=float, default=T_MIN,
@@ -1204,7 +1183,9 @@ def main(argv=None):
     print("=" * 70)
     print("3DMHKPup Simulated Annealing (random single-neighbour, sequence "
           "decoder, 'this way up')")
-    print(f"SA params: T0={'auto' if args.t_init is None else args.t_init}, "
+    t0_desc = (f"{args.t_init_fraction:.0%} of f(S_0)"
+               if args.t_init is None else f"{args.t_init}")
+    print(f"SA params: T0={t0_desc}, "
           f"alpha={args.alpha}, T_min={args.t_min}, "
           f"reheat_threshold={reheat}, reheat_fraction={args.reheat_fraction}")
     print(f"Move weights: {MOVE_WEIGHTS}")

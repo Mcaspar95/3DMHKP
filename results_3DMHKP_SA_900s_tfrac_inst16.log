@@ -1,0 +1,99 @@
+======================================================================
+3DMHKP Simulated Annealing (random single-neighbour, sequence decoder)
+SA params: T0=5% of f(S_0), alpha=0.999, T_min=0.001, reheat_threshold=5753, reheat_fraction=0.25
+Move weights: {'relocate': 1.0, 'swap': 1.0, '2opt': 1.0, 'promote': 1.5, 'demote': 1.0, 'orient': 1.0, 'container': 0.5}
+Time limit: 900.0s per instance, seed 1
+======================================================================
+
+======================================================================
+instance16: 90 boxes (3 types), 3 containers (3 types)
+  continuous-knapsack bound: 666829.6
+  initial (value-density) decode: value 505770.0 (75/90 boxes)
+  T0 = 25288.5 (5% of the initial objective)
+    [iter 3] *** NEW BEST: value 517938.0, boxes 76/90, T=25237.9, elapsed=0.0s
+    [iter 12] *** NEW BEST: value 530106.0, boxes 77/90, T=25011.7, elapsed=0.1s
+    [iter 597] *** NEW BEST: value 534714.0, boxes 75/90, T=13930.1, elapsed=1.6s
+    [iter 1570] *** NEW BEST: value 534930.0, boxes 77/90, T=5262.3, elapsed=3.8s
+    [iter 1595] *** NEW BEST: value 535519.0, boxes 76/90, T=5132.3, elapsed=3.9s
+    [iter 1848] *** NEW BEST: value 537234.0, boxes 76/90, T=3984.6, elapsed=4.4s
+    [iter 1857] *** NEW BEST: value 543452.0, boxes 76/90, T=3948.8, elapsed=4.5s
+    [iter 1929] *** NEW BEST: value 544041.0, boxes 75/90, T=3674.4, elapsed=4.6s
+    [iter 1957] *** NEW BEST: value 548276.0, boxes 76/90, T=3572.9, elapsed=4.7s
+    [iter 1963] *** NEW BEST: value 552511.0, boxes 77/90, T=3551.5, elapsed=4.7s
+    [iter 1965] *** NEW BEST: value 556746.0, boxes 78/90, T=3544.4, elapsed=4.7s
+    [iter 4187] *** NEW BEST: value 559266.0, boxes 79/90, T=383.8, elapsed=9.7s
+    [iter 6388] *** NEW BEST: value 566610.0, boxes 80/90, T=42.4, elapsed=15.0s
+    [iter 11818] *** NEW BEST: value 568914.0, boxes 79/90, T=0.2, elapsed=29.1s
+    [iter 12352] *** NEW BEST: value 576258.0, boxes 80/90, T=0.1, elapsed=30.5s
+    [iter 18105] reheat + diversify: T=6322.1, value=448300.0
+    [iter 23098] *** NEW BEST: value 578562.0, boxes 79/90, T=42.8, elapsed=59.5s
+    [iter 23756] *** NEW BEST: value 581082.0, boxes 80/90, T=22.2, elapsed=61.3s
+    [iter 29509] reheat + diversify: T=6322.1, value=476282.0
+    [iter 35262] reheat + diversify: T=6322.1, value=486467.0
+    [iter 41015] reheat + diversify: T=6322.1, value=508447.0
+    [iter 46768] reheat + diversify: T=6322.1, value=480569.0
+    [iter 52521] reheat + diversify: T=6322.1, value=475962.0
+    [iter 58274] reheat + diversify: T=6322.1, value=460468.0
+    [iter 64027] reheat + diversify: T=6322.1, value=448889.0
+    [iter 69780] reheat + diversify: T=6322.1, value=500298.0
+    [iter 75533] reheat + diversify: T=6322.1, value=481643.0
+    [iter 81286] reheat + diversify: T=6322.1, value=450067.0
+    [iter 87039] reheat + diversify: T=6322.1, value=436721.0
+    [iter 92792] reheat + diversify: T=6322.1, value=473710.0
+    [iter 98545] reheat + diversify: T=6322.1, value=446586.0
+    [iter 104298] reheat + diversify: T=6322.1, value=493170.0
+    [iter 110051] reheat + diversify: T=6322.1, value=466045.0
+    [iter 115804] reheat + diversify: T=6322.1, value=485289.0
+    [iter 121557] reheat + diversify: T=6322.1, value=476178.0
+    [iter 127310] reheat + diversify: T=6322.1, value=466366.0
+    [iter 133063] reheat + diversify: T=6322.1, value=464486.0
+    [iter 138816] reheat + diversify: T=6322.1, value=505338.0
+    [iter 144569] reheat + diversify: T=6322.1, value=429810.0
+    [iter 150322] reheat + diversify: T=6322.1, value=488398.0
+    [iter 156075] reheat + diversify: T=6322.1, value=510534.0
+    [iter 161828] reheat + diversify: T=6322.1, value=463898.0
+    [iter 167581] reheat + diversify: T=6322.1, value=493759.0
+    [iter 173334] reheat + diversify: T=6322.1, value=473710.0
+    [iter 179087] reheat + diversify: T=6322.1, value=500029.0
+    [iter 184840] reheat + diversify: T=6322.1, value=487861.0
+    [iter 190593] reheat + diversify: T=6322.1, value=490866.0
+    [iter 196346] reheat + diversify: T=6322.1, value=472636.0
+    [iter 202099] reheat + diversify: T=6322.1, value=503138.0
+    [iter 207852] reheat + diversify: T=6322.1, value=468834.0
+    [iter 213605] reheat + diversify: T=6322.1, value=483306.0
+    [iter 219358] reheat + diversify: T=6322.1, value=466314.0
+    [iter 225111] reheat + diversify: T=6322.1, value=492954.0
+    [iter 230864] reheat + diversify: T=6322.1, value=463256.0
+    [iter 236617] reheat + diversify: T=6322.1, value=459074.0
+    [iter 242370] reheat + diversify: T=6322.1, value=490381.0
+    [iter 248123] reheat + diversify: T=6322.1, value=464972.0
+    [iter 253876] reheat + diversify: T=6322.1, value=493490.0
+    [iter 258542] *** NEW BEST: value 581671.0, boxes 79/90, T=59.4, elapsed=702.4s
+    [iter 258952] *** NEW BEST: value 585906.0, boxes 80/90, T=39.4, elapsed=703.6s
+    [iter 262565] *** NEW BEST: value 588210.0, boxes 79/90, T=1.1, elapsed=715.6s
+    [iter 268318] reheat + diversify: T=6322.1, value=461057.0
+    [iter 274071] reheat + diversify: T=6322.1, value=468133.0
+    [iter 279824] reheat + diversify: T=6322.1, value=461057.0
+    [iter 285577] reheat + diversify: T=6322.1, value=455107.0
+    [iter 291330] reheat + diversify: T=6322.1, value=476230.0
+    [iter 297083] reheat + diversify: T=6322.1, value=453930.0
+    [iter 302836] reheat + diversify: T=6322.1, value=504853.0
+    [iter 308589] reheat + diversify: T=6322.1, value=477945.0
+    [iter 314342] reheat + diversify: T=6322.1, value=495742.0
+    [iter 320095] reheat + diversify: T=6322.1, value=471138.0
+  time limit reached at iteration 324316
+  SA finished: 324316 iterations in 900.0s (360 it/s), accepted 117098 (36.1%), rejected 207217, no-move draws 0, reheats 51
+  SA: value 588210.0 (greedy 505770.0, +82440.0), bound 666829.6, gap 11.79%, util 87.6%
+  report -> c:\Users\Marvin\3DMHKP\results_3DMHKP\instance16-3DMHKP-SA-900s-tfrac.txt
+
+================================================================================================
+SUMMARY
+================================================================================================
+instance      boxes  packed       greedy     SA value        bound      gap    util    iters    time
+------------------------------------------------------------------------------------------------
+instance16       90      79     505770.0     588210.0     666829.6   11.8%   87.6%   324316  900.0s
+------------------------------------------------------------------------------------------------
+proven optimal (value reaches the upper bound): 0/1
+improved over greedy: 1/1 (total value 505770.0 -> 588210.0, +16.30%)
+mean gap to continuous-knapsack bound: 11.8%
+mean volume utilization: 87.6%

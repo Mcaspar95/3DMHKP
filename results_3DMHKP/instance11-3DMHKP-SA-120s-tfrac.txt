@@ -1,0 +1,55 @@
+Instance: instance11
+Solver: simulated annealing (sequence decoder)
+Value model: v_i = c_i * volume_i (volume)
+Boxes: 118 (4 types)
+Containers: 4 (3 types)
+
+Runtime: 120.00 s
+Packed value (SA incumbent / lower bound): 52563.6
+Continuous-knapsack bound: 68353.2
+Gap to that bound: 23.10%
+Greedy (initial decode) value: 48943.6
+SA improvement over greedy: +3620.0
+
+SA parameters and statistics:
+  T0: 2447.18
+  alpha: 0.999, reheat threshold: 5753
+  iterations: 290202 (2418 it/s)
+  accepted: 187784, rejected: 102417, no-move draws: 0, reheats: 47
+  seed: 1
+  verification: ok
+
+Boxes packed: 25 / 118
+Volume utilization: 31802 / 37974 = 83.7%
+
+Container 0 (type 1, 21x18x24): 6 boxes, value 12678.4, utilization 85.2%
+Container 1 (type 1, 21x18x24): 6 boxes, value 12678.4, utilization 85.2%
+Container 2 (type 2, 19x15x26): 4 boxes, value 9123.8, utilization 73.0%
+Container 3 (type 3, 23x20x27): 9 boxes, value 18083.0, utilization 88.0%
+
+Placements (box, type, container, position, oriented dims):
+  box    0 type 1 -> container 0 pos (7, 13, 7) dims (11, 5, 14)
+  box    1 type 1 -> container 0 pos (0, 0, 13) dims (5, 14, 11)
+  box    3 type 1 -> container 1 pos (14, 0, 13) dims (5, 14, 11)
+  box    9 type 1 -> container 2 pos (13, 0, 7) dims (5, 11, 14)
+  box   25 type 1 -> container 1 pos (0, 13, 0) dims (14, 5, 11)
+  box   63 type 3 -> container 0 pos (14, 0, 7) dims (7, 13, 17)
+  box   68 type 3 -> container 2 pos (0, 7, 7) dims (13, 7, 17)
+  box   69 type 3 -> container 3 pos (14, 0, 0) dims (7, 13, 17)
+  box   71 type 3 -> container 1 pos (0, 0, 17) dims (13, 17, 7)
+  box   72 type 3 -> container 1 pos (7, 0, 0) dims (7, 13, 17)
+  box   78 type 3 -> container 1 pos (14, 0, 0) dims (7, 17, 13)
+  box   79 type 3 -> container 2 pos (0, 0, 0) dims (17, 13, 7)
+  box   82 type 3 -> container 3 pos (7, 0, 0) dims (7, 13, 17)
+  box   83 type 3 -> container 3 pos (0, 0, 0) dims (7, 17, 13)
+  box   84 type 3 -> container 2 pos (0, 0, 7) dims (13, 7, 17)
+  box   85 type 3 -> container 3 pos (0, 0, 13) dims (7, 17, 13)
+  box   90 type 3 -> container 3 pos (7, 13, 0) dims (13, 7, 17)
+  box   91 type 3 -> container 0 pos (7, 0, 7) dims (7, 13, 17)
+  box   92 type 3 -> container 0 pos (0, 0, 0) dims (7, 17, 13)
+  box   93 type 3 -> container 1 pos (0, 0, 0) dims (7, 13, 17)
+  box   94 type 3 -> container 0 pos (7, 0, 0) dims (13, 17, 7)
+  box   95 type 4 -> container 3 pos (15, 10, 17) dims (8, 10, 10)
+  box  110 type 4 -> container 3 pos (15, 0, 17) dims (8, 10, 10)
+  box  114 type 4 -> container 3 pos (7, 0, 17) dims (8, 10, 10)
+  box  116 type 4 -> container 3 pos (7, 10, 17) dims (8, 10, 10)
