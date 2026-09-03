@@ -100,8 +100,8 @@ T_INIT = None              # initial temperature; None = T_INIT_FRACTION * f(S_0
 T_INIT_FRACTION = 0.05     # T_INIT as a fraction of the initial objective value
 ALPHA = 0.999              # geometric cooling factor (T *= ALPHA each iteration)
 T_MIN = 1e-3               # minimum temperature
-MAX_ITERATIONS = 50000000  # maximum SA iterations
-TIME_LIMIT = 300.0         # total wall-clock seconds per instance
+MAX_ITERATIONS = 500000000  # maximum SA iterations
+TIME_LIMIT = 1800.0         # total wall-clock seconds per instance
 EP_LIMIT = 0               # max extreme points scanned per box, 0 = unlimited
 
 # Why T_INIT is derived from the objective rather than fixed at 100 as in
@@ -142,11 +142,11 @@ REHEAT_THRESHOLD = None    # None = max(200, 0.5 * sweep length at ALPHA)
 # to 0 to disable that operator. These are weights, not probabilities — they are
 # normalised.
 MOVE_WEIGHTS = {
-    "relocate":  1.0,
+    "relocate":  0.0,
     "swap":      1.0,
-    "2opt":      1.0,
+    "2opt":      0.0,
     "promote":   1.5,   # slightly favoured: these two are the operators that
-    "demote":    1.0,   # actually exchange packed against unpacked cargo
+    "demote":    1.5,   # actually exchange packed against unpacked cargo
     "orient":    1.0,
     "container": 0.5,   # only meaningful on heterogeneous container fleets
 }

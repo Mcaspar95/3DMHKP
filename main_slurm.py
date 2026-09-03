@@ -25,7 +25,7 @@ INSTANCE_COUNT = 16
 
 # Keep these names aligned with the solver filenames in this project.
 module_names = {
-    "D": "3DMHKP",
+    #"D": "3DMHKP",
     "SA": "3DMHKP-SA",
 }
 
@@ -105,7 +105,7 @@ def main(argv=None):
     )
     parser.add_argument(
         "--time-limit", "--timelimit", dest="time_limit", type=float,
-        default=1800.0, help="seconds per instance (default: 1800)",
+        default=1800.0, help="seconds per instance (default: 900)",
     )
     parser.add_argument(
         "--num_cpu", type=int, default=1,

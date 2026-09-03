@@ -1,8 +1,8 @@
 #!/bin/bash -l
 #SBATCH -J 3DMHKP
-# 2 methods (D, SA) x 16 instances = 32 jobs.
+# 1 method (SA) x 16 instances = 16 jobs.
 # Must match main_slurm.py's TOTAL_JOBS: python3 main_slurm.py --print-grid
-#SBATCH --array=0-31
+#SBATCH --array=0-15
 #SBATCH --ntasks=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
