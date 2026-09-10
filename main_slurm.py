@@ -70,6 +70,15 @@ def _solver_arguments(args, method, instance):
         "--time-limit", str(args.time_limit),
     ]
 
+    # The SA report filenames carry the cooling rate, reheat factor and time
+    # limit, so a sweep over any of the three keeps its runs apart. Forward
+    # them, or every array task of a sweep writes the same filename.
+    if method != "D":
+        if args.alpha is not None:
+            solver_args.extend(["--alpha", str(args.alpha)])
+        if args.reheat_fraction is not None:
+            solver_args.extend(["--reheat-fraction", str(args.reheat_fraction)])
+
     if args.value_mode:
         solver_args.extend(["--value-mode", args.value_mode])
     if args.no_report:
@@ -105,11 +114,20 @@ def main(argv=None):
     )
     parser.add_argument(
         "--time-limit", "--timelimit", dest="time_limit", type=float,
-        default=1800.0, help="seconds per instance (default: 900)",
+        default=1800.0, help="seconds per instance (default: 1800)",
     )
     parser.add_argument(
         "--num_cpu", type=int, default=1,
         help="CPUs requested from SLURM; used as the D solver thread count.",
+    )
+    parser.add_argument(
+        "--alpha", type=float, default=None,
+        help="SA geometric cooling factor; solver default when omitted.",
+    )
+    parser.add_argument(
+        "--reheat-fraction", type=float, default=None,
+        help="SA reheat factor, T is reset to this fraction of T0; solver "
+             "default when omitted.",
     )
     parser.add_argument("--value-mode", choices=("volume", "flat"), default=None)
     parser.add_argument("--seed", type=int, default=None)
@@ -145,6 +163,12 @@ def main(argv=None):
     print(f"  Method:   {method} ({module_names[method]}.py)")
     print(f"  Instance: {instance_path}")
     print(f"  Timelimit: {args.time_limit}s")
+    if method != "D":
+        alpha = "solver default" if args.alpha is None else args.alpha
+        rf = ("solver default" if args.reheat_fraction is None
+              else args.reheat_fraction)
+        print(f"  Alpha:    {alpha}")
+        print(f"  Reheat:   {rf}")
     print(f"  CPUs:     {args.num_cpu}")
     print("=" * 60, flush=True)
 

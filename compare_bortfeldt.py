@@ -34,9 +34,14 @@
 # both in instance 15 (280.0 of its 37315.5 value); everywhere else the
 # comparison is like for like.
 #
-#   python compare_bortfeldt.py                  # the untagged SA run
-#   python compare_bortfeldt.py --sa-tag 30s     # a run written with --tag 30s
-#   python compare_bortfeldt.py --sa-tag "" 30s  # both, side by side
+#   python compare_bortfeldt.py                    # the unsuffixed SA run
+#   python compare_bortfeldt.py --sa-tag t1800s    # the 1800 s run
+#   python compare_bortfeldt.py --sa-tag t120s t1800s   # both, side by side
+#   python compare_bortfeldt.py --sa-dir results_3DMHKP_Sa900   # another run dir
+#
+# A selector is any substring of the report filename, which since the reports
+# started carrying their parameters means either a setting (t1800s, a0.999,
+# r0.25) or a --tag.
 #
 import argparse
 import sys
@@ -134,6 +139,12 @@ def read_report(path):
             out["util"] = float(line.rsplit("=", 1)[1].strip().rstrip("%"))
         elif line.startswith("Runtime"):
             out["runtime"] = float(line.split(":")[1].strip().split()[0])
+        # Provenance, written by 3DMHKP-SA.py since the reports started
+        # recording their own configuration; absent from older report files.
+        elif line.startswith("Time limit:"):
+            out["time_limit"] = float(line.split(":")[1].strip().split()[0])
+        elif line.strip().startswith("seed:"):
+            out["seed"] = line.split(":", 1)[1].strip()
     return out or None
 
 
@@ -150,30 +161,96 @@ def sa_label(tag):
     return f"SA {tag}" if tag else "SA"
 
 
+def find_reports(directory, n, selector):
+    """The SA reports for instance n in `directory` that `selector` picks out.
+
+    Report names carry the run's parameters
+    (instance01-3DMHKP-SA-a0.999-r0.25-t1800s.txt), so one directory can hold
+    several runs side by side. `selector` matches any name containing it, so
+    "t1800s", "a0.999" and an old --tag such as "30s" are all valid selectors.
+    The empty selector means the plain unsuffixed report if one exists - which
+    is what every run written before the names carried parameters produced -
+    and otherwise every report present, so that an ambiguous directory is
+    reported rather than silently resolved.
+    """
+    stem = f"instance{n:02d}-3DMHKP-SA"
+    exact = directory / f"{stem}.txt"
+    if not selector and exact.exists():
+        return [exact]
+    return sorted(q for q in directory.glob(f"{stem}*.txt") if selector in q.name)
+
+
+def describe_run(directory, reports):
+    """One line of provenance for an SA column: where it came from, what time
+    limit it was given, and whether the 16 runs share a seed.
+
+    The configured time limit is what the run was ASKED for; the mean elapsed
+    time is what it took. They differ when a run was cut short or when the
+    reports predate the solver recording its own configuration - hence the
+    "not recorded" fallback rather than a silent guess.
+    """
+    limits = {r["time_limit"] for r in reports if "time_limit" in r}
+    seeds = {r["seed"] for r in reports if "seed" in r}
+    elapsed = sum(r["runtime"] for r in reports) / len(reports)
+    if not limits:
+        budget = f"time limit not recorded, {elapsed:.0f} s elapsed on average"
+    elif len(limits) == 1:
+        budget = f"{limits.pop():.0f} s limit, {elapsed:.0f} s elapsed on average"
+    else:
+        budget = (f"MIXED time limits {sorted(limits)}, "
+                  f"{elapsed:.0f} s elapsed on average")
+    if not seeds:
+        seed = "seed not recorded"
+    elif len(seeds) == 1:
+        seed = f"seed {seeds.pop()}"
+    else:
+        seed = f"{len(seeds)} distinct seeds"
+    return f"{directory}, {len(reports)} instances, {budget}, {seed}"
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Compare our solvers against Bortfeldt (2000) Table 2.")
-    parser.add_argument("--sa-tag", nargs="*", default=[""], metavar="TAG",
-                        help="which SA runs to show, by the --tag they were "
-                             "written with; empty string is the untagged run. "
-                             "Pass several to get one column each.")
+    parser.add_argument("--sa-tag", nargs="*", default=[""], metavar="SELECTOR",
+                        help="which SA runs to show. A selector matches any "
+                             "report filename containing it, so it can be a "
+                             "parameter (t1800s, a0.999) or an old --tag (30s); "
+                             "the empty string is the unsuffixed run. Pass "
+                             "several to get one column each.")
+    parser.add_argument("--sa-dir", type=Path, default=RESULTS_DIR, metavar="DIR",
+                        help=f"directory holding the SA reports (default: "
+                             f"{RESULTS_DIR.name}). The MILP column is always "
+                             f"read from {RESULTS_DIR.name}.")
     args = parser.parse_args()
     sa_tags = args.sa_tag or [""]
+    sa_dir = args.sa_dir
 
     # sa_val[tag][instance]; the first tag listed is the primary run, i.e. the
     # one whose absolute values and utilization get their own columns.
     sa_val = {tag: {} for tag in sa_tags}
+    sa_conf = {tag: [] for tag in sa_tags}
     milp_val, bounds, util, runtime = {}, {}, {}, {}
     for n in range(1, 17):
         for tag in sa_tags:
-            suffix = f"-{tag}" if tag else ""
-            rep = read_report(RESULTS_DIR / f"instance{n:02d}-3DMHKP-SA{suffix}.txt")
-            if rep is None:
-                print(f"missing {sa_label(tag)} report for instance {n:02d} - run "
-                      f"3DMHKP-SA.py{f' --tag {tag}' if tag else ''} first",
+            found = find_reports(sa_dir, n, tag)
+            if not found:
+                print(f"no {sa_label(tag)} report for instance {n:02d} in "
+                      f"{sa_dir} - run 3DMHKP-SA.py first, or pass --sa-dir",
                       file=sys.stderr)
                 return 1
+            if len(found) > 1:
+                names = "\n  ".join(q.name for q in found)
+                print(f"{sa_label(tag)} is ambiguous for instance {n:02d} in "
+                      f"{sa_dir} - {len(found)} reports match. Narrow it with "
+                      f"--sa-tag (any substring of the filename, e.g. t1800s):"
+                      f"\n  {names}", file=sys.stderr)
+                return 1
+            rep = read_report(found[0])
+            if rep is None:
+                print(f"unreadable report {found[0]}", file=sys.stderr)
+                return 1
             sa_val[tag][n] = rep["value"]
+            sa_conf[tag].append(rep)
             if tag == sa_tags[0]:
                 bounds[n] = rep["bound"]
                 util[n] = rep["util"]
@@ -210,6 +287,8 @@ def main():
     print("=" * width)
     print("Stowed value as a percentage of the upper bound - "
           "Bortfeldt (2000) Table 2 vs. our solvers")
+    for tag in sa_tags:
+        print(f"  {sa_label(tag)}: {describe_run(sa_dir, sa_conf[tag])}")
     print("=" * width)
     header = f"{'inst':<6}{'upper bound':>14}"
     for name, _ in method_cols:

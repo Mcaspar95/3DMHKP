@@ -1,0 +1,82 @@
+Instance: instance10
+Solver: simulated annealing (sequence decoder)
+Value model: v_i = c_i * volume_i (volume)
+Boxes: 200 (3 types)
+Containers: 3 (2 types)
+
+Run started: 2026-09-03 18:30:47
+Command: 3DMHKP-SA.py --instances 10 --instance-dir /home/mcaspar/3DMHKP/Mohanty --time-limit 7200   [launched by: main_slurm.py --id 9 --num_cpu 1]
+Time limit: 7200.0 s per instance
+Runtime: 7200.00 s (SA loop 7200.00 s, stopped on time limit)
+Packed value (SA incumbent / lower bound): 15360.0
+Continuous-knapsack bound: 15360.0
+Gap to that bound: 0.00%
+Greedy (initial decode) value: 15360.0
+SA improvement over greedy: +0.0
+
+SA parameters:
+  time limit: 7200.0 s, max iterations: 500000000
+  T0: 768.00 (5% of f(S_0))
+  alpha: 0.999, T_min: 0.001, one cooling sweep: 13545 it
+  reheat threshold: 5753 it, reheat to 192.00 (25% of T0)
+  ep limit: 0 (unlimited), value mode: volume
+  move weights: swap=1, promote=1.5, demote=1.5, orient=1, container=0.5 (disabled: relocate, 2opt)
+  seed: 1884464394
+
+SA statistics:
+  iterations: 17261575 in 7200.00 s (2397 it/s)
+  stopped on: time limit
+  accepted: 11346642, rejected: 5914932, no-move draws: 0, reheats: 3000
+  acceptance rate: 65.7%
+  T at exit: 14.6173
+  last improvement: none - the incumbent is the greedy decode
+  verification: ok
+
+Boxes packed: 40 / 200
+Volume utilization: 10240 / 10240 = 100.0%
+
+Container 0 (type 1, 24x16x8): 12 boxes, value 4608.0, utilization 100.0%
+Container 1 (type 1, 24x16x8): 12 boxes, value 4608.0, utilization 100.0%
+Container 2 (type 2, 16x16x16): 16 boxes, value 6144.0, utilization 100.0%
+
+Placements (box, type, container, position, oriented dims):
+  box   50 type 2 -> container 2 pos (0, 0, 0) dims (2, 8, 16)
+  box   51 type 2 -> container 2 pos (2, 0, 0) dims (2, 8, 16)
+  box   52 type 2 -> container 2 pos (4, 0, 0) dims (2, 8, 16)
+  box   53 type 2 -> container 2 pos (6, 0, 0) dims (2, 8, 16)
+  box   54 type 2 -> container 2 pos (8, 0, 0) dims (2, 8, 16)
+  box   55 type 2 -> container 2 pos (10, 0, 0) dims (2, 8, 16)
+  box   56 type 2 -> container 2 pos (12, 0, 0) dims (2, 8, 16)
+  box   57 type 2 -> container 2 pos (14, 0, 0) dims (2, 8, 16)
+  box   58 type 2 -> container 2 pos (0, 8, 0) dims (2, 8, 16)
+  box   59 type 2 -> container 2 pos (2, 8, 0) dims (2, 8, 16)
+  box   60 type 2 -> container 2 pos (4, 8, 0) dims (2, 8, 16)
+  box   61 type 2 -> container 2 pos (6, 8, 0) dims (2, 8, 16)
+  box   62 type 2 -> container 2 pos (8, 8, 0) dims (2, 8, 16)
+  box   63 type 2 -> container 2 pos (10, 8, 0) dims (2, 8, 16)
+  box   64 type 2 -> container 2 pos (12, 8, 0) dims (2, 8, 16)
+  box   65 type 2 -> container 2 pos (14, 8, 0) dims (2, 8, 16)
+  box   66 type 2 -> container 0 pos (0, 0, 0) dims (2, 16, 8)
+  box   67 type 2 -> container 0 pos (2, 0, 0) dims (2, 16, 8)
+  box   68 type 2 -> container 0 pos (4, 0, 0) dims (2, 16, 8)
+  box   69 type 2 -> container 0 pos (6, 0, 0) dims (2, 16, 8)
+  box   70 type 2 -> container 0 pos (8, 0, 0) dims (2, 16, 8)
+  box   71 type 2 -> container 0 pos (10, 0, 0) dims (2, 16, 8)
+  box   72 type 2 -> container 0 pos (12, 0, 0) dims (2, 16, 8)
+  box   73 type 2 -> container 0 pos (14, 0, 0) dims (2, 16, 8)
+  box   74 type 2 -> container 0 pos (16, 0, 0) dims (2, 16, 8)
+  box   75 type 2 -> container 0 pos (18, 0, 0) dims (2, 16, 8)
+  box   76 type 2 -> container 0 pos (20, 0, 0) dims (2, 16, 8)
+  box   77 type 2 -> container 0 pos (22, 0, 0) dims (2, 16, 8)
+  box   78 type 2 -> container 1 pos (0, 0, 0) dims (2, 16, 8)
+  box   79 type 2 -> container 1 pos (2, 0, 0) dims (2, 16, 8)
+  box   80 type 2 -> container 1 pos (4, 0, 0) dims (2, 16, 8)
+  box   81 type 2 -> container 1 pos (6, 0, 0) dims (2, 16, 8)
+  box   82 type 2 -> container 1 pos (8, 0, 0) dims (2, 16, 8)
+  box   83 type 2 -> container 1 pos (10, 0, 0) dims (2, 16, 8)
+  box   84 type 2 -> container 1 pos (12, 0, 0) dims (2, 16, 8)
+  box   85 type 2 -> container 1 pos (14, 0, 0) dims (2, 16, 8)
+  box   86 type 2 -> container 1 pos (16, 0, 0) dims (2, 16, 8)
+  box   87 type 2 -> container 1 pos (18, 0, 0) dims (2, 16, 8)
+  box   88 type 2 -> container 1 pos (20, 0, 0) dims (2, 16, 8)
+  box   89 type 2 -> container 1 pos (22, 0, 0) dims (2, 16, 8)

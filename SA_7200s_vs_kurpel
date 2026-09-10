@@ -1,0 +1,83 @@
+SA (results_3DMHKP_Sa900, selector 't7200s', 7200 s per instance)
+vs Kurpel et al. (2020), EJOR 284:87-107, Table 12 'This paper' - exact 0-1 model, 3600 s
+========================================================================================================
+inst     KUR value   KUR t  opt     SA value        delta   delta%  SA util   verdict
+--------------------------------------------------------------------------------------------------------
+1           9216.0     20s    *       8640.0       -576.0    -6.2%    86.4%   SA worse (below proven optimum)
+2          85555.2      9s    *      83212.8      -2342.4    -2.7%    99.5%   SA worse (below proven optimum)
+3          53262.5      3s    *      53262.5         +0.0    +0.0%    99.6%   equal (OPTIMAL)
+4        1354752.0      0s    *    2333440.0          n/c             82.7%   not comparable (Kurpel solved a 10-container truncation)
+5         583750.0      0s    *     572250.0     -11500.0    -2.0%    98.6%   SA worse (below proven optimum)
+6         142464.0     lim          139200.0      -3264.0    -2.3%    96.2%   SA worse
+7          17664.0     lim           17550.0       -114.0    -0.6%    89.7%   SA worse
+8          71972.4     lim           68452.8      -3519.6    -4.9%    95.1%   SA worse
+9          98748.0     lim          131328.0     +32580.0   +33.0%    93.4%   SA better
+10         15360.0      1s    *      15360.0         +0.0    +0.0%   100.0%   equal (OPTIMAL)
+11         54761.0    171s    *      54669.6        -91.4    -0.2%    86.8%   SA worse (below proven optimum)
+12         24076.8     lim           23601.6       -475.2    -2.0%    93.2%   SA worse
+13         36556.8     72s    *      36556.8         +0.0    +0.0%    77.8%   equal (OPTIMAL)
+14         68723.2     lim           66982.4      -1740.8    -2.5%    95.0%   SA worse
+15         40807.8     23s    *      38496.4      -2311.4    -5.7%    93.3%   SA worse (below proven optimum)
+16        632274.0     lim          590946.0     -41328.0    -6.5%    86.4%   SA worse
+--------------------------------------------------------------------------------------------------------
+mean                                                         -0.2%    92.1%
+--------------------------------------------------------------------------------------------------------
+* = Kurpel proved optimality (their gap 0.00); 'lim' = they hit the 3600 s limit.
+Median delta -2.0% - report it next to the mean, which a single large win distorts.
+
+Over the 15 comparable instances: SA better on 1 [9], equal on 3 [3, 10, 13], worse on 11 [1, 2, 5, 6, 7, 8, 11, 12, 14, 15, 16].
+Aggregate value over those 15: SA 1900508.9 vs KUR 1935191.7 (-1.8%).
+On the 8 instances with a PROVEN optimum [1, 2, 3, 5, 10, 11, 13, 15]: SA reaches it on 3, mean 97.9% of optimum, worst instance 1 at 93.8%.
+On the 7 instances Kurpel left OPEN [6, 7, 8, 9, 12, 14, 16] (they burned the full 3600 s on each): SA better on [9], worse on [6, 7, 8, 12, 14, 16].
+
+========================================================================================================
+'t7200s' against our own 't1800s' run
+========================================================================================================
+inst          t1800s         t7200s        delta   delta%   seeds differ
+--------------------------------------------------------------------------------------------------------
+1             8640.0         8640.0         +0.0    +0.0%   yes
+2            83302.4        83212.8        -89.6    -0.1%   yes
+3            53262.5        53262.5         +0.0    +0.0%   yes
+4          2333440.0      2333440.0         +0.0    +0.0%   yes
+5           566250.0       572250.0      +6000.0    +1.1%   yes
+6           139968.0       139200.0       -768.0    -0.5%   yes
+7            17556.0        17550.0         -6.0    -0.0%   yes
+8            69204.2        68452.8       -751.4    -1.1%   yes
+9           129852.0       131328.0      +1476.0    +1.1%   yes
+10           15360.0        15360.0         +0.0    +0.0%   yes
+11           54669.6        54669.6         +0.0    +0.0%   yes
+12           23443.2        23601.6       +158.4    +0.7%   yes
+13           36556.8        36556.8         +0.0    +0.0%   yes
+14           66684.8        66982.4       +297.6    +0.4%   yes
+15           38215.0        38496.4       +281.4    +0.7%   yes
+16          596359.0       590946.0      -5413.0    -0.9%   yes
+--------------------------------------------------------------------------------------------------------
+'t7200s' better on 5 [5, 9, 12, 14, 15], equal on 6 [1, 3, 4, 10, 11, 13], worse on 5 [2, 6, 7, 8, 16].
+Aggregate over the 15 comparable instances: t1800s 1899323.5 -> t7200s 1900508.9 (+0.1%).
+CAVEAT: the two runs use different seeds throughout, so a per-instance difference mixes the effect of the longer budget with ordinary seed-to-seed SA variance. Only a same-seed pair isolates the budget.
+
+========================================================================================================
+When the 7200 s run last improved its incumbent (from the report files)
+========================================================================================================
+inst     last improvement  share of run   iterations    it/s  reheats   vs the 1800 s run
+--------------------------------------------------------------------------------------------------------
+1                  0.1 s            0%     26713935    3710     4643   equal
+2                 35.8 s            0%      9922561    1378     1720   worse
+3                129.4 s            2%     12160998    1689     2111   equal
+4               2829.7 s           39%     12218292    1697     2117   equal
+5               4791.3 s           67%     26713750    3710     4639   better
+6               5187.3 s           72%     11483944    1595     1990   worse
+7               2149.5 s           30%     16329832    2268     2832   worse
+8               1614.0 s           22%      2973049     413      508   worse
+9                726.5 s           10%      4934581     685      850   better
+10          none (greedy)             -     17261575    2397     3000   equal
+11               870.1 s           12%     24856019    3452     4314   equal
+12              5867.9 s           81%      5136975     713      887   better
+13                 0.1 s            0%      1913972     266      332   equal
+14               865.9 s           12%     14669052    2037     2548   better
+15              2687.7 s           37%     15927514    2212     2764   better
+16              1766.6 s           25%      3435613     477      591   worse
+--------------------------------------------------------------------------------------------------------
+Still improving past the 25% mark of the run: [4, 5, 6, 7, 12, 15] (6 of 16).
+Everywhere else the incumbent was frozen for the last three quarters of the
+budget, which is why quadrupling it from 1800 s bought +0.1% in aggregate.

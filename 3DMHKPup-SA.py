@@ -107,9 +107,11 @@
 import argparse
 import math
 import random
+import shlex
 import sys
 import time
 from bisect import insort
+from datetime import datetime
 from pathlib import Path
 
 # -------------------------
@@ -854,6 +856,7 @@ def simulated_annealing(inst, max_iterations=MAX_ITERATIONS, time_limit=TIME_LIM
     best = copy_solution(current)
 
     # ---- Temperature ----
+    t_init_auto = t_init is None
     if t_init is None:
         t_init = max(1e-6, t_init_fraction * current["value"])
         if verbose:
@@ -865,9 +868,15 @@ def simulated_annealing(inst, max_iterations=MAX_ITERATIONS, time_limit=TIME_LIM
     no_improve = 0
     accepted = rejected = no_move = reheats = 0
     iteration = 0
+    # Recorded in the report so a run stays interpretable after the fact: why
+    # the loop ended, and how late in the budget the incumbent was still
+    # improving (a best_time near the limit means more time would still pay).
+    stopped_on = "iteration cap"
+    best_iteration, best_time = 0, 0.0
 
     for iteration in range(1, max_iterations + 1):
         if time.time() >= deadline:
+            stopped_on = "time limit"
             if verbose:
                 print(f"  time limit reached at iteration {iteration}")
             break
@@ -905,6 +914,7 @@ def simulated_annealing(inst, max_iterations=MAX_ITERATIONS, time_limit=TIME_LIM
             if current["value"] > best["value"] + 1e-6:
                 best = copy_solution(current)
                 no_improve = 0
+                best_iteration, best_time = iteration, time.time() - t_start
                 if verbose:
                     print(f"    [iter {iteration}] *** NEW BEST: value "
                           f"{best['value']:.1f}, boxes {len(best['packed'])}/"
@@ -942,6 +952,21 @@ def simulated_annealing(inst, max_iterations=MAX_ITERATIONS, time_limit=TIME_LIM
         "initial_value": initial_value,
         "elapsed": elapsed,
         "iters_per_sec": iteration / elapsed if elapsed > 0 else 0.0,
+        # The configuration too, so the report is a complete record of the run
+        # and not just of its outcome.
+        "time_limit": time_limit,
+        "max_iterations": max_iterations,
+        "t_init_auto": t_init_auto,
+        "t_init_fraction": t_init_fraction,
+        "t_min": t_min,
+        "t_reheat": t_reheat,
+        "reheat_fraction": reheat_fraction,
+        "ep_limit": ep_limit,
+        "move_weights": dict(MOVE_WEIGHTS),
+        "t_final": T,
+        "stopped_on": stopped_on,
+        "best_iteration": best_iteration,
+        "best_time": best_time,
     }
     if verbose:
         acc_rate = accepted / max(1, accepted + rejected)
@@ -978,6 +1003,29 @@ def summarize(inst, placement):
     return stats
 
 
+def report_name(inst_name, solver, args):
+    """Report filename, carrying the parameters that define the run.
+
+    A set of 16 reports is only interpretable next to the settings that
+    produced it, and two runs at different settings otherwise overwrite each
+    other silently - which is how a directory named "Sa900" came to hold
+    1800 s results. The name carries the three settings that are varied in
+    practice, cooling rate, reheat factor and time limit:
+
+        instance01-3DMHKP-SA-a0.999-r0.25-t1800s.txt
+
+    --tag still appends a free-text suffix on top, for runs that differ in
+    something the name does not cover (a seed, a move-weight set).
+    """
+    if args.greedy_only:
+        params = "-greedy"          # no cooling schedule to name
+    else:
+        params = (f"-a{args.alpha:g}-r{args.reheat_fraction:g}"
+                  f"-t{args.time_limit:g}s")
+    tag = f"-{args.tag}" if args.tag else ""
+    return f"{inst_name}-{solver}{params}{tag}.txt"
+
+
 def write_report(path, inst, placement, result):
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     stats = summarize(inst, placement)
@@ -995,7 +1043,15 @@ def write_report(path, inst, placement, result):
         f.write(f"Containers: {len(inst['containers'])} "
                 f"({len(inst['container_types'])} types)\n\n")
 
-        f.write(f"Runtime: {result['runtime']:.2f} s\n")
+        tag = f"  (tag: {result['tag']})" if result.get("tag") else ""
+        on = [k for k, v in sa["move_weights"].items() if v > 0]
+        off = [k for k, v in sa["move_weights"].items() if v <= 0]
+
+        f.write(f"Run started: {result['started']:%Y-%m-%d %H:%M:%S}{tag}\n")
+        f.write(f"Command: {result['command']}\n")
+        f.write(f"Time limit: {sa['time_limit']:.1f} s per instance\n")
+        f.write(f"Runtime: {result['runtime']:.2f} s (SA loop {sa['elapsed']:.2f} s, "
+                f"stopped on {sa['stopped_on']})\n")
         f.write(f"Packed value (SA incumbent / lower bound): {result['value']:.1f}\n")
         f.write(f"Continuous-knapsack bound: {result['ck_bound']:.1f}\n")
         f.write(f"Gap to that bound: {result['gap']:.2%}\n")
@@ -1003,13 +1059,50 @@ def write_report(path, inst, placement, result):
         f.write(f"SA improvement over greedy: "
                 f"{result['value'] - sa['initial_value']:+.1f}\n\n")
 
-        f.write("SA parameters and statistics:\n")
-        f.write(f"  T0: {sa['t_init']:.2f}\n")
-        f.write(f"  alpha: {sa['alpha']}, reheat threshold: {sa['reheat_threshold']}\n")
-        f.write(f"  iterations: {sa['iterations']} ({sa['iters_per_sec']:.0f} it/s)\n")
+        f.write("SA parameters:\n")
+        f.write(f"  time limit: {sa['time_limit']:.1f} s, "
+                f"max iterations: {sa['max_iterations']}\n")
+        # The cooling schedule only exists if the SA loop actually ran; under
+        # --greedy-only there is no T0 to report a sweep length against.
+        if sa["iterations"]:
+            sweep = cooling_sweep_iters(sa["alpha"], sa["t_min"],
+                                        max(sa["t_init"], 1e-6))
+            t0_note = (f"{sa['t_init_fraction']:.0%} of f(S_0)"
+                       if sa["t_init_auto"] else "fixed, --t-init")
+            f.write(f"  T0: {sa['t_init']:.2f} ({t0_note})\n")
+            f.write(f"  alpha: {sa['alpha']}, T_min: {sa['t_min']:g}, "
+                    f"one cooling sweep: {sweep:.0f} it\n")
+            f.write(f"  reheat threshold: {sa['reheat_threshold']} it, reheat to "
+                    f"{sa['t_reheat']:.2f} ({sa['reheat_fraction']:.0%} of T0)\n")
+        else:
+            f.write("  cooling schedule: not applicable, the SA loop did not "
+                    "run\n")
+        f.write(f"  ep limit: {sa['ep_limit']}"
+                f"{' (unlimited)' if not sa['ep_limit'] else ''}, "
+                f"value mode: {inst['value_mode']}\n")
+        f.write(f"  move weights: "
+                + ", ".join(f"{k}={sa['move_weights'][k]:g}" for k in on)
+                + (f" (disabled: {', '.join(off)})" if off else "") + "\n")
+        f.write(f"  seed: {result['seed']}\n\n")
+
+        f.write("SA statistics:\n")
+        f.write(f"  iterations: {sa['iterations']} in {sa['elapsed']:.2f} s "
+                f"({sa['iters_per_sec']:.0f} it/s)\n")
+        f.write(f"  stopped on: {sa['stopped_on']}\n")
         f.write(f"  accepted: {sa['accepted']}, rejected: {sa['rejected']}, "
                 f"no-move draws: {sa['no_move']}, reheats: {sa['reheats']}\n")
-        f.write(f"  seed: {result['seed']}\n")
+        f.write(f"  acceptance rate: "
+                f"{sa['accepted'] / max(1, sa['accepted'] + sa['rejected']):.1%}\n")
+        if sa["iterations"]:
+            f.write(f"  T at exit: {sa['t_final']:g}\n")
+        if sa["best_iteration"]:
+            share = (f", {sa['best_time'] / sa['elapsed']:.0%} into the run"
+                     if sa["elapsed"] > 0 else "")
+            f.write(f"  last improvement: iteration {sa['best_iteration']} at "
+                    f"{sa['best_time']:.1f} s{share}\n")
+        else:
+            f.write("  last improvement: none - the incumbent is the greedy "
+                    "decode\n")
         f.write(f"  verification: {result['verification']}\n\n")
 
         f.write(f"Boxes packed: {len(placement)} / {len(inst['boxes'])}\n")
@@ -1049,13 +1142,24 @@ def solve_instance(path, args):
         print(f"  note: {unfittable} box(es) fit no container - never packable")
 
     t0 = time.time()
+    started = datetime.now()
 
     if args.greedy_only:
         best = build_initial_solution(inst, ep_limit=args.ep_limit)
         sa_stats = {"iterations": 0, "accepted": 0, "rejected": 0, "no_move": 0,
                     "reheats": 0, "t_init": 0.0, "alpha": args.alpha,
                     "reheat_threshold": 0, "initial_value": best["value"],
-                    "elapsed": time.time() - t0, "iters_per_sec": 0.0}
+                    "elapsed": time.time() - t0, "iters_per_sec": 0.0,
+                    "time_limit": args.time_limit,
+                    "max_iterations": args.max_iterations,
+                    "t_init_auto": args.t_init is None,
+                    "t_init_fraction": args.t_init_fraction,
+                    "t_min": args.t_min, "t_reheat": 0.0,
+                    "reheat_fraction": args.reheat_fraction,
+                    "ep_limit": args.ep_limit,
+                    "move_weights": dict(MOVE_WEIGHTS), "t_final": 0.0,
+                    "stopped_on": "greedy only, SA not run",
+                    "best_iteration": 0, "best_time": 0.0}
         print(f"  greedy-only decode: value {best['value']:.1f} "
               f"({len(best['packed'])}/{n_boxes} boxes)")
     else:
@@ -1096,6 +1200,9 @@ def solve_instance(path, args):
         "sa": sa_stats,
         "seed": args.seed,
         "verification": "ok" if not errs else f"{len(errs)} violation(s): {errs[0]}",
+        "started": started,
+        "command": args.command,
+        "tag": args.tag,
     }
 
     result["optimal"] = result["gap"] <= 1e-9
@@ -1108,8 +1215,7 @@ def solve_instance(path, args):
 
     if not args.no_report:
         RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-        tag = f"-{args.tag}" if args.tag else ""
-        out = RESULTS_DIR / f"{inst['name']}-3DMHKPup-SA{tag}.txt"
+        out = RESULTS_DIR / report_name(inst["name"], "3DMHKPup-SA", args)
         write_report(out, inst, placement, result)
         print(f"  report -> {out}")
 
@@ -1156,9 +1262,12 @@ def main(argv=None):
     parser.add_argument("--greedy-only", action="store_true",
                         help="only decode the initial value-density order, no SA")
     parser.add_argument("--tag", default="",
-                        help="suffix for the report filenames, e.g. --tag 30s "
-                             "writes instanceNN-3DMHKPup-SA-30s.txt; use it to keep "
-                             "runs at different time limits or seeds side by side")
+                        help="extra suffix for the report filenames. The names "
+                             "already carry the cooling rate, reheat factor and "
+                             "time limit (instanceNN-3DMHKPup-SA-a0.999-r0.25-"
+                             "t1800s.txt), so a tag is only needed to separate "
+                             "runs that differ in something else, such as the "
+                             "seed or the move weights")
     parser.add_argument("--no-report", action="store_true",
                         help="do not write per-instance report files")
     parser.add_argument("--quiet", action="store_true",
@@ -1168,6 +1277,15 @@ def main(argv=None):
     if args.seed is None:
         args.seed = random.randrange(2 ** 31)
     random.seed(args.seed)
+
+    # The reports record how this solver was invoked. main_slurm.py calls
+    # main(argv) in-process, so sys.argv is the dispatcher's line, not ours -
+    # record the arguments we actually parsed, and the launching command after
+    # them when the two differ.
+    args.command = shlex.join([Path(__file__).name]
+                              + (list(argv) if argv is not None else sys.argv[1:]))
+    if argv is not None:
+        args.command += f"   [launched by: {shlex.join(sys.argv)}]"
 
     numbers = args.instances if args.instances else list(range(1, 17))
     paths = []

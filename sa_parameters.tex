@@ -1,0 +1,195 @@
+% Parameters of the simulated annealing for the 3DMHKP (3DMHKP-SA.py).
+% Values in brackets are those of 3DMHKPup-SA.py where they differ.
+\begin{enumerate}
+
+  \item \textbf{Solution representation and decoder.}
+        A solution is a triple: a box sequence, an orientation preference per
+        box, and a container sequence. It is mapped to a packing by an
+        extreme-point decoder, so every solution is feasible by construction.
+        \begin{enumerate}
+          \item Extreme points scanned per box, \texttt{EP\_LIMIT}
+                (\texttt{--ep-limit}): $0$, i.e.\ unlimited.
+        \end{enumerate}
+
+  \item \textbf{Objective function.}
+        Maximise the stowed value $f(S)=\sum_{j\in P(S)} v_j$ with
+        $v_j = c_j \cdot \mathrm{vol}_j$ (option \texttt{--value-mode flat}
+        gives $v_j = c_j$).
+
+  \item \textbf{Initial solution $S_0$.}
+        Greedy decode of the boxes in non-increasing value-density order.
+
+  \item \textbf{Initial temperature $T_0$.}
+        Not a constant: $T_0 = \gamma\, f(S_0)$ with
+        $\gamma = 0.05$ (\texttt{T\_INIT\_FRACTION}, \texttt{--t-init-fraction}).
+        The objective scales with the box volumes and spans
+        $7.7\cdot 10^{3}$ to $2.1\cdot 10^{6}$ over the $16$ instances, so a
+        single scalar $T_0$ cannot serve them all. Observed values:
+        $T_0 = 384.0$ (instance~1) up to $103\,872.0$ (instance~4).
+        A fixed value can be forced with \texttt{--t-init}.
+
+  \item \textbf{Cooling schedule.}
+        Geometric: $T \leftarrow \alpha\,T$.
+
+  \item \textbf{Cooling rate $\alpha$.}
+        $\alpha = 0.999$ (\texttt{ALPHA}, \texttt{--alpha}). One full sweep
+        $T_0 \rightarrow T_{\min}$ takes
+        $\ln(T_{\min}/T_0)/\ln\alpha \approx 12\,900$ iterations at
+        $T_0 = 384$, and $\approx 18\,200$ at $T_0 = 81\,600$.
+
+  \item \textbf{Chain length $L$.}
+        $L = 1$: the temperature is lowered after \emph{every} iteration, so
+        there is no inner Markov chain at fixed $T$. $L$ and $\alpha$ are
+        therefore not independent; only their combination fixes the sweep
+        length.
+
+  \item \textbf{Final temperature $T_{\min}$.}
+        $T_{\min} = 10^{-3}$ (\texttt{T\_MIN}, \texttt{--t-min}). A floor, not
+        a stopping criterion: the run continues at $T_{\min}$ until the time
+        limit.
+
+  \item \textbf{Acceptance criterion.}
+        Metropolis, for a maximisation objective with
+        $\Delta = f(S') - f(S)$:
+        \[
+          P(\text{accept}) =
+          \begin{cases}
+            1, & \Delta > 0,\\[2pt]
+            \exp(\Delta / T), & \Delta \le 0 .
+          \end{cases}
+        \]
+
+  \item \textbf{Neighbourhood $N(S)$: move operators and their weights.}
+        Relative draw probabilities per iteration (weights, normalised; a
+        weight of $0$ disables the operator). Hard-coded in
+        \texttt{MOVE\_WEIGHTS}, no command-line option.
+        \begin{enumerate}
+          \item \texttt{swap} $= 1.0$ --- exchange two boxes in the sequence.
+          \item \texttt{promote} $= 1.5$ --- move an unpacked box forward.
+          \item \texttt{demote} $= 1.5$ $[1.0]$ --- move a packed box back.
+          \item \texttt{orient} $= 1.0$ --- change one box's orientation
+                preference.
+          \item \texttt{container} $= 0.5$ --- reorder the container sequence;
+                meaningful only on heterogeneous fleets.
+          \item \texttt{relocate} $= 0.0$ --- disabled.
+          \item \texttt{2opt} $= 0.0$ --- disabled.
+        \end{enumerate}
+        \texttt{promote} and \texttt{demote} are favoured as the only
+        operators that exchange packed against unpacked cargo.
+
+  \item \textbf{Neighbours drawn per iteration.}
+        Exactly one: a single random operator and a single random move, decoded
+        and then accepted or rejected. The neighbourhood is never enumerated.
+        \begin{enumerate}
+          \item Retries before a sampler gives up for the iteration,
+                \texttt{\_SAMPLE\_TRIES} $= 12$; a failure is counted as a
+                ``no-move draw''. Hard-coded.
+        \end{enumerate}
+
+  \item \textbf{Stagnation threshold.}
+        \texttt{REHEAT\_THRESHOLD} (\texttt{--reheat-threshold}), the number of
+        iterations without a new \emph{global best} before the chain is
+        reheated and diversified. Default
+        $\max\{200,\,0.5\cdot \text{sweep}\} = 5753$.
+        This single threshold triggers both the reheat (item~13) and the
+        diversification (item~14); there is no separate diversification
+        threshold. Observed frequency: $82$ to $1150$ triggers per instance in
+        a $1800$\,s run.
+
+  \item \textbf{Reheat factor.}
+        \texttt{REHEAT\_FRACTION} $= 0.25$ (\texttt{--reheat-fraction}). On a
+        trigger the temperature is \emph{reset},
+        $T \leftarrow 0.25\,T_0$, not scaled from its current value: after a
+        long stagnation $T$ has annealed close to $T_{\min}$, where a
+        multiplicative reheat would have no effect.
+
+  \item \textbf{Diversification strength.}
+        The perturbation applied to the current solution at the same trigger
+        as the reheat. Two properties frame it. It is applied
+        \emph{unconditionally}: the kicked solution replaces the current one
+        without a Metropolis test, so the chain is displaced whether or not
+        the kick was good. And it acts only on the current solution, never on
+        the incumbent best, so a destructive kick cannot cost the run its
+        result --- the risk it carries is spent search time, not lost value.
+        Let $n$ be the number of boxes and $U(S)$ the set the decoder left
+        unplaced. The kick has three magnitudes, all hard-coded, with no
+        command-line option:
+        \begin{enumerate}
+
+          \item \emph{Promotion of rejected cargo.}
+                $m = \max\{1, \lfloor |U(S)|/3 \rfloor\}$ of the unplaced
+                boxes are drawn uniformly without replacement, removed from
+                the sequence, and each reinserted at a position drawn
+                uniformly from $\{0,\dots,h\}$ with
+                $h = \max\{1, \lfloor n/3 \rfloor\}$. The insertions are
+                sequential and every index is drawn against the same constant
+                $h$, so all $m$ boxes come to lie within the first $h+m$
+                positions. The step is skipped entirely when
+                $U(S) = \emptyset$. Because the decoder is order-greedy, a
+                promoted box gets first claim on the container space and
+                displaces whatever previously occupied it; this is the
+                same exchange of packed against unpacked cargo as the
+                \texttt{promote} operator, but performed on $m$ boxes at once
+                instead of one.
+
+          \item \emph{Block scramble.} If $n \ge 4$, a contiguous window of
+                length $s = \max\{2, \lfloor n/5 \rfloor\}$ is chosen at a
+                uniformly random start position $i \in \{0,\dots,n-s\}$ and
+                its entries are uniformly shuffled. It is applied to the
+                sequence \emph{after} the promotion step. This reorders a
+                block in one step, where the \texttt{swap} operator would need
+                many accepted moves to reach the same permutation.
+
+          \item \emph{Container sequence.} The container order is shuffled
+                unconditionally, which changes the order in which containers
+                are filled. Containers are filled one at a time, so the first
+                in the order has first claim on the whole cargo pool and the
+                last sees only what the others left; the shuffle therefore
+                decides which containers receive the high-value cargo. Unlike
+                the \texttt{container} move operator it does not skip
+                permutations of same-type containers, which decode to an
+                identical packing. All 16 instances have heterogeneous fleets
+                (2 to 3 container types over 2 to 15 containers), so a shuffle
+                is usually effective, though on the smallest fleets a
+                substantial share of draws is the identity.
+
+        \end{enumerate}
+        The solution is then re-decoded in place, so the reheated chain
+        continues from the perturbed packing.
+
+        The magnitudes are fractions of $n$ and $|U(S)|$, hence instance-
+        dependent but fixed relative to size. Over the 16 instances
+        $n$ ranges from 47 to 200, giving an insertion window $h$ of 15 to 66
+        and a scrambled block $s$ of 9 to 40; the number of promoted boxes $m$
+        also depends on how much cargo the current solution rejects, and in
+        the $1800$\,s runs ranged from 3 (instance~9, 9 boxes unplaced) to 53
+        (instance~10, 160 unplaced). Instance~13 packs all 84 boxes, so its
+        promotion step is inactive.
+
+        Two consequences are worth stating. First, the strength does not adapt
+        to how long the search has been stuck: the same kick is applied at the
+        first stagnation and at the thousandth. Second, since the trigger
+        fires between 82 and 1150 times in an $1800$\,s run, the kick is not a
+        rare restart but a routine part of the search, and its magnitude is
+        arguably a more sensitive tuning parameter than the reheat factor
+        itself. Unlike the cooling rate and the reheat factor it is not
+        exposed on the command line, so varying it requires editing the
+        source.
+
+  \item \textbf{Stopping criterion.}
+        \begin{enumerate}
+          \item Wall-clock limit per instance, \texttt{TIME\_LIMIT}
+                (\texttt{--time-limit}): $1800$\,s $[300$\,s$]$. This is the
+                binding criterion in all runs reported here.
+          \item Iteration cap, \texttt{MAX\_ITERATIONS}
+                (\texttt{--max-iterations}): $5\cdot 10^{8}$
+                $[5\cdot 10^{7}]$; never reached, as a $1800$\,s run performs
+                between $0.9$ and $6.6$ million iterations depending on the
+                instance ($477$ to $3656$ iterations per second).
+        \end{enumerate}
+
+  \item \textbf{Random seed.}
+        \texttt{--seed}; drawn at random when not given, and seeded once per
+        process.
+
+\end{enumerate}

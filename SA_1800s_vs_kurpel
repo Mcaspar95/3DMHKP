@@ -1,0 +1,61 @@
+SA (3DMHKP-SA.py, free rotation, 1800 s, dir results_3DMHKP_Sa900)
+vs Kurpel et al. (2020), EJOR 284:87-107, Table 12 'This paper' - exact 0-1 model, 3600 s
+========================================================================================================
+inst     KUR value   KUR t  opt     SA value        delta   delta%  SA util   verdict
+--------------------------------------------------------------------------------------------------------
+1           9216.0     20s    *       8640.0       -576.0    -6.2%    86.4%   SA worse (below proven optimum)
+2          85555.2      9s    *      83302.4      -2252.8    -2.6%    99.6%   SA worse (below proven optimum)
+3          53262.5      3s    *      53262.5         +0.0    +0.0%    99.6%   equal (OPTIMAL)
+4        1354752.0      0s    *    2333440.0          n/c             82.7%   not comparable (Kurpel solved a 10-container truncation)
+5         583750.0      0s    *     566250.0     -17500.0    -3.0%    96.4%   SA worse (below proven optimum)
+6         142464.0     lim          139968.0      -2496.0    -1.8%    96.7%   SA worse
+7          17664.0     lim           17556.0       -108.0    -0.6%    89.3%   SA worse
+8          71972.4     lim           69204.2      -2768.2    -3.8%    94.6%   SA worse
+9          98748.0     lim          129852.0     +31104.0   +31.5%    92.3%   SA better
+10         15360.0      1s    *      15360.0         +0.0    +0.0%   100.0%   equal (OPTIMAL)
+11         54761.0    171s    *      54669.6        -91.4    -0.2%    86.8%   SA worse (below proven optimum)
+12         24076.8     lim           23443.2       -633.6    -2.6%    92.4%   SA worse
+13         36556.8     72s    *      36556.8         +0.0    +0.0%    77.8%   equal (OPTIMAL)
+14         68723.2     lim           66684.8      -2038.4    -3.0%    91.2%   SA worse
+15         40807.8     23s    *      38215.0      -2592.8    -6.4%    91.8%   SA worse (below proven optimum)
+16        632274.0     lim          596359.0     -35915.0    -5.7%    88.2%   SA worse
+--------------------------------------------------------------------------------------------------------
+mean                                                         -0.3%    91.6%
+--------------------------------------------------------------------------------------------------------
+* = Kurpel proved optimality (their gap 0.00); 'lim' = they hit the 3600 s limit.
+
+Over the 15 comparable instances: SA better on 1 [9], equal on 3 [3, 10, 13], worse on 11 [1, 2, 5, 6, 7, 8, 11, 12, 14, 15, 16].
+Aggregate value over those 15: SA 1899323.5 vs KUR 1935191.7 (-1.9%).
+On the 8 instances with a PROVEN optimum [1, 2, 3, 5, 10, 11, 13, 15]: SA reaches it on 3, mean 97.7% of optimum, worst instance 15 at 93.6%.
+On the 7 instances Kurpel left OPEN [6, 7, 8, 9, 12, 14, 16] (they burned the full 3600 s on each): SA better on [9], worse on [6, 7, 8, 12, 14, 16].
+
+All 16 SA packings pass verify_placement(); every run used the full 1800 s budget
+(half of Kurpel's 3600 s limit, on different hardware - wall-clock is indicative only).
+
+Progression of our own SA runs on the same instances (value; s = 15/60 s base run):
+inst          base(60s)      SA 30s     SA 120s  SA 120s-tfrac      SA 1800s
+1                8640.0      8640.0      8640.0         8640.0        8640.0
+2               82944.0     82508.8     82931.2        83110.4       83302.4
+3               52750.0     52650.0     53262.5        53262.5       53262.5
+4             2333440.0   2307840.0   2333440.0      2333440.0     2333440.0
+5              562750.0    565250.0    565250.0       571250.0      566250.0
+6              137184.0    137952.0    135936.0       139968.0      139968.0
+7               17286.0     17415.0     17286.0        17415.0       17556.0
+8               68593.6     65217.0     66674.8        65864.0       69204.2
+9              126936.0    125046.0    127278.0       128484.0      129852.0
+10              15360.0     15360.0     15360.0        15360.0       15360.0
+11              53357.6     51948.4     54578.2        52563.6       54669.6
+12              22881.6     22809.6     23443.2        22737.6       23443.2
+13              36556.8     36556.8     36556.8        36556.8       36556.8
+14              66982.4     65987.2     66982.4        65987.2       66684.8
+15              37315.5     37892.5     37210.8        37428.6       38215.0
+16             566394.0    571218.0    578778.0       579367.0      596359.0
+
+The 1800 s run is best-or-tied on 14 of 16; it regresses only on 5 (571250.0 at
+120s-tfrac) and 14 (66982.4 at 60 s), both within ordinary seed-to-seed SA spread.
+
+NOTE: the directory is named results_3DMHKP_Sa900 but every report in it says
+"Runtime: 1800.00 s". The reports have since been renamed to
+instanceNN-3DMHKP-SA-a0.999-r0.25-t1800s.txt, which is what they record:
+alpha 0.999, the default reheat threshold 5753 (hence reheat factor 0.25,
+which main_slurm.py cannot override), and 1800.00 s elapsed on all 16.
