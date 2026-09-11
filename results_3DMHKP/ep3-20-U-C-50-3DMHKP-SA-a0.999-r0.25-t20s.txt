@@ -1,0 +1,48 @@
+Instance: ep3-20-U-C-50
+Solver: simulated annealing (sequence decoder)
+Value model: v_i = c_i (flat)
+Boxes: 20 (5 types)
+Containers: 1 (1 types)
+
+Run started: 2026-09-11 14:22:56
+Command: 3DMHKP-SA.py --instance-files Egeblad/ep3-20-U-C-50.txt --value-mode flat --time-limit 20 --seed 42 --t-init 150
+Time limit: 20.0 s per instance
+Runtime: 20.00 s (SA loop 20.00 s, stopped on time limit)
+Packed value (SA incumbent / lower bound): 108758.0
+Continuous-knapsack bound: 157180.5
+Gap to that bound: 30.81%
+Greedy (initial decode) value: 85910.0
+SA improvement over greedy: +22848.0
+
+SA parameters:
+  time limit: 20.0 s, max iterations: 500000000
+  T0: 150.00 (fixed, --t-init)
+  schedule: time-based, T0 -> 0.00 over 20s (alpha unused)
+  reheat threshold: 5753 it, ceiling 37.50 (25% of T0) decaying x0.9 per reheat
+  ep limit: 0 (unlimited), value mode: flat
+  move weights: swap=1, promote=1.5, demote=1.5, orient=1, container=0.5 (disabled: relocate, 2opt)
+  seed: 42
+
+SA statistics:
+  iterations: 438080 in 20.00 s (21904 it/s)
+  stopped on: time limit
+  accepted: 194859, rejected: 243220, no-move draws: 0, reheats: 75
+  acceptance rate: 44.5%
+  T at exit: 0.0154162
+  last improvement: iteration 9117 at 0.4 s, 2% into the run
+  verification: ok
+
+Boxes packed: 8 / 20
+Volume utilization: 2675883 / 3906250 = 68.5%
+
+Container 0 (type 1, 125x125x250): 8 boxes, value 108758.0, utilization 68.5%
+
+Placements (box, type, container, position, oriented dims):
+  box    8 type 3 -> container 0 pos (65, 0, 77) dims (59, 59, 85)
+  box    9 type 3 -> container 0 pos (65, 0, 162) dims (59, 59, 85)
+  box   10 type 3 -> container 0 pos (65, 59, 77) dims (59, 59, 85)
+  box   11 type 3 -> container 0 pos (65, 59, 162) dims (59, 59, 85)
+  box   13 type 4 -> container 0 pos (65, 0, 0) dims (53, 83, 77)
+  box   16 type 5 -> container 0 pos (0, 0, 0) dims (65, 87, 68)
+  box   17 type 5 -> container 0 pos (0, 0, 68) dims (65, 68, 87)
+  box   19 type 5 -> container 0 pos (0, 0, 155) dims (65, 68, 87)

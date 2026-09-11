@@ -10,8 +10,11 @@
 # 300 s of SA per task plus interpreter start-up and report writing; 30 min is
 # a wide margin. Short jobs like these also schedule sooner than a 2-day ask.
 #SBATCH --time=00:30:00
-##SBATCH -o %x-%A-%a.out
-##SBATCH -e %x-%A-%a.err
+# Logs land next to the per-instance reports so one directory is the complete
+# record of a run; without this the .out files stay in the submit directory
+# while --results-dir gets the reports, and copying back one loses the other.
+#SBATCH -o results_3DMHKP_ep3/slurm-%A_%a.out
+#SBATCH -e results_3DMHKP_ep3/slurm-%A_%a.err
 #SBATCH --mail-type=END,FAIL
 ##SBATCH --constraint="XEON_E5_2637v3"
 ##SBATCH --constraint="XEON_E5_2640v3"
@@ -20,6 +23,11 @@
 ##module load python/3.13
 ##module load gcc/latest
 ##module load gurobipy/12.0.3
+# SLURM does not create the -o/-e directory and a missing one loses the job's
+# output entirely, so it must exist before submission too: mkdir it in the
+# submit shell as well, not only here.
+mkdir -p results_3DMHKP_ep3
+
 source /home/mcaspar/3DPCPTP/bin/activate
 # SA is pure Python and needs no Gurobi licence; the export is harmless and
 # kept so this file stays interchangeable with slurm.sbatch.

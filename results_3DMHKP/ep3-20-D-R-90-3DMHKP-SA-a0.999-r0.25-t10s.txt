@@ -1,0 +1,57 @@
+Instance: ep3-20-D-R-90
+Solver: simulated annealing (sequence decoder)
+Value model: v_i = c_i (flat)
+Boxes: 20 (20 types)
+Containers: 1 (1 types)
+
+Run started: 2026-09-11 14:24:13
+Command: 3DMHKP-SA.py --instance-files Egeblad/ep3-20-D-R-90.txt --value-mode flat --time-limit 10 --seed 42
+Time limit: 10.0 s per instance
+Runtime: 10.00 s (SA loop 10.00 s, stopped on time limit)
+Packed value (SA incumbent / lower bound): 23812.0
+Continuous-knapsack bound: 25836.3
+Gap to that bound: 7.84%
+Greedy (initial decode) value: 13192.0
+SA improvement over greedy: +10620.0
+
+SA parameters:
+  time limit: 10.0 s, max iterations: 500000000
+  T0: 6686.28 (calibrated, 93 worsening draws, target accept 80%)
+  schedule: time-based, T0 -> 323.98 over 10s (alpha unused)
+  reheat threshold: 5753 it, ceiling 1671.57 (25% of T0) decaying x0.9 per reheat
+  ep limit: 0 (unlimited), value mode: flat
+  move weights: swap=1, promote=1.5, demote=1.5, orient=1, container=0.5 (disabled: relocate, 2opt)
+  seed: 42
+
+SA statistics:
+  iterations: 81456 in 10.00 s (8146 it/s)
+  stopped on: time limit
+  accepted: 62100, rejected: 19355, no-move draws: 0, reheats: 12
+  acceptance rate: 76.2%
+  T at exit: 524.556
+  last improvement: iteration 60514 at 7.5 s, 75% into the run
+  verification: ok
+
+Boxes packed: 17 / 20
+Volume utilization: 420843 / 500094 = 84.2%
+
+Container 0 (type 1, 63x63x126): 17 boxes, value 23812.0, utilization 84.2%
+
+Placements (box, type, container, position, oriented dims):
+  box    0 type 1 -> container 0 pos (62, 0, 0) dims (1, 30, 19)
+  box    1 type 2 -> container 0 pos (25, 0, 91) dims (36, 48, 35)
+  box    2 type 3 -> container 0 pos (0, 0, 50) dims (36, 40, 41)
+  box    3 type 4 -> container 0 pos (0, 0, 0) dims (39, 39, 50)
+  box    4 type 5 -> container 0 pos (39, 48, 19) dims (22, 14, 50)
+  box    5 type 6 -> container 0 pos (39, 48, 69) dims (13, 11, 49)
+  box    6 type 7 -> container 0 pos (0, 39, 0) dims (38, 21, 46)
+  box    7 type 8 -> container 0 pos (59, 30, 0) dims (4, 2, 38)
+  box    8 type 9 -> container 0 pos (59, 0, 0) dims (3, 30, 21)
+  box    9 type 10 -> container 0 pos (39, 50, 0) dims (13, 6, 19)
+  box   10 type 11 -> container 0 pos (0, 40, 50) dims (31, 17, 41)
+  box   11 type 12 -> container 0 pos (39, 0, 62) dims (21, 45, 28)
+  box   12 type 13 -> container 0 pos (39, 0, 19) dims (20, 48, 43)
+  box   14 type 15 -> container 0 pos (25, 48, 91) dims (14, 15, 34)
+  box   15 type 16 -> container 0 pos (0, 0, 91) dims (25, 39, 31)
+  box   16 type 17 -> container 0 pos (0, 39, 91) dims (25, 24, 27)
+  box   19 type 20 -> container 0 pos (39, 0, 0) dims (20, 50, 19)

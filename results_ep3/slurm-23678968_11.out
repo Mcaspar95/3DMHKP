@@ -1,0 +1,284 @@
+============================================================
+  Solver:     3DMHKP-SA.py
+  Instance:   /home/mcaspar/3DMHKP/Egeblad/ep3-20-F-R-90.txt
+  Value mode: flat
+  Timelimit:  300s
+  Reports:    /home/mcaspar/3DMHKP/results_3DMHKP_ep3
+  CPUs:       1
+============================================================
+======================================================================
+3DMHKP Simulated Annealing (random single-neighbour, sequence decoder)
+SA params: T0=5% of f(S_0), alpha=0.999, T_min=0.001, reheat_threshold=5753, reheat_fraction=0.25
+Move weights: {'relocate': 0.0, 'swap': 1.0, '2opt': 0.0, 'promote': 1.5, 'demote': 1.5, 'orient': 1.0, 'container': 0.5}
+Time limit: 300.0s per instance, seed 2066278583
+======================================================================
+
+======================================================================
+ep3-20-F-R-90: 20 boxes (20 types), 1 containers (1 types)
+  continuous-knapsack bound: 192947.5
+  initial (value-density) decode: value 145956.0 (12/20 boxes)
+  T0 = 7297.8 (5% of the initial objective)
+    [iter 5] *** NEW BEST: value 149270.0, boxes 13/20, T=7268.7, elapsed=0.0s
+    [iter 10] *** NEW BEST: value 151060.0, boxes 14/20, T=7232.4, elapsed=0.0s
+    [iter 52] *** NEW BEST: value 158775.0, boxes 14/20, T=6934.8, elapsed=0.0s
+    [iter 73] *** NEW BEST: value 161777.0, boxes 14/20, T=6790.6, elapsed=0.0s
+    [iter 440] *** NEW BEST: value 161844.0, boxes 14/20, T=4703.7, elapsed=0.1s
+    [iter 524] *** NEW BEST: value 165140.0, boxes 15/20, T=4324.6, elapsed=0.1s
+    [iter 626] *** NEW BEST: value 168142.0, boxes 15/20, T=3905.0, elapsed=0.2s
+    [iter 960] *** NEW BEST: value 168808.0, boxes 15/20, T=2795.7, elapsed=0.2s
+    [iter 1175] *** NEW BEST: value 168942.0, boxes 15/20, T=2254.6, elapsed=0.3s
+    [iter 3340] *** NEW BEST: value 168954.0, boxes 15/20, T=258.4, elapsed=0.7s
+    [iter 5979] *** NEW BEST: value 171386.0, boxes 15/20, T=18.4, elapsed=1.2s
+    [iter 8906] *** NEW BEST: value 172182.0, boxes 15/20, T=1.0, elapsed=1.9s
+    [iter 14659] reheat + diversify: T=1824.5, value=138721.0
+    [iter 20412] reheat + diversify: T=1824.5, value=111737.0
+    [iter 26165] reheat + diversify: T=1824.5, value=161858.0
+    [iter 31918] reheat + diversify: T=1824.5, value=145236.0
+    [iter 37671] reheat + diversify: T=1824.5, value=142528.0
+    [iter 38173] *** NEW BEST: value 174355.0, boxes 15/20, T=1105.2, elapsed=8.0s
+    [iter 43926] reheat + diversify: T=1824.5, value=149717.0
+    [iter 49679] reheat + diversify: T=1824.5, value=171412.0
+    [iter 55432] reheat + diversify: T=1824.5, value=130500.0
+    [iter 61185] reheat + diversify: T=1824.5, value=172182.0
+    [iter 66938] reheat + diversify: T=1824.5, value=142381.0
+    [iter 72691] reheat + diversify: T=1824.5, value=125738.0
+    [iter 74794] *** NEW BEST: value 176172.0, boxes 16/20, T=222.7, elapsed=16.0s
+    [iter 80547] reheat + diversify: T=1824.5, value=165876.0
+    [iter 86300] reheat + diversify: T=1824.5, value=153893.0
+    [iter 92053] reheat + diversify: T=1824.5, value=158737.0
+    [iter 97806] reheat + diversify: T=1824.5, value=129751.0
+    [iter 103559] reheat + diversify: T=1824.5, value=126025.0
+    [iter 109312] reheat + diversify: T=1824.5, value=138834.0
+    [iter 115065] reheat + diversify: T=1824.5, value=118034.0
+    [iter 118162] *** NEW BEST: value 178438.0, boxes 16/20, T=82.4, elapsed=26.3s
+    [iter 118174] *** NEW BEST: value 178480.0, boxes 16/20, T=81.4, elapsed=26.4s
+    [iter 123927] reheat + diversify: T=1824.5, value=139729.0
+    [iter 129680] reheat + diversify: T=1824.5, value=161439.0
+    [iter 135433] reheat + diversify: T=1824.5, value=137705.0
+    [iter 141186] reheat + diversify: T=1824.5, value=141517.0
+    [iter 146939] reheat + diversify: T=1824.5, value=128389.0
+    [iter 152692] reheat + diversify: T=1824.5, value=137580.0
+    [iter 158445] reheat + diversify: T=1824.5, value=138142.0
+    [iter 164198] reheat + diversify: T=1824.5, value=161342.0
+    [iter 169951] reheat + diversify: T=1824.5, value=152917.0
+    [iter 175704] reheat + diversify: T=1824.5, value=172182.0
+    [iter 181457] reheat + diversify: T=1824.5, value=160960.0
+    [iter 187210] reheat + diversify: T=1824.5, value=154403.0
+    [iter 192963] reheat + diversify: T=1824.5, value=167219.0
+    [iter 198716] reheat + diversify: T=1824.5, value=143513.0
+    [iter 204469] reheat + diversify: T=1824.5, value=132503.0
+    [iter 210222] reheat + diversify: T=1824.5, value=148899.0
+    [iter 215975] reheat + diversify: T=1824.5, value=151286.0
+    [iter 221728] reheat + diversify: T=1824.5, value=121026.0
+    [iter 227481] reheat + diversify: T=1824.5, value=137492.0
+    [iter 233234] reheat + diversify: T=1824.5, value=123729.0
+    [iter 238987] reheat + diversify: T=1824.5, value=141846.0
+    [iter 244740] reheat + diversify: T=1824.5, value=137823.0
+    [iter 250493] reheat + diversify: T=1824.5, value=139984.0
+    [iter 256246] reheat + diversify: T=1824.5, value=146037.0
+    [iter 261999] reheat + diversify: T=1824.5, value=144794.0
+    [iter 267752] reheat + diversify: T=1824.5, value=143224.0
+    [iter 273505] reheat + diversify: T=1824.5, value=155305.0
+    [iter 279258] reheat + diversify: T=1824.5, value=136567.0
+    [iter 285011] reheat + diversify: T=1824.5, value=137352.0
+    [iter 290764] reheat + diversify: T=1824.5, value=172182.0
+    [iter 296517] reheat + diversify: T=1824.5, value=153212.0
+    [iter 302270] reheat + diversify: T=1824.5, value=161342.0
+    [iter 308023] reheat + diversify: T=1824.5, value=145083.0
+    [iter 313776] reheat + diversify: T=1824.5, value=159592.0
+    [iter 319529] reheat + diversify: T=1824.5, value=161858.0
+    [iter 325282] reheat + diversify: T=1824.5, value=161874.0
+    [iter 331035] reheat + diversify: T=1824.5, value=123503.0
+    [iter 336788] reheat + diversify: T=1824.5, value=158910.0
+    [iter 342541] reheat + diversify: T=1824.5, value=157466.0
+    [iter 348294] reheat + diversify: T=1824.5, value=144817.0
+    [iter 354047] reheat + diversify: T=1824.5, value=105994.0
+    [iter 359800] reheat + diversify: T=1824.5, value=132842.0
+    [iter 365553] reheat + diversify: T=1824.5, value=148642.0
+    [iter 371306] reheat + diversify: T=1824.5, value=145176.0
+    [iter 377059] reheat + diversify: T=1824.5, value=153200.0
+    [iter 382812] reheat + diversify: T=1824.5, value=148511.0
+    [iter 388565] reheat + diversify: T=1824.5, value=168792.0
+    [iter 394318] reheat + diversify: T=1824.5, value=132999.0
+    [iter 400071] reheat + diversify: T=1824.5, value=122502.0
+    [iter 405824] reheat + diversify: T=1824.5, value=165714.0
+    [iter 411577] reheat + diversify: T=1824.5, value=138410.0
+    [iter 417330] reheat + diversify: T=1824.5, value=150369.0
+    [iter 423083] reheat + diversify: T=1824.5, value=106017.0
+    [iter 428836] reheat + diversify: T=1824.5, value=116206.0
+    [iter 434589] reheat + diversify: T=1824.5, value=116822.0
+    [iter 440342] reheat + diversify: T=1824.5, value=119708.0
+    [iter 446095] reheat + diversify: T=1824.5, value=135745.0
+    [iter 451848] reheat + diversify: T=1824.5, value=136439.0
+    [iter 457601] reheat + diversify: T=1824.5, value=124929.0
+    [iter 463354] reheat + diversify: T=1824.5, value=144336.0
+    [iter 469107] reheat + diversify: T=1824.5, value=151944.0
+    [iter 474860] reheat + diversify: T=1824.5, value=148236.0
+    [iter 480613] reheat + diversify: T=1824.5, value=149043.0
+    [iter 486366] reheat + diversify: T=1824.5, value=140337.0
+    [iter 492119] reheat + diversify: T=1824.5, value=128977.0
+    [iter 497872] reheat + diversify: T=1824.5, value=154712.0
+    [iter 503625] reheat + diversify: T=1824.5, value=145148.0
+    [iter 509378] reheat + diversify: T=1824.5, value=147473.0
+    [iter 515131] reheat + diversify: T=1824.5, value=137729.0
+    [iter 520884] reheat + diversify: T=1824.5, value=133041.0
+    [iter 526637] reheat + diversify: T=1824.5, value=121421.0
+    [iter 532390] reheat + diversify: T=1824.5, value=128069.0
+    [iter 538143] reheat + diversify: T=1824.5, value=152933.0
+    [iter 543896] reheat + diversify: T=1824.5, value=169104.0
+    [iter 549649] reheat + diversify: T=1824.5, value=154549.0
+    [iter 555402] reheat + diversify: T=1824.5, value=155714.0
+    [iter 561155] reheat + diversify: T=1824.5, value=142485.0
+    [iter 566908] reheat + diversify: T=1824.5, value=138653.0
+    [iter 572661] reheat + diversify: T=1824.5, value=168808.0
+    [iter 578414] reheat + diversify: T=1824.5, value=147765.0
+    [iter 584167] reheat + diversify: T=1824.5, value=146291.0
+    [iter 589920] reheat + diversify: T=1824.5, value=131078.0
+    [iter 595673] reheat + diversify: T=1824.5, value=138823.0
+    [iter 601426] reheat + diversify: T=1824.5, value=125743.0
+    [iter 607179] reheat + diversify: T=1824.5, value=140505.0
+    [iter 612932] reheat + diversify: T=1824.5, value=139471.0
+    [iter 618685] reheat + diversify: T=1824.5, value=140450.0
+    [iter 624438] reheat + diversify: T=1824.5, value=133144.0
+    [iter 630191] reheat + diversify: T=1824.5, value=138280.0
+    [iter 635944] reheat + diversify: T=1824.5, value=125125.0
+    [iter 641697] reheat + diversify: T=1824.5, value=160445.0
+    [iter 647450] reheat + diversify: T=1824.5, value=141077.0
+    [iter 653203] reheat + diversify: T=1824.5, value=162536.0
+    [iter 658956] reheat + diversify: T=1824.5, value=143826.0
+    [iter 664709] reheat + diversify: T=1824.5, value=143077.0
+    [iter 670462] reheat + diversify: T=1824.5, value=165375.0
+    [iter 676215] reheat + diversify: T=1824.5, value=151628.0
+    [iter 681968] reheat + diversify: T=1824.5, value=158268.0
+    [iter 687721] reheat + diversify: T=1824.5, value=154500.0
+    [iter 693474] reheat + diversify: T=1824.5, value=137459.0
+    [iter 699227] reheat + diversify: T=1824.5, value=120282.0
+    [iter 704980] reheat + diversify: T=1824.5, value=126561.0
+    [iter 710733] reheat + diversify: T=1824.5, value=143970.0
+    [iter 716486] reheat + diversify: T=1824.5, value=140776.0
+    [iter 722239] reheat + diversify: T=1824.5, value=133370.0
+    [iter 727992] reheat + diversify: T=1824.5, value=148307.0
+    [iter 733745] reheat + diversify: T=1824.5, value=160268.0
+    [iter 739498] reheat + diversify: T=1824.5, value=152013.0
+    [iter 745251] reheat + diversify: T=1824.5, value=165560.0
+    [iter 751004] reheat + diversify: T=1824.5, value=110445.0
+    [iter 756757] reheat + diversify: T=1824.5, value=139265.0
+    [iter 762510] reheat + diversify: T=1824.5, value=131817.0
+    [iter 768263] reheat + diversify: T=1824.5, value=139004.0
+    [iter 774016] reheat + diversify: T=1824.5, value=151406.0
+    [iter 779769] reheat + diversify: T=1824.5, value=161570.0
+    [iter 785522] reheat + diversify: T=1824.5, value=126005.0
+    [iter 791275] reheat + diversify: T=1824.5, value=119363.0
+    [iter 797028] reheat + diversify: T=1824.5, value=120218.0
+    [iter 802781] reheat + diversify: T=1824.5, value=131179.0
+    [iter 808534] reheat + diversify: T=1824.5, value=152422.0
+    [iter 814287] reheat + diversify: T=1824.5, value=133919.0
+    [iter 820040] reheat + diversify: T=1824.5, value=116429.0
+    [iter 825793] reheat + diversify: T=1824.5, value=108677.0
+    [iter 831546] reheat + diversify: T=1824.5, value=98938.0
+    [iter 837299] reheat + diversify: T=1824.5, value=148672.0
+    [iter 843052] reheat + diversify: T=1824.5, value=146418.0
+    [iter 848805] reheat + diversify: T=1824.5, value=138027.0
+    [iter 854558] reheat + diversify: T=1824.5, value=161709.0
+    [iter 860311] reheat + diversify: T=1824.5, value=146605.0
+    [iter 866064] reheat + diversify: T=1824.5, value=144477.0
+    [iter 871817] reheat + diversify: T=1824.5, value=165730.0
+    [iter 877570] reheat + diversify: T=1824.5, value=160092.0
+    [iter 883323] reheat + diversify: T=1824.5, value=161570.0
+    [iter 889076] reheat + diversify: T=1824.5, value=122113.0
+    [iter 894829] reheat + diversify: T=1824.5, value=155361.0
+    [iter 900582] reheat + diversify: T=1824.5, value=145721.0
+    [iter 906335] reheat + diversify: T=1824.5, value=155241.0
+    [iter 912088] reheat + diversify: T=1824.5, value=141285.0
+    [iter 917841] reheat + diversify: T=1824.5, value=143258.0
+    [iter 923594] reheat + diversify: T=1824.5, value=124655.0
+    [iter 929347] reheat + diversify: T=1824.5, value=135287.0
+    [iter 935100] reheat + diversify: T=1824.5, value=139768.0
+    [iter 940853] reheat + diversify: T=1824.5, value=159034.0
+    [iter 946606] reheat + diversify: T=1824.5, value=147158.0
+    [iter 952359] reheat + diversify: T=1824.5, value=141693.0
+    [iter 958112] reheat + diversify: T=1824.5, value=154549.0
+    [iter 963865] reheat + diversify: T=1824.5, value=168057.0
+    [iter 969618] reheat + diversify: T=1824.5, value=154498.0
+    [iter 975371] reheat + diversify: T=1824.5, value=156882.0
+    [iter 981124] reheat + diversify: T=1824.5, value=164709.0
+    [iter 986877] reheat + diversify: T=1824.5, value=157102.0
+    [iter 992630] reheat + diversify: T=1824.5, value=145236.0
+    [iter 998383] reheat + diversify: T=1824.5, value=166660.0
+    [iter 1004136] reheat + diversify: T=1824.5, value=161832.0
+    [iter 1009889] reheat + diversify: T=1824.5, value=130847.0
+    [iter 1015642] reheat + diversify: T=1824.5, value=165730.0
+    [iter 1021395] reheat + diversify: T=1824.5, value=133750.0
+    [iter 1027148] reheat + diversify: T=1824.5, value=160268.0
+    [iter 1032901] reheat + diversify: T=1824.5, value=152234.0
+    [iter 1038654] reheat + diversify: T=1824.5, value=172047.0
+    [iter 1044407] reheat + diversify: T=1824.5, value=172182.0
+    [iter 1050160] reheat + diversify: T=1824.5, value=123046.0
+    [iter 1055913] reheat + diversify: T=1824.5, value=129055.0
+    [iter 1061666] reheat + diversify: T=1824.5, value=132437.0
+    [iter 1067419] reheat + diversify: T=1824.5, value=146774.0
+    [iter 1073172] reheat + diversify: T=1824.5, value=142916.0
+    [iter 1078925] reheat + diversify: T=1824.5, value=158656.0
+    [iter 1084678] reheat + diversify: T=1824.5, value=168938.0
+    [iter 1090431] reheat + diversify: T=1824.5, value=109455.0
+    [iter 1096184] reheat + diversify: T=1824.5, value=146768.0
+    [iter 1101937] reheat + diversify: T=1824.5, value=163112.0
+    [iter 1107690] reheat + diversify: T=1824.5, value=165890.0
+    [iter 1113443] reheat + diversify: T=1824.5, value=137703.0
+    [iter 1119196] reheat + diversify: T=1824.5, value=126434.0
+    [iter 1124949] reheat + diversify: T=1824.5, value=172182.0
+    [iter 1130702] reheat + diversify: T=1824.5, value=162686.0
+    [iter 1136455] reheat + diversify: T=1824.5, value=124035.0
+    [iter 1142208] reheat + diversify: T=1824.5, value=103125.0
+    [iter 1147961] reheat + diversify: T=1824.5, value=158624.0
+    [iter 1153714] reheat + diversify: T=1824.5, value=122815.0
+    [iter 1159467] reheat + diversify: T=1824.5, value=134685.0
+    [iter 1165220] reheat + diversify: T=1824.5, value=132431.0
+    [iter 1170973] reheat + diversify: T=1824.5, value=126099.0
+    [iter 1176726] reheat + diversify: T=1824.5, value=156315.0
+    [iter 1182479] reheat + diversify: T=1824.5, value=136668.0
+    [iter 1188232] reheat + diversify: T=1824.5, value=168156.0
+    [iter 1193985] reheat + diversify: T=1824.5, value=143568.0
+    [iter 1199738] reheat + diversify: T=1824.5, value=175360.0
+    [iter 1205491] reheat + diversify: T=1824.5, value=138499.0
+    [iter 1211244] reheat + diversify: T=1824.5, value=137154.0
+    [iter 1216997] reheat + diversify: T=1824.5, value=135876.0
+    [iter 1222750] reheat + diversify: T=1824.5, value=143025.0
+    [iter 1228503] reheat + diversify: T=1824.5, value=140834.0
+    [iter 1234256] reheat + diversify: T=1824.5, value=132484.0
+    [iter 1240009] reheat + diversify: T=1824.5, value=135216.0
+    [iter 1245762] reheat + diversify: T=1824.5, value=147448.0
+    [iter 1251515] reheat + diversify: T=1824.5, value=116462.0
+    [iter 1257268] reheat + diversify: T=1824.5, value=120514.0
+    [iter 1263021] reheat + diversify: T=1824.5, value=128243.0
+    [iter 1268774] reheat + diversify: T=1824.5, value=136710.0
+    [iter 1274527] reheat + diversify: T=1824.5, value=136229.0
+    [iter 1280280] reheat + diversify: T=1824.5, value=133092.0
+    [iter 1286033] reheat + diversify: T=1824.5, value=123684.0
+    [iter 1291786] reheat + diversify: T=1824.5, value=126652.0
+    [iter 1297539] reheat + diversify: T=1824.5, value=119384.0
+    [iter 1303292] reheat + diversify: T=1824.5, value=152818.0
+    [iter 1309045] reheat + diversify: T=1824.5, value=168791.0
+    [iter 1314798] reheat + diversify: T=1824.5, value=108036.0
+    [iter 1320551] reheat + diversify: T=1824.5, value=114789.0
+    [iter 1326304] reheat + diversify: T=1824.5, value=156602.0
+    [iter 1332057] reheat + diversify: T=1824.5, value=145671.0
+    [iter 1337810] reheat + diversify: T=1824.5, value=161570.0
+    [iter 1343563] reheat + diversify: T=1824.5, value=145644.0
+    [iter 1349316] reheat + diversify: T=1824.5, value=161740.0
+  time limit reached at iteration 1352040
+  SA finished: 1352040 iterations in 300.0s (4507 it/s), accepted 470756 (34.8%), rejected 881283, no-move draws 0, reheats 232
+  SA: value 178480.0 (greedy 145956.0, +32524.0), bound 192947.5, gap 7.50%, util 83.8%
+  report -> /home/mcaspar/3DMHKP/results_3DMHKP_ep3/ep3-20-F-R-90-3DMHKP-SA-a0.999-r0.25-t300s.txt
+
+================================================================================================
+SUMMARY
+================================================================================================
+instance      boxes  packed       greedy     SA value        bound      gap    util    iters    time
+------------------------------------------------------------------------------------------------
+ep3-20-F-R-90     20      16     145956.0     178480.0     192947.5    7.5%   83.8%  1352040  300.0s
+------------------------------------------------------------------------------------------------
+proven optimal (value reaches the upper bound): 0/1
+improved over greedy: 1/1 (total value 145956.0 -> 178480.0, +22.28%)
+mean gap to continuous-knapsack bound: 7.5%
+mean volume utilization: 83.8%
