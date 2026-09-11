@@ -1017,7 +1017,7 @@ def report_name(inst_name, solver, args):
 
 
 def write_report(path, inst, placement, result):
-    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
     stats = summarize(inst, placement)
     total_container_vol = sum(c["vol"] for c in inst["containers"])
     packed_vol = sum(inst["boxes"][j]["vol"] for j in placement)
@@ -1026,7 +1026,9 @@ def write_report(path, inst, placement, result):
     with open(path, "w") as f:
         f.write(f"Instance: {inst['name']}\n")
         f.write("Solver: simulated annealing (sequence decoder)\n")
-        f.write(f"Value model: v_i = c_i * volume_i ({inst['value_mode']})\n")
+        formula = ("v_i = c_i" if inst["value_mode"] == "flat"
+                   else "v_i = c_i * volume_i")
+        f.write(f"Value model: {formula} ({inst['value_mode']})\n")
         f.write(f"Boxes: {len(inst['boxes'])} ({len(inst['box_types'])} types)\n")
         f.write(f"Containers: {len(inst['containers'])} "
                 f"({len(inst['container_types'])} types)\n\n")
@@ -1203,8 +1205,9 @@ def solve_instance(path, args):
           f"util {result['utilization']:.1%}")
 
     if not args.no_report:
-        RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-        out = RESULTS_DIR / report_name(inst["name"], "3DMHKP-SA", args)
+        results_dir = getattr(args, "results_dir", None) or RESULTS_DIR
+        results_dir.mkdir(parents=True, exist_ok=True)
+        out = results_dir / report_name(inst["name"], "3DMHKP-SA", args)
         write_report(out, inst, placement, result)
         print(f"  report -> {out}")
 
@@ -1262,6 +1265,11 @@ def main(argv=None):
                              "t1800s.txt), so a tag is only needed to separate "
                              "runs that differ in something else, such as the "
                              "seed or the move weights")
+    parser.add_argument("--results-dir", type=Path, default=RESULTS_DIR,
+                        help=f"directory for the per-instance reports "
+                             f"(default: {RESULTS_DIR.name}). Give a separate "
+                             f"directory to a run over a different instance "
+                             f"set, so its reports stay together.")
     parser.add_argument("--no-report", action="store_true",
                         help="do not write per-instance report files")
     parser.add_argument("--quiet", action="store_true",

@@ -702,7 +702,9 @@ def write_report(path, inst, placement, result):
 
     with open(path, "w") as f:
         f.write(f"Instance: {inst['name']}\n")
-        f.write(f"Value model: v_i = c_i * volume_i ({inst['value_mode']})\n")
+        formula = ("v_i = c_i" if inst["value_mode"] == "flat"
+                   else "v_i = c_i * volume_i")
+        f.write(f"Value model: {formula} ({inst['value_mode']})\n")
         f.write(f"Boxes: {len(inst['boxes'])} "
                 f"({len(inst['box_types'])} types)\n")
         f.write(f"Containers: {len(inst['containers'])} "
