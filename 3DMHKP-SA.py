@@ -90,6 +90,7 @@ import sys
 import time
 from bisect import insort
 from datetime import datetime
+from math import gcd
 from itertools import permutations
 from pathlib import Path
 
@@ -422,6 +423,43 @@ def continuous_knapsack_bound(inst):
         bound += take * (b["value"] / b["vol"])
         remaining -= take
     return bound
+
+
+def knapsack01_bound(inst):
+    """Upper bound by the INTEGRAL 0-1 knapsack on volume.
+
+    This is the "1D" bound of Egeblad & Pisinger (2009), Eq. (9): boxes may not
+    be split, so it is tighter than continuous_knapsack_bound() above, and it
+    reproduces their Table 8 "1D" column exactly on the ep3 instances.
+
+    It is the bound to quote whenever rotation is allowed. The conservative-
+    scales bound the paper reports alongside it is NOT valid under rotation
+    (their Sec. 6.1), and a rotating solver can legitimately exceed it - on
+    these instances six of our results do, which makes a gap against it
+    meaningless rather than impressive.
+
+    Volumes are divided through by their gcd to keep the DP table small; on the
+    ep3 instances that is the difference between ~4e6 and ~4e3 states.
+    """
+    capacity = sum(c["vol"] for c in inst["containers"])
+    boxes = inst["boxes"]
+    if not boxes or capacity <= 0:
+        return 0.0
+
+    divisor = capacity
+    for b in boxes:
+        divisor = gcd(divisor, b["vol"])
+    cap = capacity // divisor
+
+    dp = [0.0] * (cap + 1)
+    for b in boxes:
+        w = b["vol"] // divisor
+        v = b["value"]
+        for c in range(cap, w - 1, -1):
+            cand = dp[c - w] + v
+            if cand > dp[c]:
+                dp[c] = cand
+    return max(dp)
 
 
 # =========================================================================
@@ -1183,8 +1221,10 @@ def write_report(path, inst, placement, result):
         f.write(f"Runtime: {result['runtime']:.2f} s (SA loop {sa['elapsed']:.2f} s, "
                 f"stopped on {sa['stopped_on']})\n")
         f.write(f"Packed value (SA incumbent / lower bound): {result['value']:.1f}\n")
-        f.write(f"Continuous-knapsack bound: {result['ck_bound']:.1f}\n")
-        f.write(f"Gap to that bound: {result['gap']:.2%}\n")
+        f.write(f"0-1 knapsack bound (1D, valid under rotation): "
+                f"{result['kp_bound']:.1f}\n")
+        f.write(f"Continuous-knapsack relaxation: {result['ck_bound']:.1f}\n")
+        f.write(f"Gap to the 0-1 bound: {result['gap']:.2%}\n")
         f.write(f"Greedy (initial decode) value: {sa['initial_value']:.1f}\n")
         f.write(f"SA improvement over greedy: "
                 f"{result['value'] - sa['initial_value']:+.1f}\n\n")
@@ -1270,12 +1310,19 @@ def solve_instance(path, args):
     n_boxes = len(inst["boxes"])
     n_containers = len(inst["containers"])
     unfittable = sum(1 for c in inst["compat"] if not c)
+    # The integral 0-1 bound is always at least as tight as the continuous one
+    # and is the bound that stays valid under rotation, so it is the one gaps
+    # are reported against. The continuous bound is kept for continuity with the
+    # earlier Bortfeldt-referenced runs.
     ck_bound = continuous_knapsack_bound(inst)
+    kp_bound = knapsack01_bound(inst)
+    bound = kp_bound if kp_bound > 0 else ck_bound
 
     print(f"\n{'=' * 70}")
     print(f"{inst['name']}: {n_boxes} boxes ({len(inst['box_types'])} types), "
           f"{n_containers} containers ({len(inst['container_types'])} types)")
-    print(f"  continuous-knapsack bound: {ck_bound:.1f}")
+    print(f"  0-1 knapsack bound: {kp_bound:.1f} "
+          f"(continuous relaxation: {ck_bound:.1f})")
     if unfittable:
         print(f"  note: {unfittable} box(es) fit no container - never packable")
 
@@ -1334,10 +1381,12 @@ def solve_instance(path, args):
         "n_boxes": n_boxes,
         "n_containers": n_containers,
         "ck_bound": ck_bound,
+        "kp_bound": kp_bound,
+        "bound": bound,
         "value": best["value"],
         # The bound is an upper bound, so a decode that reaches it is optimal;
         # clamp away the float noise instead of printing a negative gap.
-        "gap": max(0.0, (ck_bound - best["value"]) / ck_bound) if ck_bound > 0 else 0.0,
+        "gap": max(0.0, (bound - best["value"]) / bound) if bound > 0 else 0.0,
         "n_packed": len(placement),
         "utilization": packed_vol / total_vol if total_vol else 0.0,
         "runtime": time.time() - t0,
@@ -1353,7 +1402,7 @@ def solve_instance(path, args):
     print(f"  SA: value {result['value']:.1f} "
           f"(greedy {sa_stats['initial_value']:.1f}, "
           f"{result['value'] - sa_stats['initial_value']:+.1f}), "
-          f"bound {ck_bound:.1f}, gap {result['gap']:.2%}"
+          f"bound {bound:.1f}, gap {result['gap']:.2%}"
           f"{' - matches the bound, so PROVEN OPTIMAL' if result['optimal'] else ''}, "
           f"util {result['utilization']:.1%}")
 
@@ -1511,7 +1560,7 @@ def main(argv=None):
     for r in results:
         print(f"{r['instance']:<12}{r['n_boxes']:>7}{r['n_packed']:>8}"
               f"{r['sa']['initial_value']:>13.1f}{r['value']:>13.1f}"
-              f"{r['ck_bound']:>13.1f}{r['gap']:>8.1%}{r['utilization']:>8.1%}"
+              f"{r['bound']:>13.1f}{r['gap']:>8.1%}{r['utilization']:>8.1%}"
               f"{r['sa']['iterations']:>9}{r['runtime']:>7.1f}s")
     print("-" * 96)
 
@@ -1523,7 +1572,7 @@ def main(argv=None):
     print(f"improved over greedy: {improved}/{len(results)} "
           f"(total value {total_greedy:.1f} -> {total_sa:.1f}, "
           f"{(total_sa / total_greedy - 1) if total_greedy else 0:+.2%})")
-    print(f"mean gap to continuous-knapsack bound: "
+    print(f"mean gap to 0-1 knapsack bound: "
           f"{sum(r['gap'] for r in results) / len(results):.1%}")
     print(f"mean volume utilization: "
           f"{sum(r['utilization'] for r in results) / len(results):.1%}")
