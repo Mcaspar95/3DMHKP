@@ -233,6 +233,30 @@ def fits(box_dims_oriented, container_dims):
     return dx <= L and dy <= W and dz <= H
 
 
+def _warn_on_value_mode(path, value_mode):
+    """Warn when an instance file declares a value mode other than the one used.
+
+    Converted Egeblad ep3 instances carry explicit profits in the coefficient
+    column and so must run under --value-mode flat; under the default volume
+    mode the objective silently becomes profit * volume, which is a different
+    problem. Such files mark themselves with a "#! value-mode: flat" line.
+    """
+    declared = None
+    with open(path) as f:
+        for raw in f:
+            line = raw.strip()
+            if line.startswith("#!") and "value-mode:" in line:
+                declared = line.split("value-mode:", 1)[1].strip()
+                break
+            if line and not line.startswith("#"):
+                break
+    if declared and declared != value_mode:
+        print(f"  WARNING: {Path(path).name} declares value-mode {declared!r} "
+              f"but is being solved with {value_mode!r}; pass "
+              f"--value-mode {declared} for this instance's intended objective.",
+              file=sys.stderr)
+
+
 def build_instance(path, value_mode="volume"):
     """Expand box/container types into individual items and containers.
 
@@ -1092,6 +1116,7 @@ def write_report(path, inst, placement, result):
 # =========================================================================
 def solve_instance(path, args):
     inst = build_instance(path, value_mode=args.value_mode)
+    _warn_on_value_mode(path, args.value_mode)
 
     n_boxes = len(inst["boxes"])
     n_containers = len(inst["containers"])
@@ -1195,6 +1220,13 @@ def main(argv=None):
                         help="instance numbers to solve (default: all 16)")
     parser.add_argument("--instance-dir", type=Path, default=INSTANCE_DIR,
                         help=f"instance directory (default: {INSTANCE_DIR})")
+    parser.add_argument("--instance-files", nargs="*", type=Path, default=None,
+                        metavar="PATH",
+                        help="explicit instance files to solve, instead of the "
+                             "instanceNN.txt numbering of --instances. Accepts "
+                             "any file in the BOXES/CONTAINERS format, e.g. the "
+                             "converted Egeblad set: --instance-files "
+                             "Egeblad/*.txt --value-mode flat")
     parser.add_argument("--time-limit", type=float, default=TIME_LIMIT,
                         help=f"SA seconds per instance (default: {TIME_LIMIT})")
     parser.add_argument("--max-iterations", type=int, default=MAX_ITERATIONS,
@@ -1249,14 +1281,30 @@ def main(argv=None):
     if argv is not None:
         args.command += f"   [launched by: {shlex.join(sys.argv)}]"
 
-    numbers = args.instances if args.instances else list(range(1, 17))
-    paths = []
-    for n in numbers:
-        p = args.instance_dir / f"instance{n:02d}.txt"
-        if not p.exists():
-            print(f"missing instance file: {p}", file=sys.stderr)
-            return 1
-        paths.append(p)
+    if args.instance_files:
+        paths = []
+        for p in args.instance_files:
+            # A shell that cannot expand the glob (or a quoted pattern) hands
+            # us the pattern itself; expand it here so both forms work.
+            matches = sorted(Path().glob(str(p))) if any(
+                ch in str(p) for ch in "*?[") else [p]
+            if not matches:
+                print(f"no instance file matches: {p}", file=sys.stderr)
+                return 1
+            for m in matches:
+                if not m.exists():
+                    print(f"missing instance file: {m}", file=sys.stderr)
+                    return 1
+                paths.append(m)
+    else:
+        numbers = args.instances if args.instances else list(range(1, 17))
+        paths = []
+        for n in numbers:
+            p = args.instance_dir / f"instance{n:02d}.txt"
+            if not p.exists():
+                print(f"missing instance file: {p}", file=sys.stderr)
+                return 1
+            paths.append(p)
 
     reheat = (args.reheat_threshold if args.reheat_threshold is not None
               else default_reheat_threshold(args.alpha))
