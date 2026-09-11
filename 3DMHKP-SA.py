@@ -85,6 +85,7 @@ import argparse
 import math
 import random
 import shlex
+import statistics
 import sys
 import time
 from bisect import insort
@@ -140,6 +141,40 @@ REHEAT_FRACTION = 0.25     # T is reset to REHEAT_FRACTION * T_0 on a reheat.
 # into a random walk.
 REHEAT_THRESHOLD = None    # None = max(200, 0.5 * sweep length at ALPHA)
 
+# ---- Time-based schedule (SCHEDULE = "time") -----------------------------
+# The iteration-based geometric schedule above ties the annealing curve to
+# iteration COUNT, but decode cost varies ~8x across the ep3 instances (6.4M
+# iterations on ep3-20-C-C-50 against 824k on ep3-40-C-R-90 in the same 300 s).
+# The same ALPHA therefore anneals one instance fully and another barely at all.
+# Under SCHEDULE="time" temperature follows wall-clock progress instead,
+#   T(p) = T0 * (T_MIN/T0) ** p,  p = elapsed / time_limit,
+# so every instance traverses the identical T0 -> T_MIN curve regardless of how
+# many decodes it fits into the budget, and ALPHA stops mattering.
+SCHEDULE = "time"          # "time" (wall-clock) or "iter" (legacy geometric)
+
+# T0 calibrated from the move-delta distribution rather than from f(S_0).
+# T_INIT_FRACTION * f(S_0) was mis-scaled: the objective is a SUM over packed
+# boxes while a single move perturbs only one or two of them, so 5% of the total
+# dwarfed the typical |delta| and exp(delta/T) sat near 1. Measured acceptance
+# was 60-77% for the whole run (a well-tuned SA ends at 1-5%) — a random walk.
+# Sampling worsening deltas and inverting Metropolis targets a real acceptance
+# rate: T0 = -mean|delta| / ln(TARGET_ACCEPT_INITIAL).
+CALIBRATE_T_INIT = True
+CALIBRATE_SAMPLES = 1000       # random moves drawn to estimate mean |delta|
+# 0.35 rather than the textbook 0.8: roughly half of all sampled moves decode to
+# an unchanged value on these instances (the decoder cannot distinguish many
+# reorderings) and those are admitted at any temperature, so a T0 targeting 80%
+# on the worsening moves alone leaves the walk far hotter than intended.
+TARGET_ACCEPT_INITIAL = 0.35   # acceptance the calibrated T0 aims for
+TARGET_ACCEPT_FINAL = 0.01     # acceptance T_MIN aims for, sets the floor
+
+# Each reheat returns to a LOWER ceiling than the last, so the search still
+# converges over a run with many reheats. Previously every reheat reset T to the
+# same 0.25*T0 — with 1113 reheats in a 300 s run (measured) T never fell below
+# that ceiling for the entire budget, which is why 13 of 24 runs found their
+# best solution in the first ~3 s and then improved nothing for 297 s.
+REHEAT_DECAY = 0.90        # ceiling multiplier per reheat: 0.25*T0 * DECAY**k
+
 # Relative probability of drawing each move operator per iteration. Set an entry
 # to 0 to disable that operator. These are weights, not probabilities — they are
 # normalised.
@@ -163,6 +198,49 @@ def cooling_sweep_iters(alpha, t_min=T_MIN, t_init=100.0):
 
 def default_reheat_threshold(alpha):
     return max(200, int(0.5 * cooling_sweep_iters(alpha)))
+
+
+def calibrate_t_init(sol, inst, samples=CALIBRATE_SAMPLES, ep_limit=EP_LIMIT,
+                     target_accept=TARGET_ACCEPT_INITIAL):
+    """Estimate T0 from the objective deltas this instance actually produces.
+
+    Draws random neighbours of `sol`, keeps the worsening ones, and inverts the
+    Metropolis criterion on their mean magnitude:
+
+        accept = exp(-mean|delta| / T0) = target_accept
+        =>  T0 = -mean|delta| / ln(target_accept)
+
+    The MEDIAN worsening delta is used, not the mean: the distribution is
+    right-skewed (on ep3-20-U-C-50, median 3672 against mean 4903 with a max of
+    9919), and a mean dragged up by rare large drops sets T0 high enough to
+    accept the common small ones almost always.
+
+    Returns (t_init, t_floor, n_worsening). t_floor is the same inversion at
+    TARGET_ACCEPT_FINAL and is used as the end-of-schedule temperature, so the
+    run spans a meaningful acceptance range instead of an arbitrary one.
+    Returns (None, None, 0) when no worsening draw is found, leaving the caller
+    to fall back to the f(S_0) fraction.
+    """
+    probe = copy_solution(sol)
+    base = sol["value"]
+    deltas = []
+    for _ in range(samples):
+        move = sample_random_move(probe, inst)
+        if move is None:
+            continue
+        trial = copy_solution(probe)
+        apply_move(trial, move, inst)
+        delta = evaluate(trial, inst, ep_limit=ep_limit) - base
+        if delta < 0:
+            deltas.append(-delta)
+
+    if not deltas:
+        return None, None, 0
+
+    ref = statistics.median(deltas)
+    t_init = -ref / math.log(target_accept)
+    t_floor = -ref / math.log(TARGET_ACCEPT_FINAL)
+    return t_init, t_floor, len(deltas)
 
 
 # =========================================================================
@@ -815,7 +893,8 @@ def simulated_annealing(inst, max_iterations=MAX_ITERATIONS, time_limit=TIME_LIM
                         t_init=T_INIT, alpha=ALPHA, t_min=T_MIN,
                         reheat_threshold=None, reheat_fraction=REHEAT_FRACTION,
                         t_init_fraction=T_INIT_FRACTION, ep_limit=EP_LIMIT,
-                        verbose=True):
+                        schedule=SCHEDULE, calibrate=CALIBRATE_T_INIT,
+                        reheat_decay=REHEAT_DECAY, verbose=True):
     """Simulated Annealing for the 3DMHKP over decoder inputs.
 
     Per iteration exactly ONE random neighbour is drawn (random operator +
@@ -826,10 +905,14 @@ def simulated_annealing(inst, max_iterations=MAX_ITERATIONS, time_limit=TIME_LIM
       - Improving moves (delta > 0): always accepted
       - Worsening moves: accepted with probability exp(delta / T)
     Temperature schedule:
-      - T0 = t_init_fraction * f(S_0) unless t_init is given explicitly
-      - Geometric cooling: T *= alpha every iteration (also on rejection)
-      - Reheating to reheat_fraction * t_init after prolonged stagnation,
-        combined with a diversification shake
+      - T0 calibrated from sampled worsening deltas (calibrate=True), else
+        t_init_fraction * f(S_0); an explicit t_init overrides both
+      - schedule="time": T = T0 * (T_end/T0) ** (elapsed / time_limit), so the
+        annealing curve is independent of decode throughput
+        schedule="iter": legacy geometric T *= alpha per iteration
+      - Reheating after prolonged stagnation, to a ceiling that decays by
+        reheat_decay each time so the run still converges, combined with a
+        diversification shake
     """
     t_start = time.time()
     deadline = t_start + time_limit
@@ -847,17 +930,47 @@ def simulated_annealing(inst, max_iterations=MAX_ITERATIONS, time_limit=TIME_LIM
 
     # ---- Temperature ----
     t_init_auto = t_init is None
+    t_init_source = "fixed, --t-init"
+    t_end = t_min
+    calib_samples = 0
     if t_init is None:
-        t_init = max(1e-6, t_init_fraction * current["value"])
+        if calibrate:
+            t_cal, t_floor, calib_samples = calibrate_t_init(
+                current, inst, ep_limit=ep_limit)
+            if t_cal is not None:
+                t_init = t_cal
+                # Floor the schedule at the calibrated low-acceptance point
+                # rather than at the arbitrary T_MIN, but never above it.
+                t_end = max(t_min, min(t_floor, t_init))
+                t_init_source = (f"calibrated, {calib_samples} worsening draws, "
+                                 f"target accept {TARGET_ACCEPT_INITIAL:.0%}")
+        if t_init is None:
+            t_init = max(1e-6, t_init_fraction * current["value"])
+            t_init_source = f"{t_init_fraction:.0%} of f(S_0)"
         if verbose:
-            print(f"  T0 = {t_init:.1f} "
-                  f"({t_init_fraction:.0%} of the initial objective)")
+            print(f"  T0 = {t_init:.1f} ({t_init_source})")
+            if schedule == "time":
+                print(f"  schedule: time-based, T0 -> {t_end:.2f} "
+                      f"over {time_limit:.0f}s")
     t_reheat = reheat_fraction * t_init
 
     T = t_init
     no_improve = 0
-    accepted = rejected = no_move = reheats = 0
+    accepted = rejected = no_move = reheats = neutral = 0
     iteration = 0
+    # Under the time schedule a reheat cannot just assign T: the next cooling
+    # step recomputes T from the clock and would erase it. Instead a reheat
+    # raises this floor, which decays per reheat and is released as the
+    # schedule's own curve falls back below it.
+    reheat_floor = 0.0
+    log_span = math.log(t_end / t_init) if t_init > 0 and t_end > 0 else 0.0
+
+    def schedule_temperature():
+        """Temperature from the configured schedule, before the reheat floor."""
+        if schedule == "time":
+            p = min(1.0, (time.time() - t_start) / time_limit)
+            return max(t_end, t_init * math.exp(log_span * p))
+        return None  # iteration schedule cools multiplicatively in place
     # Recorded in the report so a run stays interpretable after the fact: why
     # the loop ended, and how late in the budget the incumbent was still
     # improving (a best_time near the limit means more time would still pay).
@@ -878,11 +991,13 @@ def simulated_annealing(inst, max_iterations=MAX_ITERATIONS, time_limit=TIME_LIM
             no_move += 1
             no_improve += 1
             if no_improve >= reheat_threshold:
-                T = t_reheat
+                reheat_floor = t_reheat * (reheat_decay ** reheats)
                 _diversify(current, inst, ep_limit=ep_limit)
                 no_improve = 0
                 reheats += 1
-            T = max(T * alpha, t_min)
+            sched_t = schedule_temperature()
+            T = max(sched_t if sched_t is not None else T * alpha,
+                    reheat_floor, t_min)
             continue
 
         # ---- Decode it: every neighbour is feasible by construction ----
@@ -891,6 +1006,13 @@ def simulated_annealing(inst, max_iterations=MAX_ITERATIONS, time_limit=TIME_LIM
         delta = evaluate(trial, inst, ep_limit=ep_limit) - current["value"]
 
         # ---- Metropolis acceptance ----
+        # Neutral draws are counted apart from the Metropolis decision: on these
+        # instances ~73% of sampled moves decode to the same value (the decoder
+        # cannot tell many reorderings apart), and exp(0/T)=1 admits every one of
+        # them at any temperature. Folding them into "accepted" made the overall
+        # rate read 60-77% and hid what the schedule was really doing.
+        if delta == 0:
+            neutral += 1
         if delta > 0:
             accept = True                       # improving move — always accept
         elif T > 1e-12:
@@ -916,24 +1038,30 @@ def simulated_annealing(inst, max_iterations=MAX_ITERATIONS, time_limit=TIME_LIM
             rejected += 1
             no_improve += 1
 
-        # ---- Cool down once per iteration, whatever happened ----
-        T = max(T * alpha, t_min)
-
         # ---- Reheat + diversify on prolonged stagnation ----
+        # Raise the floor BEFORE cooling so the new ceiling takes effect this
+        # iteration rather than one iteration late.
         if no_improve >= reheat_threshold:
-            T = t_reheat
+            reheat_floor = t_reheat * (reheat_decay ** reheats)
             _diversify(current, inst, ep_limit=ep_limit)
             no_improve = 0
             reheats += 1
             if verbose:
-                print(f"    [iter {iteration}] reheat + diversify: T={T:.1f}, "
+                print(f"    [iter {iteration}] reheat + diversify: "
+                      f"ceiling={reheat_floor:.2f}, "
                       f"value={current['value']:.1f}")
+
+        # ---- Cool down once per iteration, whatever happened ----
+        sched_t = schedule_temperature()
+        T = max(sched_t if sched_t is not None else T * alpha,
+                reheat_floor, t_min)
 
     elapsed = time.time() - t_start
     stats = {
         "iterations": iteration,
         "accepted": accepted,
         "rejected": rejected,
+        "neutral": neutral,
         "no_move": no_move,
         "reheats": reheats,
         "t_init": t_init,
@@ -948,7 +1076,13 @@ def simulated_annealing(inst, max_iterations=MAX_ITERATIONS, time_limit=TIME_LIM
         "max_iterations": max_iterations,
         "t_init_auto": t_init_auto,
         "t_init_fraction": t_init_fraction,
+        "t_init_source": t_init_source,
         "t_min": t_min,
+        "t_end": t_end,
+        "schedule": schedule,
+        "calibrate": calibrate,
+        "calib_samples": calib_samples,
+        "reheat_decay": reheat_decay,
         "t_reheat": t_reheat,
         "reheat_fraction": reheat_fraction,
         "ep_limit": ep_limit,
@@ -960,10 +1094,16 @@ def simulated_annealing(inst, max_iterations=MAX_ITERATIONS, time_limit=TIME_LIM
     }
     if verbose:
         acc_rate = accepted / max(1, accepted + rejected)
+        # The rate that actually reflects the schedule: worsening moves admitted
+        # out of the worsening moves drawn, with neutral draws excluded.
+        worsening = accepted - neutral + rejected
+        worse_rate = (accepted - neutral) / max(1, worsening)
         print(f"  SA finished: {iteration} iterations in {elapsed:.1f}s "
               f"({stats['iters_per_sec']:.0f} it/s), accepted {accepted} "
-              f"({acc_rate:.1%}), rejected {rejected}, no-move draws {no_move}, "
-              f"reheats {reheats}")
+              f"({acc_rate:.1%}), rejected {rejected}, neutral {neutral} "
+              f"({neutral / max(1, iteration):.1%}), "
+              f"worsening accepted {worse_rate:.1%}, "
+              f"no-move draws {no_move}, reheats {reheats}")
     return best, stats
 
 
@@ -1055,15 +1195,22 @@ def write_report(path, inst, placement, result):
         # The cooling schedule only exists if the SA loop actually ran; under
         # --greedy-only there is no T0 to report a sweep length against.
         if sa["iterations"]:
-            sweep = cooling_sweep_iters(sa["alpha"], sa["t_min"],
-                                        max(sa["t_init"], 1e-6))
-            t0_note = (f"{sa['t_init_fraction']:.0%} of f(S_0)"
-                       if sa["t_init_auto"] else "fixed, --t-init")
-            f.write(f"  T0: {sa['t_init']:.2f} ({t0_note})\n")
-            f.write(f"  alpha: {sa['alpha']}, T_min: {sa['t_min']:g}, "
-                    f"one cooling sweep: {sweep:.0f} it\n")
-            f.write(f"  reheat threshold: {sa['reheat_threshold']} it, reheat to "
-                    f"{sa['t_reheat']:.2f} ({sa['reheat_fraction']:.0%} of T0)\n")
+            f.write(f"  T0: {sa['t_init']:.2f} "
+                    f"({sa.get('t_init_source', 'unknown')})\n")
+            if sa.get("schedule") == "time":
+                f.write(f"  schedule: time-based, T0 -> {sa['t_end']:.2f} "
+                        f"over {sa['time_limit']:.0f}s "
+                        f"(alpha unused)\n")
+            else:
+                sweep = cooling_sweep_iters(sa["alpha"], sa["t_min"],
+                                            max(sa["t_init"], 1e-6))
+                f.write(f"  schedule: iteration-based, alpha: {sa['alpha']}, "
+                        f"T_min: {sa['t_min']:g}, "
+                        f"one cooling sweep: {sweep:.0f} it\n")
+            f.write(f"  reheat threshold: {sa['reheat_threshold']} it, "
+                    f"ceiling {sa['t_reheat']:.2f} "
+                    f"({sa['reheat_fraction']:.0%} of T0) "
+                    f"decaying x{sa.get('reheat_decay', 1.0):g} per reheat\n")
         else:
             f.write("  cooling schedule: not applicable, the SA loop did not "
                     "run\n")
@@ -1145,6 +1292,9 @@ def solve_instance(path, args):
                     "max_iterations": args.max_iterations,
                     "t_init_auto": args.t_init is None,
                     "t_init_fraction": args.t_init_fraction,
+                    "t_init_source": "n/a", "t_end": args.t_min,
+                    "schedule": args.schedule, "calibrate": False,
+                    "calib_samples": 0, "reheat_decay": args.reheat_decay,
                     "t_min": args.t_min, "t_reheat": 0.0,
                     "reheat_fraction": args.reheat_fraction,
                     "ep_limit": args.ep_limit,
@@ -1164,6 +1314,9 @@ def solve_instance(path, args):
             reheat_threshold=args.reheat_threshold,
             reheat_fraction=args.reheat_fraction,
             t_init_fraction=args.t_init_fraction,
+            schedule=args.schedule,
+            calibrate=not args.no_calibrate,
+            reheat_decay=args.reheat_decay,
             ep_limit=args.ep_limit,
             verbose=not args.quiet,
         )
@@ -1249,6 +1402,17 @@ def main(argv=None):
                              "(default: half a cooling sweep at the given alpha)")
     parser.add_argument("--reheat-fraction", type=float, default=REHEAT_FRACTION,
                         help="T is reset to this fraction of T0 on a reheat")
+    parser.add_argument("--schedule", choices=("time", "iter"), default=SCHEDULE,
+                        help="cooling schedule: 'time' anneals on wall-clock "
+                             "progress (default), 'iter' is the legacy "
+                             "geometric T *= alpha per iteration")
+    parser.add_argument("--no-calibrate", action="store_true",
+                        help="skip T0 calibration from sampled move deltas and "
+                             "use --t-init-fraction * f(S_0) instead (legacy)")
+    parser.add_argument("--reheat-decay", type=float, default=REHEAT_DECAY,
+                        help="reheat ceiling is multiplied by this per reheat, "
+                             "so repeated reheats still converge (1.0 = legacy "
+                             "constant ceiling)")
     parser.add_argument("--ep-limit", type=int, default=EP_LIMIT,
                         help="max extreme points scanned per box (0 = unlimited)")
     parser.add_argument("--seed", type=int, default=None,
