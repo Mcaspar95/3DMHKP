@@ -1,0 +1,75 @@
+Instance: ep3-60-F-C-50
+Solver: simulated annealing (sequence decoder)
+Value model: v_i = c_i (flat)
+Boxes: 60 (5 types)
+Containers: 1 (1 types)
+
+Run started: 2026-09-11 16:03:13
+Command: 3DMHKP-SA.py --instance-files /home/mcaspar/3DMHKP/Egeblad/ep3-60-F-C-50.txt --value-mode flat --time-limit 300.0 --results-dir /home/mcaspar/3DMHKP/results_3DMHKP_ep3   [launched by: main_slurm_ep3.py --id 48 --num_cpu 1 --time-limit 300]
+Time limit: 300.0 s per instance
+Runtime: 300.00 s (SA loop 300.00 s, stopped on time limit)
+Packed value (SA incumbent / lower bound): 472480.0
+0-1 knapsack bound (1D, valid under rotation): 522640.0
+Continuous-knapsack relaxation: 526368.1
+Gap to the 0-1 bound: 9.60%
+Greedy (initial decode) value: 443790.0
+SA improvement over greedy: +28690.0
+
+SA parameters:
+  time limit: 300.0 s, max iterations: 500000000
+  T0: 18279.29 (calibrated, 247 worsening draws, target accept 35%)
+  schedule: time-based, T0 -> 4167.06 over 300s (alpha unused)
+  reheat threshold: 5753 it, ceiling 4569.82 (25% of T0) decaying x0.9 per reheat
+  ep limit: 0 (unlimited), value mode: flat
+  move weights: swap=1, promote=1.5, demote=1.5, orient=1, container=0.5 (disabled: relocate, 2opt)
+  seed: 950043063
+
+SA statistics:
+  iterations: 356842 in 300.00 s (1189 it/s)
+  stopped on: time limit
+  accepted: 234787, rejected: 122054, no-move draws: 0, reheats: 61
+  acceptance rate: 65.8%
+  T at exit: 4167.06
+  last improvement: iteration 303738 at 250.9 s, 84% into the run
+  verification: ok
+
+Boxes packed: 34 / 60
+Volume utilization: 5707092 / 7186563 = 79.4%
+
+Container 0 (type 1, 153x153x307): 34 boxes, value 472480.0, utilization 79.4%
+
+Placements (box, type, container, position, oriented dims):
+  box    0 type 1 -> container 0 pos (31, 0, 172) dims (31, 69, 76)
+  box    1 type 1 -> container 0 pos (0, 69, 221) dims (31, 69, 76)
+  box    2 type 1 -> container 0 pos (0, 76, 76) dims (31, 69, 76)
+  box    3 type 1 -> container 0 pos (0, 0, 221) dims (31, 69, 76)
+  box    4 type 1 -> container 0 pos (0, 0, 76) dims (31, 76, 69)
+  box    5 type 1 -> container 0 pos (0, 0, 0) dims (31, 69, 76)
+  box    6 type 1 -> container 0 pos (120, 0, 90) dims (31, 69, 76)
+  box    7 type 1 -> container 0 pos (120, 69, 90) dims (31, 69, 76)
+  box    8 type 1 -> container 0 pos (0, 76, 152) dims (31, 76, 69)
+  box    9 type 1 -> container 0 pos (0, 0, 145) dims (31, 69, 76)
+  box   10 type 1 -> container 0 pos (120, 0, 166) dims (31, 69, 76)
+  box   11 type 1 -> container 0 pos (0, 69, 0) dims (31, 69, 76)
+  box   12 type 2 -> container 0 pos (63, 0, 243) dims (57, 70, 47)
+  box   14 type 2 -> container 0 pos (63, 0, 79) dims (57, 70, 47)
+  box   15 type 2 -> container 0 pos (63, 0, 173) dims (47, 57, 70)
+  box   16 type 2 -> container 0 pos (63, 82, 95) dims (57, 70, 47)
+  box   17 type 2 -> container 0 pos (63, 82, 142) dims (47, 70, 57)
+  box   18 type 2 -> container 0 pos (63, 0, 126) dims (57, 70, 47)
+  box   21 type 2 -> container 0 pos (63, 82, 256) dims (57, 70, 47)
+  box   22 type 2 -> container 0 pos (63, 82, 199) dims (47, 70, 57)
+  box   23 type 2 -> container 0 pos (63, 0, 32) dims (57, 70, 47)
+  box   29 type 3 -> container 0 pos (63, 82, 0) dims (50, 51, 95)
+  box   36 type 4 -> container 0 pos (31, 0, 32) dims (32, 58, 82)
+  box   37 type 4 -> container 0 pos (31, 82, 164) dims (32, 58, 82)
+  box   38 type 4 -> container 0 pos (120, 0, 32) dims (32, 82, 58)
+  box   39 type 4 -> container 0 pos (120, 69, 224) dims (32, 82, 58)
+  box   40 type 4 -> container 0 pos (31, 0, 248) dims (32, 82, 58)
+  box   41 type 4 -> container 0 pos (31, 0, 114) dims (32, 82, 58)
+  box   42 type 4 -> container 0 pos (31, 82, 82) dims (32, 58, 82)
+  box   43 type 4 -> container 0 pos (113, 82, 0) dims (32, 58, 82)
+  box   44 type 4 -> container 0 pos (31, 82, 0) dims (32, 58, 82)
+  box   45 type 4 -> container 0 pos (89, 0, 0) dims (58, 82, 32)
+  box   46 type 4 -> container 0 pos (120, 69, 166) dims (32, 82, 58)
+  box   47 type 4 -> container 0 pos (31, 0, 0) dims (58, 82, 32)

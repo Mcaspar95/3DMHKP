@@ -1,0 +1,30 @@
+# Egeblad & Pisinger ep3 instance ep3-60-C-C-90, converted from ep3-60-C-C-90.3kp
+# Source: Egeblad, J. & Pisinger, D. (2009), "Heuristic approaches for
+# the two- and three-dimensional knapsack packing problem",
+# Computers & Operations Research 36(4):1026-1049. Data set kp2d3d-data/ep3.
+#
+# Single-container 3D knapsack: one container, boxes carry explicit profits.
+# Format: BOXES rows      = type_id count length width height value_coefficient
+#         CONTAINERS rows = type_id count length width height
+#
+# The value_coefficient column holds the ORIGINAL ep3 profit p of the box,
+# not a per-volume coefficient: ep3 profits are not proportional to volume.
+# Run these instances with --value-mode flat so that value = coefficient.
+# Under the default --value-mode volume the objective would be p * volume,
+# which is NOT the ep3 objective. The solvers read the machine-readable
+# declaration below and warn if run with the wrong mode.
+#! value-mode: flat
+#
+# Boxes: 60 (5 distinct types)
+# Total profit if all packed: 672552
+# Total box volume: 21005916   Container volume: 18787862   (ratio 1.118)
+
+BOXES
+1 12 29 29 29 2523
+2 12 67 67 67 13467
+3 12 85 85 85 21675
+4 12 93 93 93 17298
+5 12 19 19 19 1083
+
+CONTAINERS
+1 1 211 211 422

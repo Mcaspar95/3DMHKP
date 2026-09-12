@@ -1,0 +1,87 @@
+============================================================
+  Solver:     3DMHKP-SA.py
+  Instance:   /home/mcaspar/3DMHKP/Egeblad/ep3-60-U-R-90.txt
+  Value mode: flat
+  Timelimit:  900s
+  Reports:    /home/mcaspar/3DMHKP/results_3DMHKP_ep3
+  CPUs:       1
+============================================================
+======================================================================
+3DMHKP Simulated Annealing (random single-neighbour, sequence decoder)
+SA params: T0=5% of f(S_0), alpha=0.999, T_min=0.001, reheat_threshold=5753, reheat_fraction=0.25
+Move weights: {'relocate': 0.0, 'swap': 1.0, '2opt': 0.0, 'promote': 1.5, 'demote': 1.5, 'orient': 1.0, 'container': 0.5}
+Time limit: 900.0s per instance, seed 1786117901
+======================================================================
+
+======================================================================
+ep3-60-U-R-90: 60 boxes (60 types), 1 containers (1 types)
+  0-1 knapsack bound: 604852.0 (continuous relaxation: 604880.0)
+  initial (value-density) decode: value 508383.0 (41/60 boxes)
+  T0 = 8152.8 (calibrated, 534 worsening draws, target accept 35%)
+  schedule: time-based, T0 -> 1858.56 over 900s
+    [iter 8] *** NEW BEST: value 514496.0, boxes 44/60, T=8073.4, elapsed=6.0s
+    [iter 390] *** NEW BEST: value 517732.0, boxes 45/60, T=8046.5, elapsed=8.0s
+    [iter 721] *** NEW BEST: value 525780.0, boxes 45/60, T=8028.0, elapsed=9.4s
+    [iter 2322] *** NEW BEST: value 530114.0, boxes 46/60, T=7923.1, elapsed=17.4s
+    [iter 2508] *** NEW BEST: value 530186.0, boxes 46/60, T=7913.0, elapsed=18.2s
+    [iter 6877] *** NEW BEST: value 531189.0, boxes 45/60, T=7640.3, elapsed=39.5s
+    [iter 7003] *** NEW BEST: value 533155.0, boxes 45/60, T=7633.3, elapsed=40.1s
+    [iter 12756] reheat + diversify: ceiling=2038.20, value=446898.0
+    [iter 18509] reheat + diversify: ceiling=1834.38, value=443867.0
+    [iter 24262] reheat + diversify: ceiling=1650.94, value=394418.0
+    [iter 27674] *** NEW BEST: value 534178.0, boxes 45/60, T=6439.0, elapsed=143.6s
+    [iter 27678] *** NEW BEST: value 535308.0, boxes 45/60, T=6438.8, elapsed=143.7s
+    [iter 27688] *** NEW BEST: value 539924.0, boxes 45/60, T=6438.3, elapsed=143.7s
+    [iter 27806] *** NEW BEST: value 542494.0, boxes 45/60, T=6432.6, elapsed=144.3s
+    [iter 33559] reheat + diversify: ceiling=1485.85, value=445253.0
+    [iter 39312] reheat + diversify: ceiling=1337.26, value=462168.0
+    [iter 43017] *** NEW BEST: value 545117.0, boxes 46/60, T=5714.4, elapsed=216.3s
+    [iter 48770] reheat + diversify: ceiling=1203.54, value=366207.0
+    [iter 54523] reheat + diversify: ceiling=1083.18, value=477145.0
+    [iter 60276] reheat + diversify: ceiling=974.87, value=391456.0
+    [iter 66029] reheat + diversify: ceiling=877.38, value=420742.0
+    [iter 71782] reheat + diversify: ceiling=789.64, value=316625.0
+    [iter 77535] reheat + diversify: ceiling=710.68, value=400807.0
+    [iter 83288] reheat + diversify: ceiling=639.61, value=406559.0
+    [iter 88817] *** NEW BEST: value 547012.0, boxes 45/60, T=4075.5, elapsed=422.1s
+    [iter 94570] reheat + diversify: ceiling=575.65, value=461395.0
+    [iter 94871] *** NEW BEST: value 547750.0, boxes 46/60, T=3895.2, elapsed=449.6s
+    [iter 100624] reheat + diversify: ceiling=518.08, value=382349.0
+    [iter 106377] reheat + diversify: ceiling=466.28, value=411885.0
+    [iter 108330] *** NEW BEST: value 549809.0, boxes 45/60, T=3544.1, elapsed=507.1s
+    [iter 108349] *** NEW BEST: value 550031.0, boxes 45/60, T=3543.5, elapsed=507.2s
+    [iter 114102] reheat + diversify: ceiling=419.65, value=372456.0
+    [iter 119855] reheat + diversify: ceiling=377.68, value=450946.0
+    [iter 125608] reheat + diversify: ceiling=339.91, value=352051.0
+    [iter 131361] reheat + diversify: ceiling=305.92, value=427147.0
+    [iter 137114] reheat + diversify: ceiling=275.33, value=486165.0
+    [iter 141535] *** NEW BEST: value 550910.0, boxes 47/60, T=2756.5, elapsed=660.1s
+    [iter 143989] *** NEW BEST: value 551805.0, boxes 46/60, T=2702.7, elapsed=672.1s
+    [iter 144743] *** NEW BEST: value 553457.0, boxes 46/60, T=2688.4, elapsed=675.3s
+    [iter 150496] reheat + diversify: ceiling=247.80, value=301347.0
+    [iter 156249] reheat + diversify: ceiling=223.02, value=466450.0
+    [iter 162002] reheat + diversify: ceiling=200.72, value=353327.0
+    [iter 164042] *** NEW BEST: value 554402.0, boxes 45/60, T=2375.0, elapsed=750.8s
+    [iter 169795] reheat + diversify: ceiling=180.64, value=455071.0
+    [iter 175548] reheat + diversify: ceiling=162.58, value=358250.0
+    [iter 181301] reheat + diversify: ceiling=146.32, value=448196.0
+    [iter 183535] *** NEW BEST: value 554822.0, boxes 46/60, T=2063.1, elapsed=836.5s
+    [iter 183639] *** NEW BEST: value 555242.0, boxes 46/60, T=2061.7, elapsed=836.9s
+    [iter 189392] reheat + diversify: ceiling=131.69, value=481489.0
+    [iter 194899] *** NEW BEST: value 555260.0, boxes 46/60, T=1915.7, elapsed=881.6s
+  time limit reached at iteration 199910
+  SA finished: 199910 iterations in 900.0s (222 it/s), accepted 84780 (42.4%), rejected 115129, neutral 60038 (30.0%), worsening accepted 17.7%, no-move draws 0, reheats 27
+  SA: value 555260.0 (greedy 508383.0, +46877.0), bound 604852.0, gap 8.20%, util 84.3%
+  report -> /home/mcaspar/3DMHKP/results_3DMHKP_ep3/ep3-60-U-R-90-3DMHKP-SA-a0.999-r0.25-t900s.txt
+
+================================================================================================
+SUMMARY
+================================================================================================
+instance      boxes  packed       greedy     SA value        bound      gap    util    iters    time
+------------------------------------------------------------------------------------------------
+ep3-60-U-R-90     60      46     508383.0     555260.0     604852.0    8.2%   84.3%   199910  900.0s
+------------------------------------------------------------------------------------------------
+proven optimal (value reaches the upper bound): 0/1
+improved over greedy: 1/1 (total value 508383.0 -> 555260.0, +9.22%)
+mean gap to 0-1 knapsack bound: 8.2%
+mean volume utilization: 84.3%

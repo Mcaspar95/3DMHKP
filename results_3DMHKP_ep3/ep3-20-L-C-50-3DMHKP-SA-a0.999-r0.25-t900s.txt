@@ -1,0 +1,50 @@
+Instance: ep3-20-L-C-50
+Solver: simulated annealing (sequence decoder)
+Value model: v_i = c_i (flat)
+Boxes: 20 (5 types)
+Containers: 1 (1 types)
+
+Run started: 2026-09-11 16:58:27
+Command: 3DMHKP-SA.py --instance-files /home/mcaspar/3DMHKP/Egeblad/ep3-20-L-C-50.txt --value-mode flat --time-limit 900.0 --results-dir /home/mcaspar/3DMHKP/results_3DMHKP_ep3   [launched by: main_slurm_ep3.py --id 12 --num_cpu 1 --time-limit 900]
+Time limit: 900.0 s per instance
+Runtime: 900.00 s (SA loop 900.00 s, stopped on time limit)
+Packed value (SA incumbent / lower bound): 26832.0
+0-1 knapsack bound (1D, valid under rotation): 33780.0
+Continuous-knapsack relaxation: 34613.5
+Gap to the 0-1 bound: 20.57%
+Greedy (initial decode) value: 21018.0
+SA improvement over greedy: +5814.0
+
+SA parameters:
+  time limit: 900.0 s, max iterations: 500000000
+  T0: 1085.90 (calibrated, 53 worsening draws, target accept 35%)
+  schedule: time-based, T0 -> 247.55 over 900s (alpha unused)
+  reheat threshold: 5753 it, ceiling 271.47 (25% of T0) decaying x0.9 per reheat
+  ep limit: 0 (unlimited), value mode: flat
+  move weights: swap=1, promote=1.5, demote=1.5, orient=1, container=0.5 (disabled: relocate, 2opt)
+  seed: 2018603391
+
+SA statistics:
+  iterations: 15393957 in 900.00 s (17104 it/s)
+  stopped on: time limit
+  accepted: 9566325, rejected: 5827631, no-move draws: 0, reheats: 2674
+  acceptance rate: 62.1%
+  T at exit: 247.548
+  last improvement: iteration 6117 at 0.5 s, 0% into the run
+  verification: ok
+
+Boxes packed: 9 / 20
+Volume utilization: 861339 / 1024000 = 84.1%
+
+Container 0 (type 1, 80x80x160): 9 boxes, value 26832.0, utilization 84.1%
+
+Placements (box, type, container, position, oriented dims):
+  box    1 type 1 -> container 0 pos (0, 62, 43) dims (64, 14, 99)
+  box    2 type 1 -> container 0 pos (66, 0, 43) dims (14, 64, 99)
+  box    4 type 2 -> container 0 pos (0, 0, 130) dims (66, 62, 29)
+  box    5 type 2 -> container 0 pos (0, 0, 101) dims (66, 62, 29)
+  box    6 type 2 -> container 0 pos (0, 0, 43) dims (66, 62, 29)
+  box    7 type 2 -> container 0 pos (0, 0, 72) dims (66, 62, 29)
+  box    9 type 3 -> container 0 pos (0, 0, 0) dims (57, 57, 43)
+  box   13 type 4 -> container 0 pos (57, 0, 0) dims (23, 56, 27)
+  box   15 type 4 -> container 0 pos (0, 57, 0) dims (56, 23, 27)

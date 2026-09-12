@@ -1,0 +1,142 @@
+============================================================
+  Solver:     3DMHKP-SA.py
+  Instance:   /home/mcaspar/3DMHKP/Egeblad/ep3-60-C-R-50.txt
+  Value mode: flat
+  Timelimit:  300s
+  Reports:    /home/mcaspar/3DMHKP/results_3DMHKP_ep3
+  CPUs:       1
+============================================================
+======================================================================
+3DMHKP Simulated Annealing (random single-neighbour, sequence decoder)
+SA params: T0=5% of f(S_0), alpha=0.999, T_min=0.001, reheat_threshold=5753, reheat_fraction=0.25
+Move weights: {'relocate': 0.0, 'swap': 1.0, '2opt': 0.0, 'promote': 1.5, 'demote': 1.5, 'orient': 1.0, 'container': 0.5}
+Time limit: 300.0s per instance, seed 1991753058
+======================================================================
+
+======================================================================
+ep3-60-C-R-50: 60 boxes (52 types), 1 containers (1 types)
+  0-1 knapsack bound: 303842.0 (continuous relaxation: 304386.5)
+  initial (value-density) decode: value 97544.0 (36/60 boxes)
+  T0 = 9624.5 (calibrated, 200 worsening draws, target accept 35%)
+  schedule: time-based, T0 -> 2194.06 over 300s
+    [iter 1] *** NEW BEST: value 103746.0, boxes 35/60, T=9624.5, elapsed=1.0s
+    [iter 18] *** NEW BEST: value 111566.0, boxes 38/60, T=9578.4, elapsed=1.0s
+    [iter 20] *** NEW BEST: value 129782.0, boxes 37/60, T=9578.3, elapsed=1.0s
+    [iter 21] *** NEW BEST: value 133146.0, boxes 38/60, T=9578.3, elapsed=1.0s
+    [iter 32] *** NEW BEST: value 133170.0, boxes 38/60, T=9577.9, elapsed=1.0s
+    [iter 37] *** NEW BEST: value 146175.0, boxes 40/60, T=9577.7, elapsed=1.0s
+    [iter 44] *** NEW BEST: value 146980.0, boxes 40/60, T=9577.4, elapsed=1.0s
+    [iter 45] *** NEW BEST: value 177833.0, boxes 41/60, T=9577.4, elapsed=1.0s
+    [iter 55] *** NEW BEST: value 184578.0, boxes 42/60, T=9577.1, elapsed=1.0s
+    [iter 65] *** NEW BEST: value 186577.0, boxes 42/60, T=9576.7, elapsed=1.0s
+    [iter 73] *** NEW BEST: value 188179.0, boxes 41/60, T=9576.5, elapsed=1.0s
+    [iter 77] *** NEW BEST: value 193805.0, boxes 43/60, T=9576.3, elapsed=1.0s
+    [iter 82] *** NEW BEST: value 197289.0, boxes 43/60, T=9576.2, elapsed=1.0s
+    [iter 87] *** NEW BEST: value 200205.0, boxes 44/60, T=9576.0, elapsed=1.0s
+    [iter 231] *** NEW BEST: value 200903.0, boxes 44/60, T=9571.7, elapsed=1.1s
+    [iter 597] *** NEW BEST: value 215632.0, boxes 45/60, T=9561.5, elapsed=1.3s
+    [iter 786] *** NEW BEST: value 218450.0, boxes 45/60, T=9555.7, elapsed=1.5s
+    [iter 2630] *** NEW BEST: value 220203.0, boxes 45/60, T=9502.7, elapsed=2.6s
+    [iter 8383] reheat + diversify: ceiling=2406.12, value=167052.0
+    [iter 14136] reheat + diversify: ceiling=2165.51, value=207639.0
+    [iter 17089] *** NEW BEST: value 221469.0, boxes 45/60, T=9091.2, elapsed=11.6s
+    [iter 17170] *** NEW BEST: value 221586.0, boxes 45/60, T=9088.7, elapsed=11.6s
+    [iter 22923] reheat + diversify: ceiling=1948.96, value=158926.0
+    [iter 28676] reheat + diversify: ceiling=1754.06, value=178131.0
+    [iter 34429] reheat + diversify: ceiling=1578.66, value=161385.0
+    [iter 40182] reheat + diversify: ceiling=1420.79, value=199687.0
+    [iter 45935] reheat + diversify: ceiling=1278.71, value=175421.0
+    [iter 51688] reheat + diversify: ceiling=1150.84, value=190233.0
+    [iter 53950] *** NEW BEST: value 223858.0, boxes 46/60, T=8134.1, elapsed=34.1s
+    [iter 59703] reheat + diversify: ceiling=1035.76, value=166746.0
+    [iter 65456] reheat + diversify: ceiling=932.18, value=198502.0
+    [iter 71209] reheat + diversify: ceiling=838.96, value=162697.0
+    [iter 76962] reheat + diversify: ceiling=755.07, value=191167.0
+    [iter 82715] reheat + diversify: ceiling=679.56, value=176592.0
+    [iter 88468] reheat + diversify: ceiling=611.60, value=194307.0
+    [iter 94221] reheat + diversify: ceiling=550.44, value=161516.0
+    [iter 99974] reheat + diversify: ceiling=495.40, value=204154.0
+    [iter 105727] reheat + diversify: ceiling=445.86, value=189272.0
+    [iter 111480] reheat + diversify: ceiling=401.27, value=186064.0
+    [iter 117233] reheat + diversify: ceiling=361.15, value=198799.0
+    [iter 122986] reheat + diversify: ceiling=325.03, value=188060.0
+    [iter 128739] reheat + diversify: ceiling=292.53, value=193212.0
+    [iter 134492] reheat + diversify: ceiling=263.28, value=179571.0
+    [iter 140245] reheat + diversify: ceiling=236.95, value=208110.0
+    [iter 145998] reheat + diversify: ceiling=213.25, value=186496.0
+    [iter 151751] reheat + diversify: ceiling=191.93, value=143315.0
+    [iter 157504] reheat + diversify: ceiling=172.74, value=201100.0
+    [iter 163257] reheat + diversify: ceiling=155.46, value=207695.0
+    [iter 169010] reheat + diversify: ceiling=139.92, value=204964.0
+    [iter 174763] reheat + diversify: ceiling=125.92, value=182245.0
+    [iter 180516] reheat + diversify: ceiling=113.33, value=151849.0
+    [iter 186269] reheat + diversify: ceiling=102.00, value=188035.0
+    [iter 192022] reheat + diversify: ceiling=91.80, value=198697.0
+    [iter 197775] reheat + diversify: ceiling=82.62, value=148670.0
+    [iter 203528] reheat + diversify: ceiling=74.36, value=164026.0
+    [iter 209281] reheat + diversify: ceiling=66.92, value=136486.0
+    [iter 215034] reheat + diversify: ceiling=60.23, value=166510.0
+    [iter 220787] reheat + diversify: ceiling=54.21, value=200203.0
+    [iter 226540] reheat + diversify: ceiling=48.79, value=196063.0
+    [iter 232293] reheat + diversify: ceiling=43.91, value=195089.0
+    [iter 238046] reheat + diversify: ceiling=39.52, value=212237.0
+    [iter 243799] reheat + diversify: ceiling=35.56, value=205384.0
+    [iter 249552] reheat + diversify: ceiling=32.01, value=204842.0
+    [iter 255305] reheat + diversify: ceiling=28.81, value=189628.0
+    [iter 261058] reheat + diversify: ceiling=25.93, value=182947.0
+    [iter 266811] reheat + diversify: ceiling=23.33, value=175940.0
+    [iter 272564] reheat + diversify: ceiling=21.00, value=180816.0
+    [iter 278317] reheat + diversify: ceiling=18.90, value=165434.0
+    [iter 284070] reheat + diversify: ceiling=17.01, value=177955.0
+    [iter 289823] reheat + diversify: ceiling=15.31, value=210239.0
+    [iter 295576] reheat + diversify: ceiling=13.78, value=199179.0
+    [iter 301329] reheat + diversify: ceiling=12.40, value=186943.0
+    [iter 307082] reheat + diversify: ceiling=11.16, value=207343.0
+    [iter 312835] reheat + diversify: ceiling=10.04, value=179887.0
+    [iter 318588] reheat + diversify: ceiling=9.04, value=186003.0
+    [iter 324341] reheat + diversify: ceiling=8.14, value=217227.0
+    [iter 330094] reheat + diversify: ceiling=7.32, value=168187.0
+    [iter 335847] reheat + diversify: ceiling=6.59, value=213200.0
+    [iter 341600] reheat + diversify: ceiling=5.93, value=179724.0
+    [iter 347353] reheat + diversify: ceiling=5.34, value=152742.0
+    [iter 353106] reheat + diversify: ceiling=4.80, value=205803.0
+    [iter 358859] reheat + diversify: ceiling=4.32, value=175216.0
+    [iter 364612] reheat + diversify: ceiling=3.89, value=212318.0
+    [iter 370365] reheat + diversify: ceiling=3.50, value=167690.0
+    [iter 376118] reheat + diversify: ceiling=3.15, value=208918.0
+    [iter 381871] reheat + diversify: ceiling=2.84, value=215919.0
+    [iter 387624] reheat + diversify: ceiling=2.55, value=199563.0
+    [iter 393377] reheat + diversify: ceiling=2.30, value=214542.0
+    [iter 399130] reheat + diversify: ceiling=2.07, value=149040.0
+    [iter 404883] reheat + diversify: ceiling=1.86, value=177953.0
+    [iter 410636] reheat + diversify: ceiling=1.68, value=186496.0
+    [iter 416389] reheat + diversify: ceiling=1.51, value=191726.0
+    [iter 422142] reheat + diversify: ceiling=1.36, value=155810.0
+    [iter 427895] reheat + diversify: ceiling=1.22, value=208180.0
+    [iter 433648] reheat + diversify: ceiling=1.10, value=173891.0
+    [iter 439401] reheat + diversify: ceiling=0.99, value=217458.0
+    [iter 445154] reheat + diversify: ceiling=0.89, value=177404.0
+    [iter 450907] reheat + diversify: ceiling=0.80, value=210644.0
+    [iter 456660] reheat + diversify: ceiling=0.72, value=219187.0
+    [iter 462413] reheat + diversify: ceiling=0.65, value=181263.0
+    [iter 468166] reheat + diversify: ceiling=0.58, value=188756.0
+    [iter 473919] reheat + diversify: ceiling=0.53, value=212787.0
+    [iter 479672] reheat + diversify: ceiling=0.47, value=197811.0
+    [iter 485425] reheat + diversify: ceiling=0.43, value=180381.0
+    [iter 491178] reheat + diversify: ceiling=0.38, value=177404.0
+  time limit reached at iteration 494637
+  SA finished: 494637 iterations in 300.0s (1649 it/s), accepted 365471 (73.9%), rejected 129165, neutral 312094 (63.1%), worsening accepted 29.2%, no-move draws 0, reheats 84
+  SA: value 223858.0 (greedy 97544.0, +126314.0), bound 303842.0, gap 26.32%, util 79.2%
+  report -> /home/mcaspar/3DMHKP/results_3DMHKP_ep3/ep3-60-C-R-50-3DMHKP-SA-a0.999-r0.25-t300s.txt
+
+================================================================================================
+SUMMARY
+================================================================================================
+instance      boxes  packed       greedy     SA value        bound      gap    util    iters    time
+------------------------------------------------------------------------------------------------
+ep3-60-C-R-50     60      46      97544.0     223858.0     303842.0   26.3%   79.2%   494637  300.0s
+------------------------------------------------------------------------------------------------
+proven optimal (value reaches the upper bound): 0/1
+improved over greedy: 1/1 (total value 97544.0 -> 223858.0, +129.49%)
+mean gap to 0-1 knapsack bound: 26.3%
+mean volume utilization: 79.2%

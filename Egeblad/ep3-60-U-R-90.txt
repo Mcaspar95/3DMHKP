@@ -1,0 +1,85 @@
+# Egeblad & Pisinger ep3 instance ep3-60-U-R-90, converted from ep3-60-U-R-90.3kp
+# Source: Egeblad, J. & Pisinger, D. (2009), "Heuristic approaches for
+# the two- and three-dimensional knapsack packing problem",
+# Computers & Operations Research 36(4):1026-1049. Data set kp2d3d-data/ep3.
+#
+# Single-container 3D knapsack: one container, boxes carry explicit profits.
+# Format: BOXES rows      = type_id count length width height value_coefficient
+#         CONTAINERS rows = type_id count length width height
+#
+# The value_coefficient column holds the ORIGINAL ep3 profit p of the box,
+# not a per-volume coefficient: ep3 profits are not proportional to volume.
+# Run these instances with --value-mode flat so that value = coefficient.
+# Under the default --value-mode volume the objective would be p * volume,
+# which is NOT the ep3 objective. The solvers read the machine-readable
+# declaration below and warn if run with the wrong mode.
+#! value-mode: flat
+#
+# Boxes: 60 (60 distinct types)
+# Total profit if all packed: 633223
+# Total box volume: 25236341   Container volume: 22529024   (ratio 1.120)
+
+BOXES
+1 1 99 50 98 14850
+2 1 68 83 83 5644
+3 1 59 85 59 10030
+4 1 53 83 77 13197
+5 1 65 68 87 13260
+6 1 51 83 97 4233
+7 1 54 77 58 8316
+8 1 67 100 97 13400
+9 1 64 94 86 12032
+10 1 93 80 80 7440
+11 1 81 62 52 5022
+12 1 67 83 69 16683
+13 1 54 86 97 9288
+14 1 95 75 77 7125
+15 1 96 50 78 4800
+16 1 67 74 67 4958
+17 1 98 97 74 9506
+18 1 75 77 81 5775
+19 1 96 89 51 25632
+20 1 59 57 86 10089
+21 1 58 57 76 9918
+22 1 82 64 81 15744
+23 1 95 75 91 14250
+24 1 64 70 94 13440
+25 1 87 84 60 7308
+26 1 70 93 89 6510
+27 1 87 83 98 7221
+28 1 50 68 80 6800
+29 1 90 74 85 19980
+30 1 99 60 74 17820
+31 1 57 84 65 14364
+32 1 72 63 71 9072
+33 1 86 99 93 17028
+34 1 63 83 81 10458
+35 1 79 51 53 8058
+36 1 70 69 72 4830
+37 1 69 86 93 5934
+38 1 92 80 96 22080
+39 1 85 52 79 13260
+40 1 96 65 70 6240
+41 1 50 96 52 4800
+42 1 91 71 76 6461
+43 1 72 50 86 3600
+44 1 67 73 63 4891
+45 1 76 51 88 7752
+46 1 78 70 53 16380
+47 1 84 65 71 5460
+48 1 87 71 56 18531
+49 1 69 98 86 13524
+50 1 85 87 95 7395
+51 1 75 52 56 3900
+52 1 57 92 56 15732
+53 1 71 74 51 15762
+54 1 64 76 58 9728
+55 1 82 71 63 11644
+56 1 72 95 50 20520
+57 1 78 60 64 4680
+58 1 88 82 84 14432
+59 1 52 69 94 3588
+60 1 88 73 59 12848
+
+CONTAINERS
+1 1 224 224 449
