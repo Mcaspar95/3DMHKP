@@ -132,14 +132,6 @@ MOVE_WEIGHTS = {
     "relocate": 1.0,
     "orient": 0.7,
     "strategy": 0.6,
-    # Emptying the least-full container is the one thing random reordering
-    # essentially never assembles by itself, yet it is exactly the move that
-    # removes a container from the bill - see sample_eliminate.
-    "eliminate": 0.8,
-    # Which container type to use at all. Without this the only way to say
-    # "use type 1 throughout" is for all STRATEGY_LEN rule slots to land on
-    # "cheap" at once, which the walk rarely manages.
-    "ctype": 0.5,
 }
 _SAMPLE_TRIES = 12
 
@@ -297,14 +289,6 @@ def build_instance(path, cost_mode="file", use_dest=None):
         "use_dest": use_dest,
         "total_box_vol": sum(b["vol"] for b in boxes),
         "cost_warnings": cost_warnings,
-        # Tilt size for the concentration bonus in evaluate(): strictly below
-        # the cheapest container divided by any plausible container count, so
-        # the bonus can never outweigh one genuinely saved container.
-        "tilt_eps": min(c["cost"] for c in containers) / (2.0 * (len(boxes) + 2)),
-        # Container types that can hold EVERY box type, and so can legally be
-        # used on their own. Restricting to one of these is always feasible.
-        "viable_forced": [ci for ci in range(len(containers))
-                          if all(orients[ci][t] for t in type_index)],
     }
 
     # Unlimited supply makes every instance feasible - unless some box fits no
@@ -313,14 +297,6 @@ def build_instance(path, cost_mode="file", use_dest=None):
     unfittable = sorted({b["type"] for b in boxes
                          if not any(orients[ci][b["type"]]
                                     for ci in range(len(containers)))})
-    # A single container type leaves nothing for the container-selection rule
-    # or the type gene to choose between, so those two moves are pure waste on
-    # 47 of the 64 instances. Drop them rather than spend draws on no-ops.
-    inst["move_weights"] = {
-        k: v for k, v in MOVE_WEIGHTS.items()
-        if len(containers) > 1 or k not in ("strategy", "ctype")
-    }
-
     if unfittable:
         raise ValueError(f"{path}: box type(s) {unfittable} fit no container "
                          f"type in any orientation - instance is infeasible "
@@ -472,12 +448,9 @@ def decode(sol, inst, ep_limit=EP_LIMIT):
             dests = [None]
 
         rule = strategy[k % len(strategy)]
-        forced = sol.get("force_ctype")
         best = None
         best_score = None
         for ci, container in enumerate(containers):
-            if forced is not None and ci != forced:
-                continue
             for d in dests:
                 if d is None:
                     cand = unplaced
@@ -522,30 +495,12 @@ def decode(sol, inst, ep_limit=EP_LIMIT):
 
 
 def evaluate(sol, inst, ep_limit=EP_LIMIT):
-    """Decode `sol` in place and return the minimised SCORE.
-
-    The score is the total container cost minus a small concentration bonus,
-    the sum of (fill fraction)^2 over the opened containers - Falkenauer &
-    Delchambre's (1992) fitness for exactly this problem.
-
-    Cost on its own is a step function: every neighbour that does not change
-    the container count scores identically, so the walk wanders a flat plateau
-    with nothing pointing towards the cliff where a container disappears.
-    Measured on problem13b, 100% of the 14382 accepted moves in a 90 s run
-    were such ties and the incumbent never once improved. The bonus breaks
-    those ties in favour of packings whose fill is CONCENTRATED - i.e. whose
-    emptiest container is closest to being eliminable - which is the gradient
-    the plateau was missing. inst["tilt_eps"] keeps the bonus strictly smaller
-    than one saved container, so it can only ever order equal-cost solutions,
-    never prefer a more expensive one.
-    """
+    """Decode `sol` in place and return its cost (the minimised objective)."""
     opened, total_cost, total_cvol = decode(sol, inst, ep_limit=ep_limit)
     sol["opened"] = opened
     sol["cost"] = total_cost
     sol["cvol"] = total_cvol
-    concentration = sum((c["packed_vol"] / c["cvol"]) ** 2 for c in opened)
-    sol["score"] = total_cost - inst["tilt_eps"] * concentration
-    return sol["score"]
+    return total_cost
 
 
 def copy_solution(sol):
@@ -553,10 +508,8 @@ def copy_solution(sol):
         "order": list(sol["order"]),
         "orient": list(sol["orient"]),
         "strategy": list(sol["strategy"]),
-        "force_ctype": sol.get("force_ctype"),
         "opened": sol.get("opened"),
         "cost": sol.get("cost", 0.0),
-        "score": sol.get("score", 0.0),
         "cvol": sol.get("cvol", 0),
     }
 
@@ -567,32 +520,16 @@ def build_initial_solution(inst, ep_limit=EP_LIMIT):
     """
     boxes = inst["boxes"]
     order = sorted(range(len(boxes)), key=lambda j: -boxes[j]["vol"])
-
-    def make(force_ctype):
-        return {
-            "order": list(order),
-            "orient": [0] * inst["n_types"],
-            "strategy": ["efficiency"] * STRATEGY_LEN,
-            "force_ctype": force_ctype,
-            "opened": None,
-            "cost": 0.0,
-            "score": 0.0,
-            "cvol": 0,
-        }
-
-    # Seed from the best of: the mixed decode, and the decode restricted to
-    # each container type that can hold every box. A single-type solution is
-    # always feasible for the mixed problem, so the heterogeneous "a" variant
-    # can never legitimately score below the best of its own b/c/d siblings -
-    # yet before this seeding problem01a did exactly that (65.3% against the
-    # 74.7% its own problem01b reaches). Costs one extra decode per type.
-    best = None
-    for force in [None] + list(inst["viable_forced"]):
-        cand = make(force)
-        evaluate(cand, inst, ep_limit=ep_limit)
-        if best is None or cand["score"] < best["score"]:
-            best = cand
-    return best
+    sol = {
+        "order": order,
+        "orient": [0] * inst["n_types"],
+        "strategy": ["efficiency"] * STRATEGY_LEN,
+        "opened": None,
+        "cost": 0.0,
+        "cvol": 0,
+    }
+    evaluate(sol, inst, ep_limit=ep_limit)
+    return sol
 
 
 # =========================================================================
@@ -658,51 +595,11 @@ def sample_strategy(sol, inst):
     return ("strategy", k, random.choice(choices))
 
 
-def sample_eliminate(sol, inst):
-    """Try to empty the least-full container by promoting its boxes.
-
-    Cost only falls when a container disappears entirely, and that needs every
-    one of its boxes to find room elsewhere - a coordinated change of a dozen
-    positions at once that single swaps and relocations never assemble. This
-    move makes it in one step: take the emptiest container's boxes and scatter
-    them into the front of the priority order, where they are offered to the
-    earlier (fuller) containers first.
-    """
-    opened = sol.get("opened")
-    if not opened or len(opened) < 2:
-        return None
-    worst = min(range(len(opened)),
-                key=lambda i: opened[i]["packed_vol"] / opened[i]["cvol"])
-    victims = [j for (j, _, _) in opened[worst]["boxes"]]
-    if not victims or len(victims) >= len(sol["order"]):
-        return None
-    return ("eliminate", victims)
-
-
-def sample_ctype(sol, inst):
-    """Switch which container type may be used at all (None = any).
-
-    Restricting to a single type is what "use type 1 throughout" means, and it
-    is not otherwise reachable: the per-opening selection rules are myopic, so
-    on problem01a they take the bigger type 2 - which genuinely wins the first
-    opening on fill ratio - and cascade into 10 containers at 65.3% instead of
-    25 cheap ones at 74.7%.
-    """
-    choices = [None] + list(inst["viable_forced"])
-    if len(choices) < 2:
-        return None
-    current = sol.get("force_ctype")
-    choices = [c for c in choices if c != current]
-    return ("ctype", random.choice(choices))
-
-
 _SAMPLERS = {
     "swap": sample_swap,
     "relocate": sample_relocate,
     "orient": sample_orient,
     "strategy": sample_strategy,
-    "eliminate": sample_eliminate,
-    "ctype": sample_ctype,
 }
 
 
@@ -713,7 +610,7 @@ def sample_random_move(sol, inst, move_weights=None):
     produce a move does not waste the whole iteration.
     """
     if move_weights is None:
-        move_weights = inst.get("move_weights", MOVE_WEIGHTS)
+        move_weights = MOVE_WEIGHTS
     pool = [(name, w) for name, w in move_weights.items()
             if w > 0 and name in _SAMPLERS]
     while pool:
@@ -749,18 +646,6 @@ def apply_move(sol, move):
     elif kind == "strategy":
         _, k, rule = move
         sol["strategy"][k] = rule
-    elif kind == "eliminate":
-        _, victims = move
-        vs = set(victims)
-        order = sol["order"]
-        rest = [j for j in order if j not in vs]
-        head = max(1, len(order) // 3)
-        for j in victims:
-            rest.insert(random.randrange(head + 1), j)
-        sol["order"] = rest
-    elif kind == "ctype":
-        _, value = move
-        sol["force_ctype"] = value
 
 
 def diversify(sol, inst, ep_limit=EP_LIMIT):
@@ -796,7 +681,7 @@ def calibrate_t_init(sol, inst, samples=CALIBRATE_SAMPLES, ep_limit=EP_LIMIT,
     draw was found, leaving the caller to fall back on a fraction of f(S_0).
     """
     probe = copy_solution(sol)
-    base = sol["score"]
+    base = sol["cost"]
     deltas = []
     for _ in range(samples):
         if deadline is not None and time.time() >= deadline:
@@ -832,7 +717,6 @@ def simulated_annealing(inst, time_limit=TIME_LIMIT,
 
     current = build_initial_solution(inst, ep_limit=ep_limit)
     initial_cost = current["cost"]
-    initial_score = current["score"]
     initial_cvol = current["cvol"]
     if verbose:
         print(f"  initial (largest-first) decode: {len(current['opened'])} "
@@ -851,7 +735,7 @@ def simulated_annealing(inst, time_limit=TIME_LIMIT,
         t_init_source = (f"calibrated, {n_cal} worsening draws, "
                          f"target accept {TARGET_ACCEPT_INITIAL:.0%}")
     else:
-        t_init = max(1e-6, 0.05 * abs(initial_score))
+        t_init = max(1e-6, 0.05 * initial_cost)
         t_end = T_MIN
         t_init_source = "5% of f(S_0), no worsening draw sampled"
     if verbose:
@@ -885,14 +769,14 @@ def simulated_annealing(inst, time_limit=TIME_LIMIT,
         trial = copy_solution(current)
         apply_move(trial, move)
         trial_cost = evaluate(trial, inst, ep_limit=ep_limit)
-        delta = trial_cost - current["score"]
+        delta = trial_cost - current["cost"]
 
         if delta < 0 or (delta == 0 and random.random() < 0.5):
             current = trial
             accepted += 1
             if delta == 0:
                 neutral += 1
-            if trial_cost < best["score"]:
+            if trial_cost < best["cost"]:
                 best = copy_solution(trial)
                 best_iteration, best_time = iteration, time.time() - t_start
                 no_improve = 0

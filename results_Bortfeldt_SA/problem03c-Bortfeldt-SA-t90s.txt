@@ -5,7 +5,7 @@ Boxes: 103 (3 types), total box volume 70250
 Container types: 1 (unlimited supply per type)
   type 2: 15x15x20, volume 4500, cost 450.0
 
-Run started: 2026-09-13 18:44:00
+Run started: 2026-09-13 19:39:04
 Command: Bortfeldt-SA.py --instance-files /home/mcaspar/3DMHKP/Ivancic/problem03c.txt --time-limit 90.0 --results-dir /home/mcaspar/3DMHKP/results_Bortfeldt_SA
 Time limit: 90.0 s per instance
 Runtime: 90.00 s (stopped on time limit)
@@ -23,18 +23,18 @@ SA improvement over greedy: -0.0
 Best found at iteration 0 (0.0 s)
 
 SA parameters:
-  T0: 360.00 (5% of f(S_0), no worsening draw sampled)
-  schedule: time-based, T0 -> 0.0000 over 90s
+  T0: 0.08 (calibrated, 233 worsening draws, target accept 35%)
+  schedule: time-based, T0 -> 0.0180 over 90s
   reheat threshold: 3000 it, fraction 0.25 decaying x0.9 per reheat
   ep limit: 0 (0 = unlimited)
-  move weights: swap=1, relocate=1, orient=0.7, strategy=0.6
+  move weights: swap=1, relocate=1, orient=0.7, strategy=0.6, eliminate=0.8, ctype=0.5
   selection rules: efficiency, volume, cheap
-  seed: 46640922
+  seed: 234919475
 
 SA statistics:
-  iterations: 342821 in 90.00 s (3809.1 it/s)
-  accepted: 152694 (of which neutral 152166), rejected: 190127, no-move draws: 0
-  reheats: 114
+  iterations: 324598 in 90.00 s (3606.6 it/s)
+  accepted: 129235 (of which neutral 39119), rejected: 195363, no-move draws: 0
+  reheats: 108
   verification: ok
 
 Containers (index, type, dims, destination, boxes, packed volume, utilization):
