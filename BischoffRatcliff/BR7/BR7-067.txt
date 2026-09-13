@@ -1,0 +1,52 @@
+# Bischoff & Ratcliff container-loading instance BR7-67, converted from
+# BR/BR7/67.json (kcliu2/CLP-Datasets on GitHub).
+# Source: Bischoff, E.E. & Ratcliff, M.S.W. (1995), Omega 23(4):377-390.
+# Dataset repository: https://github.com/kcliu2/CLP-Datasets
+#
+# Single-container 3D knapsack: one container, boxes carry explicit profits.
+# Format: BOXES rows      = type_id count length width height value_coefficient
+#         CONTAINERS rows = type_id count length width height
+#
+# The value_coefficient column is 1 for every box type: the original CLP
+# objective (maximize packed volume) is already encoded as profit = volume
+# in the source data (Value == Length*Height*Depth for every box type here).
+# Run these instances under the default --value-mode volume.
+#! value-mode: volume
+#
+# CAUTION - orientation constraints dropped in this conversion: the source
+# data restricts, per box type, which of its 3 axes may be placed vertical
+# (fields C1_Length/C1_Height/C1_Depth in the source JSON -- 1 = that axis
+# may be vertical, 0 = may not). This solver's BOXES row format has no field
+# to carry that restriction, and the solver always tries all 6 axis-aligned
+# orientations for every box. These converted instances therefore solve the
+# FREE-ROTATION relaxation of the true BR benchmark (partial orientation
+# restriction). Expect equal-or-better packed volume than published results
+# that enforce the restriction; the two are not directly comparable.
+#
+# Boxes: 162 (20 distinct types)
+# Total profit if all packed: 30087794
+# Total box volume: 30087794   Container volume: 30089620   (ratio 1.000)
+
+BOXES
+1 5 119 41 38 1
+2 5 90 44 35 1
+3 7 67 55 27 1
+4 4 71 47 36 1
+5 6 90 55 51 1
+6 3 87 68 40 1
+7 11 87 53 36 1
+8 6 113 47 34 1
+9 9 97 56 35 1
+10 11 90 60 25 1
+11 6 88 75 70 1
+12 9 111 64 51 1
+13 13 105 77 31 1
+14 6 91 33 29 1
+15 10 53 34 31 1
+16 11 73 40 34 1
+17 12 84 56 44 1
+18 8 113 81 29 1
+19 10 89 53 51 1
+20 10 62 30 26 1
+CONTAINERS
+1 1 587 220 233

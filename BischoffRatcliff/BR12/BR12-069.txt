@@ -1,0 +1,102 @@
+# Bischoff & Ratcliff container-loading instance BR12-69, converted from
+# BR/BR12/69.json (kcliu2/CLP-Datasets on GitHub).
+# Source: Davies, A.P. & Bischoff, E.E. (1999), EJOR 114(3):509-527.
+# Dataset repository: https://github.com/kcliu2/CLP-Datasets
+#
+# Single-container 3D knapsack: one container, boxes carry explicit profits.
+# Format: BOXES rows      = type_id count length width height value_coefficient
+#         CONTAINERS rows = type_id count length width height
+#
+# The value_coefficient column is 1 for every box type: the original CLP
+# objective (maximize packed volume) is already encoded as profit = volume
+# in the source data (Value == Length*Height*Depth for every box type here).
+# Run these instances under the default --value-mode volume.
+#! value-mode: volume
+#
+# CAUTION - orientation constraints dropped in this conversion: the source
+# data restricts, per box type, which of its 3 axes may be placed vertical
+# (fields C1_Length/C1_Height/C1_Depth in the source JSON -- 1 = that axis
+# may be vertical, 0 = may not). This solver's BOXES row format has no field
+# to carry that restriction, and the solver always tries all 6 axis-aligned
+# orientations for every box. These converted instances therefore solve the
+# FREE-ROTATION relaxation of the true BR benchmark (partial orientation
+# restriction). Expect equal-or-better packed volume than published results
+# that enforce the restriction; the two are not directly comparable.
+#
+# Boxes: 140 (70 distinct types)
+# Total profit if all packed: 30032903
+# Total box volume: 30032903   Container volume: 30089620   (ratio 0.998)
+
+BOXES
+1 2 91 50 32 1
+2 3 118 66 40 1
+3 2 75 69 32 1
+4 4 81 73 32 1
+5 2 97 69 33 1
+6 4 97 31 27 1
+7 2 57 54 29 1
+8 1 77 71 62 1
+9 1 116 84 27 1
+10 1 85 30 29 1
+11 2 112 51 41 1
+12 1 87 81 23 1
+13 2 49 44 26 1
+14 4 63 59 38 1
+15 3 82 44 33 1
+16 1 63 61 44 1
+17 1 69 53 52 1
+18 1 104 78 25 1
+19 4 119 65 37 1
+20 1 76 76 68 1
+21 2 104 86 65 1
+22 3 91 84 34 1
+23 3 100 93 53 1
+24 2 78 40 31 1
+25 1 112 73 50 1
+26 2 89 78 70 1
+27 1 89 78 24 1
+28 1 112 49 36 1
+29 1 82 54 40 1
+30 3 107 67 38 1
+31 1 80 54 46 1
+32 1 84 48 36 1
+33 1 97 93 60 1
+34 2 89 65 49 1
+35 2 47 32 26 1
+36 2 58 49 46 1
+37 4 84 56 50 1
+38 4 94 67 29 1
+39 5 103 89 43 1
+40 2 64 53 25 1
+41 2 51 39 34 1
+42 4 83 71 27 1
+43 1 91 48 40 1
+44 1 61 50 28 1
+45 1 59 56 44 1
+46 1 58 29 25 1
+47 4 34 27 25 1
+48 2 106 80 65 1
+49 2 103 47 43 1
+50 3 54 53 25 1
+51 2 81 80 78 1
+52 1 99 69 37 1
+53 2 39 38 31 1
+54 1 80 74 27 1
+55 3 98 73 29 1
+56 2 57 34 33 1
+57 1 89 61 44 1
+58 2 77 36 34 1
+59 2 94 89 52 1
+60 1 74 55 51 1
+61 2 113 71 20 1
+62 2 97 58 40 1
+63 2 66 54 39 1
+64 1 59 55 44 1
+65 3 42 34 31 1
+66 1 84 49 32 1
+67 3 81 77 54 1
+68 1 97 50 40 1
+69 1 106 92 51 1
+70 1 120 60 56 1
+CONTAINERS
+1 1 587 220 233

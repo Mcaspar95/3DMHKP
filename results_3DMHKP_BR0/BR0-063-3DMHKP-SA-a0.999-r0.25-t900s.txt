@@ -1,0 +1,110 @@
+Instance: BR0-063
+Solver: simulated annealing (sequence decoder)
+Value model: v_i = c_i * volume_i (volume)
+Boxes: 81 (1 types)
+Containers: 1 (1 types)
+
+Run started: 2026-09-13 12:30:34
+Command: 3DMHKP-SA.py --instance-files /home/mcaspar/3DMHKP/BischoffRatcliff/BR0/BR0-063.txt --value-mode volume --time-limit 900.0 --results-dir /home/mcaspar/3DMHKP/results_3DMHKP_BR0   [launched by: main_slurm.py --id 62 --num_cpu 1 --time-limit 900]
+Time limit: 900.0 s per instance
+Runtime: 900.00 s (SA loop 900.00 s, stopped on time limit)
+Packed value (SA incumbent / lower bound): 25370472.0
+0-1 knapsack bound (1D, valid under rotation): 29782728.0
+Continuous-knapsack relaxation: 29782728.0
+Gap to the 0-1 bound: 14.81%
+Greedy (initial decode) value: 23164344.0
+SA improvement over greedy: +2206128.0
+
+SA parameters:
+  time limit: 900.0 s, max iterations: 500000000
+  T0: 350238.38 (calibrated, 238 worsening draws, target accept 35%)
+  schedule: time-based, T0 -> 79842.43 over 900s (alpha unused)
+  reheat threshold: 5753 it, ceiling 87559.59 (25% of T0) decaying x0.9 per reheat
+  ep limit: 0 (unlimited), value mode: volume
+  move weights: swap=1, promote=1.5, demote=1.5, orient=1, container=0.5 (disabled: relocate, 2opt)
+  seed: 583376075
+
+SA statistics:
+  iterations: 149991 in 900.00 s (167 it/s)
+  stopped on: time limit
+  accepted: 77909, rejected: 72081, no-move draws: 0, reheats: 24
+  acceptance rate: 51.9%
+  T at exit: 79842.4
+  last improvement: iteration 59584 at 339.9 s, 38% into the run
+  verification: ok
+
+Boxes packed: 69 / 81
+Volume utilization: 25370472 / 30089620 = 84.3%
+
+Container 0 (type 1, 587x220x233): 69 boxes, value 25370472.0, utilization 84.3%
+
+Placements (box, type, container, position, oriented dims):
+  box    2 type 1 -> container 0 pos (164, 135, 59) dims (82, 59, 76)
+  box    4 type 1 -> container 0 pos (328, 59, 0) dims (82, 59, 76)
+  box    5 type 1 -> container 0 pos (410, 158, 0) dims (82, 59, 76)
+  box    6 type 1 -> container 0 pos (469, 0, 59) dims (59, 76, 82)
+  box    7 type 1 -> container 0 pos (246, 0, 0) dims (82, 76, 59)
+  box    8 type 1 -> container 0 pos (469, 0, 141) dims (59, 76, 82)
+  box    9 type 1 -> container 0 pos (82, 152, 152) dims (82, 59, 76)
+  box   10 type 1 -> container 0 pos (200, 0, 59) dims (59, 76, 82)
+  box   11 type 1 -> container 0 pos (328, 0, 0) dims (82, 59, 76)
+  box   12 type 1 -> container 0 pos (469, 76, 135) dims (59, 82, 76)
+  box   13 type 1 -> container 0 pos (164, 135, 135) dims (59, 76, 82)
+  box   14 type 1 -> container 0 pos (410, 158, 76) dims (82, 59, 76)
+  box   15 type 1 -> container 0 pos (82, 82, 135) dims (82, 59, 76)
+  box   16 type 1 -> container 0 pos (410, 158, 152) dims (82, 59, 76)
+  box   19 type 1 -> container 0 pos (0, 59, 59) dims (76, 82, 59)
+  box   22 type 1 -> container 0 pos (328, 0, 76) dims (59, 82, 76)
+  box   23 type 1 -> container 0 pos (328, 82, 135) dims (76, 59, 82)
+  box   24 type 1 -> container 0 pos (82, 152, 0) dims (82, 59, 76)
+  box   25 type 1 -> container 0 pos (141, 0, 59) dims (59, 76, 82)
+  box   26 type 1 -> container 0 pos (246, 76, 0) dims (76, 82, 59)
+  box   27 type 1 -> container 0 pos (200, 0, 141) dims (59, 76, 82)
+  box   28 type 1 -> container 0 pos (492, 0, 0) dims (76, 82, 59)
+  box   29 type 1 -> container 0 pos (82, 76, 0) dims (82, 76, 59)
+  box   30 type 1 -> container 0 pos (246, 158, 76) dims (82, 59, 76)
+  box   32 type 1 -> container 0 pos (82, 0, 0) dims (82, 76, 59)
+  box   33 type 1 -> container 0 pos (492, 158, 0) dims (82, 59, 76)
+  box   34 type 1 -> container 0 pos (328, 158, 152) dims (82, 59, 76)
+  box   35 type 1 -> container 0 pos (528, 0, 59) dims (59, 82, 76)
+  box   36 type 1 -> container 0 pos (0, 0, 76) dims (82, 59, 76)
+  box   37 type 1 -> container 0 pos (82, 0, 135) dims (59, 82, 76)
+  box   38 type 1 -> container 0 pos (492, 82, 0) dims (82, 76, 59)
+  box   39 type 1 -> container 0 pos (528, 82, 141) dims (59, 76, 82)
+  box   40 type 1 -> container 0 pos (0, 0, 152) dims (82, 59, 76)
+  box   41 type 1 -> container 0 pos (259, 82, 59) dims (59, 76, 82)
+  box   42 type 1 -> container 0 pos (0, 141, 82) dims (59, 76, 82)
+  box   43 type 1 -> container 0 pos (328, 0, 152) dims (82, 59, 76)
+  box   44 type 1 -> container 0 pos (410, 0, 141) dims (59, 76, 82)
+  box   45 type 1 -> container 0 pos (246, 158, 0) dims (82, 59, 76)
+  box   46 type 1 -> container 0 pos (259, 0, 59) dims (59, 82, 76)
+  box   47 type 1 -> container 0 pos (0, 141, 0) dims (76, 59, 82)
+  box   48 type 1 -> container 0 pos (410, 76, 0) dims (59, 82, 76)
+  box   49 type 1 -> container 0 pos (528, 0, 135) dims (59, 82, 76)
+  box   50 type 1 -> container 0 pos (82, 82, 59) dims (82, 59, 76)
+  box   52 type 1 -> container 0 pos (259, 0, 135) dims (59, 82, 76)
+  box   53 type 1 -> container 0 pos (259, 82, 141) dims (59, 76, 82)
+  box   54 type 1 -> container 0 pos (328, 118, 0) dims (59, 82, 76)
+  box   55 type 1 -> container 0 pos (328, 82, 76) dims (82, 76, 59)
+  box   57 type 1 -> container 0 pos (141, 0, 141) dims (59, 76, 82)
+  box   58 type 1 -> container 0 pos (410, 76, 152) dims (59, 82, 76)
+  box   59 type 1 -> container 0 pos (492, 158, 76) dims (82, 59, 76)
+  box   60 type 1 -> container 0 pos (164, 76, 152) dims (82, 59, 76)
+  box   61 type 1 -> container 0 pos (82, 152, 76) dims (82, 59, 76)
+  box   62 type 1 -> container 0 pos (410, 0, 59) dims (59, 76, 82)
+  box   63 type 1 -> container 0 pos (528, 82, 59) dims (59, 76, 82)
+  box   64 type 1 -> container 0 pos (82, 0, 59) dims (59, 82, 76)
+  box   66 type 1 -> container 0 pos (164, 76, 0) dims (82, 59, 76)
+  box   68 type 1 -> container 0 pos (410, 76, 76) dims (59, 82, 76)
+  box   69 type 1 -> container 0 pos (246, 158, 152) dims (82, 59, 76)
+  box   70 type 1 -> container 0 pos (0, 59, 0) dims (76, 82, 59)
+  box   71 type 1 -> container 0 pos (492, 158, 152) dims (82, 59, 76)
+  box   72 type 1 -> container 0 pos (328, 158, 76) dims (82, 59, 76)
+  box   73 type 1 -> container 0 pos (0, 141, 164) dims (82, 76, 59)
+  box   74 type 1 -> container 0 pos (164, 135, 0) dims (76, 82, 59)
+  box   75 type 1 -> container 0 pos (0, 0, 0) dims (82, 59, 76)
+  box   76 type 1 -> container 0 pos (0, 59, 118) dims (82, 76, 59)
+  box   77 type 1 -> container 0 pos (410, 0, 0) dims (82, 76, 59)
+  box   78 type 1 -> container 0 pos (164, 76, 76) dims (82, 59, 76)
+  box   79 type 1 -> container 0 pos (164, 0, 0) dims (82, 76, 59)
+  box   80 type 1 -> container 0 pos (469, 76, 59) dims (59, 82, 76)

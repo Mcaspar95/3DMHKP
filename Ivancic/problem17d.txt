@@ -1,0 +1,26 @@
+# Ivancic, Mathur & Mohanty (1989) benchmark problem 17d
+# Container type 3 only (homogeneous container supply)
+# Cross-referenced against Bortfeldt (2000), OR Spektrum 22:239-261, Table 1,
+# where this is problem "17d". Bortfeldt confirms the full Ivancic
+# benchmark has 64 instances: 17 base problems with heterogeneous (2- or
+# 3-type) container supply, each expanded into single-container-type
+# variants (4 problems x 2 + 13 problems x 3 = 47 derived + 17 base = 64).
+# Source for groups 16-17 (missing from this folder until now): OR-Library
+# (Beasley), file thpack9, http://people.brunel.ac.uk/~mastjjb/jeb/orlib/files/thpack9.txt
+# - the original machine-readable transcription of Ivancic et al.'s data,
+# cited directly by Bortfeldt (2000) and by Bischoff & Ratcliff (1995).
+# One data-entry defect was found and fixed there: the box-3 width
+# orientation flag was missing on 3 identical lines (problems 18-20 in
+# thpack9's numbering); all other flags in the file are 1 (rotation
+# permitted on every axis for every box), so the missing flag was set to 1.
+# Format: BOXES rows = type_id count length width height
+#         CONTAINERS rows = type_id length width height cost
+
+BOXES
+1 25 21 13 11
+2 20 11 13 19
+3 20 10 14 6
+4 34 8 13 5
+
+CONTAINERS
+3 25 60 43 6450.0

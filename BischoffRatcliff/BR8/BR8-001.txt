@@ -1,0 +1,62 @@
+# Bischoff & Ratcliff container-loading instance BR8-1, converted from
+# BR/BR8/1.json (kcliu2/CLP-Datasets on GitHub).
+# Source: Davies, A.P. & Bischoff, E.E. (1999), EJOR 114(3):509-527.
+# Dataset repository: https://github.com/kcliu2/CLP-Datasets
+#
+# Single-container 3D knapsack: one container, boxes carry explicit profits.
+# Format: BOXES rows      = type_id count length width height value_coefficient
+#         CONTAINERS rows = type_id count length width height
+#
+# The value_coefficient column is 1 for every box type: the original CLP
+# objective (maximize packed volume) is already encoded as profit = volume
+# in the source data (Value == Length*Height*Depth for every box type here).
+# Run these instances under the default --value-mode volume.
+#! value-mode: volume
+#
+# CAUTION - orientation constraints dropped in this conversion: the source
+# data restricts, per box type, which of its 3 axes may be placed vertical
+# (fields C1_Length/C1_Height/C1_Depth in the source JSON -- 1 = that axis
+# may be vertical, 0 = may not). This solver's BOXES row format has no field
+# to carry that restriction, and the solver always tries all 6 axis-aligned
+# orientations for every box. These converted instances therefore solve the
+# FREE-ROTATION relaxation of the true BR benchmark (partial orientation
+# restriction). Expect equal-or-better packed volume than published results
+# that enforce the restriction; the two are not directly comparable.
+#
+# Boxes: 142 (30 distinct types)
+# Total profit if all packed: 30085799
+# Total box volume: 30085799   Container volume: 30089620   (ratio 1.000)
+
+BOXES
+1 7 108 76 30 1
+2 4 110 43 25 1
+3 5 92 81 55 1
+4 5 81 33 28 1
+5 2 120 99 73 1
+6 4 111 70 48 1
+7 5 98 72 46 1
+8 5 95 66 31 1
+9 5 85 84 30 1
+10 7 71 32 25 1
+11 8 36 34 25 1
+12 6 97 67 62 1
+13 4 33 25 23 1
+14 4 95 27 26 1
+15 4 94 81 44 1
+16 3 41 39 38 1
+17 5 104 74 65 1
+18 4 52 41 36 1
+19 3 104 78 34 1
+20 3 83 77 46 1
+21 6 74 56 30 1
+22 5 95 80 63 1
+23 6 56 35 33 1
+24 3 96 95 49 1
+25 3 88 68 30 1
+26 3 80 65 29 1
+27 5 60 55 41 1
+28 8 113 56 20 1
+29 3 93 31 31 1
+30 7 87 83 26 1
+CONTAINERS
+1 1 587 220 233

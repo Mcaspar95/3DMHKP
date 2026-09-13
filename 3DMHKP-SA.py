@@ -108,6 +108,13 @@ MAX_ITERATIONS = 500000000  # maximum SA iterations
 TIME_LIMIT = 1800.0         # total wall-clock seconds per instance
 EP_LIMIT = 0               # max extreme points scanned per box, 0 = unlimited
 
+# Ceiling on the 0-1 knapsack bound's DP table (see knapsack01_bound). 5e6
+# comfortably covers BR0 (cap ~1.5e6) and BR1 (~3.0e6) uncapped - both keep
+# today's exact bound values - while still cutting BR6-BR18's uncapped ~3e7
+# (gcd(capacity, volumes) == 1 there) down to a runtime of seconds rather
+# than several CPU-minutes per instance.
+MAX_DP_STATES = 5_000_000
+
 # Why T_INIT is derived from the objective rather than fixed at 100 as in
 # 3dp-cptp-SA.py: there the objective was revenue minus travel cost, of order
 # 1e2. Here the objective is stowed VALUE, which spans more than two orders of
@@ -439,7 +446,18 @@ def knapsack01_bound(inst):
     meaningless rather than impressive.
 
     Volumes are divided through by their gcd to keep the DP table small; on the
-    ep3 instances that is the difference between ~4e6 and ~4e3 states.
+    ep3 instances that is the difference between ~4e6 and ~4e3 states. That
+    reduction is lossless (the gcd divides every volume exactly), but it is not
+    always enough: gcd(capacity, all box volumes) == 1 on most of the BR6-BR18
+    classes (heterogeneous real-world box dimensions with no common factor),
+    which leaves cap == capacity itself - around 3e7 on the BR set, ~4e9
+    dp[] updates, several CPU-minutes in pure Python. MAX_DP_STATES guards
+    against that: past the cap, volumes are floored to a coarser unit on top
+    of the gcd reduction. Flooring both the per-box weight and the capacity by
+    the same extra factor can only make previously-feasible subsets *more*
+    comfortably feasible (never less), so the DP optimum over the coarsened
+    instance is still >= the exact optimum - the bound stays a valid upper
+    bound, just very slightly looser than the uncapped DP would give.
     """
     capacity = sum(c["vol"] for c in inst["containers"])
     boxes = inst["boxes"]
@@ -451,9 +469,16 @@ def knapsack01_bound(inst):
         divisor = gcd(divisor, b["vol"])
     cap = capacity // divisor
 
+    if cap > MAX_DP_STATES:
+        scale = -(-cap // MAX_DP_STATES)  # ceil(cap / MAX_DP_STATES)
+        divisor *= scale
+        cap = capacity // divisor
+
     dp = [0.0] * (cap + 1)
     for b in boxes:
         w = b["vol"] // divisor
+        if w == 0:
+            continue  # negligible at this resolution; would be a free (zero-cost) item
         v = b["value"]
         for c in range(cap, w - 1, -1):
             cand = dp[c - w] + v

@@ -1,0 +1,152 @@
+# Bischoff & Ratcliff container-loading instance BR17-71, converted from
+# BR/BR17/71.json (kcliu2/CLP-Datasets on GitHub).
+# Source: Liu, C., Smith-Miles, K., Wauters, T. & Costa, A.M. (2025), Computers & Operations Research 182:107111.
+# Dataset repository: https://github.com/kcliu2/CLP-Datasets
+#
+# Single-container 3D knapsack: one container, boxes carry explicit profits.
+# Format: BOXES rows      = type_id count length width height value_coefficient
+#         CONTAINERS rows = type_id count length width height
+#
+# The value_coefficient column is 1 for every box type: the original CLP
+# objective (maximize packed volume) is already encoded as profit = volume
+# in the source data (Value == Length*Height*Depth for every box type here).
+# Run these instances under the default --value-mode volume.
+#! value-mode: volume
+#
+# CAUTION - orientation constraints dropped in this conversion: the source
+# data restricts, per box type, which of its 3 axes may be placed vertical
+# (fields C1_Length/C1_Height/C1_Depth in the source JSON -- 1 = that axis
+# may be vertical, 0 = may not). This solver's BOXES row format has no field
+# to carry that restriction, and the solver always tries all 6 axis-aligned
+# orientations for every box. These converted instances therefore solve the
+# FREE-ROTATION relaxation of the true BR benchmark (partial orientation
+# restriction). Expect equal-or-better packed volume than published results
+# that enforce the restriction; the two are not directly comparable.
+#
+# Boxes: 125 (120 distinct types)
+# Total profit if all packed: 30084066
+# Total box volume: 30084066   Container volume: 30089620   (ratio 1.000)
+
+BOXES
+1 1 99 64 62 1
+2 1 110 43 37 1
+3 1 96 73 50 1
+4 1 114 53 35 1
+5 1 105 27 22 1
+6 1 75 66 51 1
+7 1 72 61 48 1
+8 1 102 46 32 1
+9 1 59 57 45 1
+10 1 111 45 33 1
+11 1 90 74 58 1
+12 1 55 51 34 1
+13 1 98 73 21 1
+14 1 85 61 35 1
+15 1 41 35 31 1
+16 1 89 86 77 1
+17 1 61 55 47 1
+18 1 96 66 45 1
+19 2 98 79 58 1
+20 1 89 61 34 1
+21 1 117 73 29 1
+22 1 80 70 27 1
+23 1 111 71 25 1
+24 2 74 44 22 1
+25 1 51 36 26 1
+26 1 62 32 22 1
+27 1 79 63 56 1
+28 1 76 64 45 1
+29 1 97 74 66 1
+30 1 72 44 28 1
+31 1 99 73 31 1
+32 1 56 54 28 1
+33 1 67 53 46 1
+34 1 70 61 29 1
+35 1 115 45 37 1
+36 1 86 80 55 1
+37 1 90 62 51 1
+38 1 64 60 20 1
+39 1 87 78 46 1
+40 1 63 39 23 1
+41 1 75 65 55 1
+42 1 96 95 61 1
+43 1 86 86 66 1
+44 1 63 61 33 1
+45 1 76 31 23 1
+46 1 57 35 23 1
+47 1 78 76 73 1
+48 1 96 62 35 1
+49 1 89 68 32 1
+50 1 77 77 62 1
+51 1 100 72 41 1
+52 1 96 75 29 1
+53 1 69 65 62 1
+54 1 85 45 20 1
+55 1 46 42 30 1
+56 1 79 58 40 1
+57 1 102 93 55 1
+58 1 78 61 54 1
+59 1 93 47 33 1
+60 1 57 31 23 1
+61 1 85 45 25 1
+62 1 87 34 25 1
+63 1 95 63 58 1
+64 1 49 28 25 1
+65 1 98 81 49 1
+66 1 71 69 42 1
+67 1 117 66 37 1
+68 1 47 41 34 1
+69 1 93 60 26 1
+70 1 82 57 49 1
+71 1 77 64 63 1
+72 1 91 61 38 1
+73 1 116 76 58 1
+74 1 92 61 39 1
+75 1 120 66 28 1
+76 1 69 42 21 1
+77 1 80 61 36 1
+78 1 75 51 20 1
+79 1 119 91 34 1
+80 1 60 49 39 1
+81 1 89 65 53 1
+82 1 102 82 65 1
+83 1 92 78 63 1
+84 1 109 87 65 1
+85 1 96 93 80 1
+86 1 91 66 33 1
+87 1 90 73 47 1
+88 1 65 64 36 1
+89 1 76 60 51 1
+90 1 88 56 26 1
+91 1 73 61 34 1
+92 1 64 51 43 1
+93 1 73 69 61 1
+94 1 48 45 31 1
+95 1 106 40 27 1
+96 1 76 55 33 1
+97 1 103 87 69 1
+98 1 96 55 51 1
+99 1 73 41 20 1
+100 1 92 55 27 1
+101 1 100 37 33 1
+102 1 59 47 40 1
+103 1 102 78 33 1
+104 2 92 53 31 1
+105 1 100 92 73 1
+106 2 81 77 73 1
+107 1 77 62 31 1
+108 1 92 73 39 1
+109 1 116 54 38 1
+110 2 113 56 34 1
+111 1 96 92 74 1
+112 1 76 60 59 1
+113 1 59 54 28 1
+114 1 108 82 76 1
+115 1 92 90 43 1
+116 1 73 49 46 1
+117 1 68 64 61 1
+118 1 77 77 64 1
+119 1 78 58 48 1
+120 1 62 44 29 1
+CONTAINERS
+1 1 587 220 233
