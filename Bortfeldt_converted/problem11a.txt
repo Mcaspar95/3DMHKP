@@ -1,0 +1,36 @@
+# Bortfeldt (2000), OR Spektrum 22:239-261 - destination-restricted Ivancic
+# et al. (1989) benchmark problem11a, converted from Bortfeldt/problem11a.txt
+# into 3DMHKP-SA.py's BOXES/CONTAINERS format.
+#
+# TWO RELAXATIONS versus the source file - see convert_bortfeldt.py for the
+# full rationale:
+#   1. Destination restriction DROPPED (not representable by this solver's
+#      instance format; the source's per-box-type destination column is
+#      discarded).
+#   2. Container COST replaced by a fixed COUNT of 1 per listed container
+#      type - this turns Bortfeldt's cost-minimising multiple-container
+#      problem (unlimited containers per type, pack every box, minimise
+#      cost) into a bounded 3D knapsack (fixed containers, maximise packed
+#      value) - the same framing used for BR0-BR18 and ep3 elsewhere in this
+#      project. Results here are NOT comparable to Bortfeldt's published
+#      cost/volume-utilisation figures.
+#
+# value_coefficient = 1 for every box type: v_i = volume_i under
+# --value-mode volume (the source data's "cost" column, being a per-CONTAINER
+# figure, has no bearing on box value).
+#! value-mode: volume
+#
+# Format: BOXES rows      = type_id count length width height value_coefficient
+#         CONTAINERS rows = type_id count length width height
+
+
+BOXES
+1 30 5 11 14 1
+2 28 9 12 10 1
+3 37 7 13 17 1
+4 23 10 10 8 1
+
+CONTAINERS
+1 1 21 18 24
+2 1 19 15 26
+3 1 23 20 27

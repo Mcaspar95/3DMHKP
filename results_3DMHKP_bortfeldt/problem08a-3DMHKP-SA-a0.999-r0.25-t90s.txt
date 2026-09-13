@@ -1,0 +1,71 @@
+Instance: problem08a
+Solver: simulated annealing (sequence decoder)
+Value model: v_i = c_i * volume_i (volume)
+Boxes: 95 (5 types)
+Containers: 3 (3 types)
+
+Run started: 2026-09-13 17:57:30
+Command: 3DMHKP-SA.py --instance-files /home/mcaspar/3DMHKP/Bortfeldt_converted/problem08a.txt --value-mode volume --time-limit 90.0 --results-dir /home/mcaspar/3DMHKP/results_3DMHKP_bortfeldt   [launched by: main_slurm_bortfeldt.py --id 27 --num_cpu 1 --time-limit 90]
+Time limit: 90.0 s per instance
+Runtime: 90.00 s (SA loop 90.00 s, stopped on time limit)
+Packed value (SA incumbent / lower bound): 21418.0
+0-1 knapsack bound (1D, valid under rotation): 23260.0
+Continuous-knapsack relaxation: 23260.0
+Gap to the 0-1 bound: 7.92%
+Greedy (initial decode) value: 18660.0
+SA improvement over greedy: +2758.0
+
+SA parameters:
+  time limit: 90.0 s, max iterations: 500000000
+  T0: 642.97 (calibrated, 395 worsening draws, target accept 35%)
+  schedule: time-based, T0 -> 146.57 over 90s (alpha unused)
+  reheat threshold: 5753 it, ceiling 160.74 (25% of T0) decaying x0.9 per reheat
+  ep limit: 0 (unlimited), value mode: volume
+  move weights: swap=1, promote=1.5, demote=1.5, orient=1, container=0.5 (disabled: relocate, 2opt)
+  seed: 1431326491
+
+SA statistics:
+  iterations: 450819 in 90.00 s (5009 it/s)
+  stopped on: time limit
+  accepted: 335309, rejected: 115509, no-move draws: 0, reheats: 73
+  acceptance rate: 74.4%
+  T at exit: 146.574
+  last improvement: iteration 325058 at 64.9 s, 72% into the run
+  verification: ok
+
+Boxes packed: 28 / 95
+Volume utilization: 21418 / 23260 = 92.1%
+
+Container 0 (type 1, 17x16x20): 6 boxes, value 4902.0, utilization 90.1%
+Container 1 (type 2, 23x18x30): 17 boxes, value 11880.0, utilization 95.7%
+Container 2 (type 3, 15x12x30): 5 boxes, value 4636.0, utilization 85.9%
+
+Placements (box, type, container, position, oriented dims):
+  box    6 type 1 -> container 2 pos (8, 0, 0) dims (6, 8, 11)
+  box    7 type 1 -> container 0 pos (0, 0, 13) dims (11, 8, 6)
+  box   11 type 1 -> container 1 pos (0, 12, 11) dims (8, 6, 11)
+  box   14 type 1 -> container 1 pos (0, 12, 0) dims (8, 6, 11)
+  box   17 type 1 -> container 0 pos (0, 8, 13) dims (11, 8, 6)
+  box   25 type 2 -> container 1 pos (8, 0, 0) dims (15, 9, 5)
+  box   27 type 2 -> container 0 pos (12, 0, 0) dims (5, 15, 9)
+  box   29 type 2 -> container 1 pos (8, 9, 25) dims (15, 9, 5)
+  box   30 type 2 -> container 1 pos (8, 0, 25) dims (15, 9, 5)
+  box   31 type 2 -> container 1 pos (8, 9, 0) dims (15, 9, 5)
+  box   34 type 2 -> container 0 pos (12, 0, 9) dims (5, 15, 9)
+  box   38 type 3 -> container 2 pos (8, 8, 0) dims (7, 4, 13)
+  box   39 type 3 -> container 1 pos (19, 0, 18) dims (4, 13, 7)
+  box   41 type 3 -> container 1 pos (19, 0, 5) dims (4, 7, 13)
+  box   43 type 3 -> container 1 pos (0, 0, 26) dims (7, 13, 4)
+  box   44 type 3 -> container 1 pos (8, 14, 5) dims (7, 4, 13)
+  box   46 type 3 -> container 1 pos (15, 14, 5) dims (7, 4, 13)
+  box   47 type 3 -> container 1 pos (19, 7, 5) dims (4, 7, 13)
+  box   49 type 3 -> container 1 pos (8, 14, 18) dims (13, 4, 7)
+  box   50 type 4 -> container 2 pos (0, 0, 21) dims (13, 12, 8)
+  box   52 type 4 -> container 0 pos (0, 0, 0) dims (12, 8, 13)
+  box   59 type 4 -> container 0 pos (0, 8, 0) dims (12, 8, 13)
+  box   60 type 4 -> container 1 pos (0, 0, 13) dims (8, 12, 13)
+  box   62 type 4 -> container 2 pos (0, 0, 0) dims (8, 12, 13)
+  box   65 type 4 -> container 1 pos (0, 0, 0) dims (8, 12, 13)
+  box   70 type 4 -> container 2 pos (0, 0, 13) dims (13, 12, 8)
+  box   76 type 5 -> container 1 pos (8, 0, 15) dims (11, 14, 10)
+  box   89 type 5 -> container 1 pos (8, 0, 5) dims (11, 14, 10)

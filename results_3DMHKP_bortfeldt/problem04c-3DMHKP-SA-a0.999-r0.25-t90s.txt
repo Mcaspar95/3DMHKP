@@ -1,0 +1,43 @@
+Instance: problem04c
+Solver: simulated annealing (sequence decoder)
+Value model: v_i = c_i * volume_i (volume)
+Boxes: 110 (2 types)
+Containers: 1 (1 types)
+
+Run started: 2026-09-13 17:57:30
+Command: 3DMHKP-SA.py --instance-files /home/mcaspar/3DMHKP/Bortfeldt_converted/problem04c.txt --value-mode volume --time-limit 90.0 --results-dir /home/mcaspar/3DMHKP/results_3DMHKP_bortfeldt   [launched by: main_slurm_bortfeldt.py --id 13 --num_cpu 1 --time-limit 90]
+Time limit: 90.0 s per instance
+Runtime: 90.00 s (SA loop 90.00 s, stopped on time limit)
+Packed value (SA incumbent / lower bound): 51200.0
+0-1 knapsack bound (1D, valid under rotation): 73984.0
+Continuous-knapsack relaxation: 74880.0
+Gap to the 0-1 bound: 30.80%
+Greedy (initial decode) value: 48384.0
+SA improvement over greedy: +2816.0
+
+SA parameters:
+  time limit: 90.0 s, max iterations: 500000000
+  T0: 23043.90 (calibrated, 1 worsening draws, target accept 35%)
+  schedule: time-based, T0 -> 5253.23 over 90s (alpha unused)
+  reheat threshold: 5753 it, ceiling 5760.98 (25% of T0) decaying x0.9 per reheat
+  ep limit: 0 (unlimited), value mode: volume
+  move weights: swap=1, promote=1.5, demote=1.5, orient=1, container=0.5 (disabled: relocate, 2opt)
+  seed: 667230918
+
+SA statistics:
+  iterations: 4158801 in 90.00 s (46209 it/s)
+  stopped on: time limit
+  accepted: 3860641, rejected: 298159, no-move draws: 0, reheats: 722
+  acceptance rate: 92.8%
+  T at exit: 5253.23
+  last improvement: iteration 44 at 0.0 s, 0% into the run
+  verification: ok
+
+Boxes packed: 2 / 110
+Volume utilization: 51200 / 74880 = 68.4%
+
+Container 0 (type 2, 40x36x52): 2 boxes, value 51200.0, utilization 68.4%
+
+Placements (box, type, container, position, oriented dims):
+  box   59 type 2 -> container 0 pos (0, 0, 0) dims (40, 32, 20)
+  box   64 type 2 -> container 0 pos (0, 0, 20) dims (40, 20, 32)

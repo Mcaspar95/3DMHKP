@@ -1,0 +1,68 @@
+Instance: problem15a
+Solver: simulated annealing (sequence decoder)
+Value model: v_i = c_i * volume_i (volume)
+Boxes: 85 (4 types)
+Containers: 2 (2 types)
+
+Run started: 2026-09-13 17:57:30
+Command: 3DMHKP-SA.py --instance-files /home/mcaspar/3DMHKP/Bortfeldt_converted/problem15a.txt --value-mode volume --time-limit 90.0 --results-dir /home/mcaspar/3DMHKP/results_3DMHKP_bortfeldt   [launched by: main_slurm_bortfeldt.py --id 53 --num_cpu 1 --time-limit 90]
+Time limit: 90.0 s per instance
+Runtime: 90.00 s (SA loop 90.00 s, stopped on time limit)
+Packed value (SA incumbent / lower bound): 10071.0
+0-1 knapsack bound (1D, valid under rotation): 10656.0
+Continuous-knapsack relaxation: 10656.0
+Gap to the 0-1 bound: 5.49%
+Greedy (initial decode) value: 8616.0
+SA improvement over greedy: +1455.0
+
+SA parameters:
+  time limit: 90.0 s, max iterations: 500000000
+  T0: 320.05 (calibrated, 181 worsening draws, target accept 35%)
+  schedule: time-based, T0 -> 72.96 over 90s (alpha unused)
+  reheat threshold: 5753 it, ceiling 80.01 (25% of T0) decaying x0.9 per reheat
+  ep limit: 0 (unlimited), value mode: volume
+  move weights: swap=1, promote=1.5, demote=1.5, orient=1, container=0.5 (disabled: relocate, 2opt)
+  seed: 11075612
+
+SA statistics:
+  iterations: 509571 in 90.00 s (5662 it/s)
+  stopped on: time limit
+  accepted: 378489, rejected: 131081, no-move draws: 0, reheats: 86
+  acceptance rate: 74.3%
+  T at exit: 72.9615
+  last improvement: iteration 344881 at 60.3 s, 67% into the run
+  verification: ok
+
+Boxes packed: 26 / 85
+Volume utilization: 10071 / 10656 = 94.5%
+
+Container 0 (type 1, 28x14x18): 19 boxes, value 6714.0, utilization 95.2%
+Container 1 (type 2, 15x12x20): 7 boxes, value 3357.0, utilization 93.2%
+
+Placements (box, type, container, position, oriented dims):
+  box    5 type 1 -> container 0 pos (0, 6, 9) dims (6, 6, 9)
+  box    8 type 1 -> container 0 pos (0, 0, 0) dims (6, 6, 9)
+  box    9 type 1 -> container 0 pos (0, 0, 9) dims (6, 6, 9)
+  box   17 type 1 -> container 1 pos (8, 0, 9) dims (6, 9, 6)
+  box   19 type 1 -> container 0 pos (0, 6, 0) dims (6, 6, 9)
+  box   25 type 2 -> container 1 pos (0, 0, 0) dims (8, 12, 10)
+  box   47 type 2 -> container 1 pos (0, 0, 10) dims (8, 12, 10)
+  box   50 type 3 -> container 0 pos (14, 9, 11) dims (4, 5, 7)
+  box   51 type 3 -> container 0 pos (24, 0, 5) dims (4, 7, 5)
+  box   53 type 3 -> container 0 pos (24, 0, 0) dims (4, 7, 5)
+  box   55 type 3 -> container 0 pos (22, 9, 11) dims (5, 4, 7)
+  box   56 type 3 -> container 0 pos (24, 7, 5) dims (4, 7, 5)
+  box   57 type 3 -> container 1 pos (8, 8, 15) dims (7, 4, 5)
+  box   58 type 3 -> container 0 pos (10, 9, 11) dims (4, 5, 7)
+  box   59 type 3 -> container 0 pos (6, 9, 11) dims (4, 5, 7)
+  box   60 type 3 -> container 1 pos (8, 4, 15) dims (7, 4, 5)
+  box   61 type 3 -> container 0 pos (18, 9, 11) dims (4, 5, 7)
+  box   62 type 3 -> container 0 pos (24, 7, 0) dims (4, 7, 5)
+  box   64 type 3 -> container 1 pos (8, 0, 15) dims (7, 4, 5)
+  box   68 type 4 -> container 0 pos (15, 7, 0) dims (9, 7, 11)
+  box   69 type 4 -> container 0 pos (6, 7, 0) dims (9, 7, 11)
+  box   73 type 4 -> container 0 pos (6, 0, 0) dims (9, 7, 11)
+  box   75 type 4 -> container 1 pos (8, 0, 0) dims (7, 11, 9)
+  box   76 type 4 -> container 0 pos (6, 0, 11) dims (11, 9, 7)
+  box   82 type 4 -> container 0 pos (15, 0, 0) dims (9, 7, 11)
+  box   84 type 4 -> container 0 pos (17, 0, 11) dims (11, 9, 7)

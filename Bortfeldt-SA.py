@@ -1,0 +1,1149 @@
+#!/usr/bin/env python3
+"""Simulated annealing for Bortfeldt's (2000) MULTIPLE container loading
+problem - the problem his heuristic MCL actually solves, so that our results
+are directly comparable with his Table 1.
+
+Why this file exists next to 3DMHKP-SA.py
+=========================================
+3DMHKP-SA.py solves a 3D multiple KNAPSACK problem:
+
+    fixed container supply, boxes carry a value, pack a SUBSET of the boxes
+    into the given containers so that packed value is maximal.
+
+Bortfeldt (2000), OR Spektrum 22:239-261, Sec. 2, poses a different problem
+(a bin-packing / fleet-sizing one), and the numbers in his Table 1 are the
+answers to THAT question:
+
+    container supply UNLIMITED per available type, EVERY box must be shipped,
+    minimise the total COST of the containers actually used.
+
+Running 3DMHKP-SA.py on Bortfeldt's instances therefore answers a question he
+never asked, which is why results from the two are not comparable. This file
+implements his problem instead:
+
+  * unlimited containers per available type - the decoder opens as many as it
+    needs;
+  * every box is packed - a solution that leaves a box out is not a solution;
+  * the objective MINIMISED is the total cost of the opened containers.
+    Bortfeldt sets each container's cost equal to its volume ("Da die
+    Containerkosten durchweg gleich dem Containervolumen sind", Sec. 6); the
+    instance files carry that as cost = volume/10, a constant factor that
+    changes nothing about which solution is best.
+  * the DESTINATION RESTRICTION of his Sec. 6/7 extension is enforced when the
+    instance file carries a destination column (the Bortfeldt/ folder): a
+    container may then hold boxes of one destination only. Files without that
+    column (the Ivancic/ folder) are the unrestricted original problems, which
+    are the ones Table 1 reports per instance.
+
+Reported metric
+===============
+Bortfeldt reports "die mittleren erzielten Volumenauslastungen ueber alle
+benutzten Container". That is
+
+    utilisation = total box volume / total volume of the containers USED
+
+(every box is packed, so the numerator is a constant of the instance and
+minimising used container volume is the same thing as maximising this
+utilisation). The definition was verified against his published figures: it
+reproduces 1b 74.7%, 1c 65.3%, 12a 94.0%, 12b 77.8%, 12c 72.0% and 12d 87.5%
+exactly. An unweighted mean of the per-container utilisations is reported
+alongside it, but it is the volume-weighted figure above that matches his
+table.
+
+Solution encoding and decoder
+=============================
+A solution is
+
+    order     - a priority permutation of the individual boxes,
+    orient    - one index per box TYPE into that type's orientation list,
+                where the packer starts looking (per type, not per box: every
+                box ships and boxes of a type are interchangeable, so a
+                per-box gene would just make the same call n times over),
+    strategy  - a short cyclic list of container-SELECTION rules, one consumed
+                per container opened (Bortfeldt likewise drives MCL with
+                several "Container-Auswahlstrategien", Sec. 4).
+
+The decoder opens containers one at a time. For each opening it trial-packs
+every available container type (and, under the destination restriction, every
+destination still outstanding) with a deepest-bottom-left extreme-point
+packer, and commits whichever candidate the current selection rule prefers:
+
+    efficiency  minimise cost / packed volume   (cost bought per unit stowed)
+    volume      maximise packed volume          (empty the box list fastest)
+    cheap       minimise container cost         (smallest bill per opening)
+
+"efficiency" and "maximise packed/container volume" coincide here because cost
+is proportional to volume on these instances, so only the three rules above
+are kept.
+
+Because the supply is unlimited the decoder can always finish, provided every
+box fits some container type in some orientation; instances failing that are
+rejected up front rather than looping forever.
+
+Examples
+========
+    python3 Bortfeldt-SA.py --instance-files Ivancic/problem01b.txt
+    python3 Bortfeldt-SA.py --instance-files Ivancic/problem*.txt --time-limit 90
+    python3 Bortfeldt-SA.py --instance-files Bortfeldt/problem01a.txt   # restricted
+    python3 Bortfeldt-SA.py --instance-files Ivancic/problem12a.txt --greedy-only
+"""
+
+import argparse
+import math
+import random
+import shlex
+import statistics
+import sys
+import time
+from bisect import insort
+from datetime import datetime
+from itertools import permutations
+from pathlib import Path
+
+# =========================================================================
+# Parameters
+# =========================================================================
+TIME_LIMIT = 90.0          # wall-clock seconds per instance; Bortfeldt reports
+                           # 73.3 s (Ivancic set) and 89.5 s (Mohanty set) of
+                           # mean runtime for MCL, so 90 s is a like-for-like
+                           # budget rather than an arbitrary one.
+MAX_ITERATIONS = 500_000_000
+EP_LIMIT = 0               # max extreme points scanned per box, 0 = unlimited
+
+# The objective is a sum of container costs, so it moves in lumps: most
+# neighbours leave the container count untouched and score delta = 0. The
+# calibration below therefore samples until it has enough genuinely worsening
+# draws, and the schedule is time-based so that the cooling curve does not
+# depend on how many decodes per second the instance happens to allow.
+CALIBRATE_SAMPLES = 400
+TARGET_ACCEPT_INITIAL = 0.35
+TARGET_ACCEPT_FINAL = 0.01
+T_MIN = 1e-6
+
+REHEAT_FRACTION = 0.25     # reheat ceiling as a fraction of T0
+REHEAT_DECAY = 0.90        # that ceiling decays per reheat, so runs converge
+REHEAT_THRESHOLD = 3000    # iterations without improvement before a reheat
+
+STRATEGY_LEN = 8           # length of the cyclic selection-rule gene
+STRATEGIES = ("efficiency", "volume", "cheap")
+
+MOVE_WEIGHTS = {
+    "swap": 1.0,
+    "relocate": 1.0,
+    "orient": 0.7,
+    "strategy": 0.6,
+}
+_SAMPLE_TRIES = 12
+
+
+# =========================================================================
+# Instance parsing
+# =========================================================================
+def parse_instance(path):
+    """Read an Ivancic/Bortfeldt-format instance file.
+
+    BOXES      rows: type_id count length width height [destination]
+    CONTAINERS rows: type_id length width height cost
+
+    The destination column is optional: the Ivancic/ folder holds the original
+    unrestricted problems (5 fields), the Bortfeldt/ folder the
+    destination-restricted extension (6 fields).
+    """
+    box_types, container_types = [], []
+    section = None
+    saw_dest = False
+
+    with open(path) as f:
+        for lineno, raw in enumerate(f, 1):
+            line = raw.strip()
+            if not line or line.startswith("#"):
+                continue
+            upper = line.upper()
+            if upper == "BOXES":
+                section = "boxes"
+                continue
+            if upper == "CONTAINERS":
+                section = "containers"
+                continue
+
+            parts = line.split()
+            try:
+                if section == "boxes":
+                    if len(parts) not in (5, 6):
+                        raise ValueError(
+                            f"expected 5 or 6 BOXES fields, got {len(parts)}")
+                    dest = int(parts[5]) if len(parts) == 6 else None
+                    saw_dest = saw_dest or dest is not None
+                    box_types.append({
+                        "type": int(parts[0]),
+                        "count": int(parts[1]),
+                        "dims": (int(parts[2]), int(parts[3]), int(parts[4])),
+                        "dest": dest,
+                    })
+                elif section == "containers":
+                    if len(parts) != 5:
+                        raise ValueError(
+                            f"expected 5 CONTAINERS fields, got {len(parts)}")
+                    container_types.append({
+                        "type": int(parts[0]),
+                        "dims": (int(parts[1]), int(parts[2]), int(parts[3])),
+                        "cost": float(parts[4]),
+                    })
+                else:
+                    raise ValueError("data line outside a BOXES/CONTAINERS "
+                                     "section")
+            except ValueError as exc:
+                raise ValueError(f"{path}:{lineno}: {exc}\n  {line!r}") from None
+
+    if not box_types:
+        raise ValueError(f"{path}: no box types found")
+    if not container_types:
+        raise ValueError(f"{path}: no container types found")
+    return box_types, container_types, saw_dest
+
+
+def unique_orientations(l, w, h):
+    """The distinct axis-aligned orientations of a box (6, or fewer if square)."""
+    return list(dict.fromkeys(permutations((l, w, h), 3)))
+
+
+def fits(dims, container_dims):
+    dx, dy, dz = dims
+    L, W, H = container_dims
+    return dx <= L and dy <= W and dz <= H
+
+
+def build_instance(path, cost_mode="file", use_dest=None):
+    """Expand box types into individual boxes and precompute fit tables."""
+    box_types, container_types, saw_dest = parse_instance(path)
+    if use_dest is None:
+        use_dest = saw_dest
+
+    boxes = []
+    type_index = {}
+    for bt in box_types:
+        l, w, h = bt["dims"]
+        vol = l * w * h
+        type_index.setdefault(bt["type"], len(type_index))
+        for _ in range(bt["count"]):
+            boxes.append({
+                "type": bt["type"],
+                "tidx": type_index[bt["type"]],
+                "dims": bt["dims"],
+                "vol": vol,
+                # Without the restriction every box shares one destination, so
+                # the decoder's per-destination loop collapses to a single pass.
+                "dest": bt["dest"] if use_dest else None,
+                "orientations": unique_orientations(l, w, h),
+            })
+
+    containers = []
+    cost_warnings = []
+    for ct in container_types:
+        L, W, H = ct["dims"]
+        vol = L * W * H
+        cost = ct["cost"]
+        # Bortfeldt sets container cost = container volume; these files carry
+        # cost = volume/10. A row breaking that is a transcription slip, and
+        # silently optimising against it would distort the objective.
+        if abs(vol / 10.0 - cost) > 0.5:
+            cost_warnings.append((ct["type"], ct["dims"], cost, vol / 10.0))
+        if cost_mode == "volume":
+            cost = vol / 10.0
+        containers.append({
+            "type": ct["type"],
+            "dims": ct["dims"],
+            "vol": vol,
+            "cost": cost,
+        })
+
+    # Per (container type, box type): the orientations that fit at all. Boxes
+    # of one type are interchangeable, so this is keyed by type, not by box.
+    orients = []
+    for c in containers:
+        table = {}
+        for b in boxes:
+            t = b["type"]
+            if t not in table:
+                table[t] = tuple(d for d in b["orientations"]
+                                 if fits(d, c["dims"]))
+        orients.append(table)
+
+    inst = {
+        "name": Path(path).stem,
+        "path": str(path),
+        "boxes": boxes,
+        "box_types": box_types,
+        "type_index": type_index,
+        "n_types": len(type_index),
+        "containers": containers,
+        "orients": orients,
+        # How far a type's orientation gene can usefully range: the packer
+        # takes it modulo the orientations that fit the container at hand, so
+        # the widest such list is the gene's effective alphabet.
+        "orient_choices": [
+            max((len(orients[ci][t]) for ci in range(len(containers))),
+                default=1) or 1
+            for t, _ in sorted(type_index.items(), key=lambda kv: kv[1])
+        ],
+        "use_dest": use_dest,
+        "total_box_vol": sum(b["vol"] for b in boxes),
+        "cost_warnings": cost_warnings,
+    }
+
+    # Unlimited supply makes every instance feasible - unless some box fits no
+    # container type at all, in which case no amount of searching will ever
+    # place it and the decoder would spin forever.
+    unfittable = sorted({b["type"] for b in boxes
+                         if not any(orients[ci][b["type"]]
+                                    for ci in range(len(containers)))})
+    if unfittable:
+        raise ValueError(f"{path}: box type(s) {unfittable} fit no container "
+                         f"type in any orientation - instance is infeasible "
+                         f"for a problem that requires every box to be packed")
+    return inst
+
+
+# =========================================================================
+# Packing one container (deepest-bottom-left extreme points)
+# =========================================================================
+def pack_container(cdims, candidates, boxes, orient_pref, orients_for_type,
+                   ep_limit=EP_LIMIT):
+    """Fill ONE container with boxes drawn from `candidates`, in that order.
+
+    Identical in mechanics to 3DMHKP-SA.py's decoder, but for a single
+    container: each box is offered the extreme points sorted by z, then y,
+    then x, and takes the first orientation - starting from its type's
+    preference - that fits inside the container without overlapping an
+    already placed box.
+
+    The orientation preference is per box TYPE, not per box: every box must be
+    shipped and boxes of a type are interchangeable, so the decoder cannot
+    tell two boxes of one type apart, and a per-box gene would only make the
+    same decision 50 times over. On problem01b that is the difference between
+    laying the 8x4x10 boxes down as 8x4x10 (one per 10x6x16 container) and
+    standing them as 10x4x8 (two per container, which is what MCL does).
+
+    The `failed` set is what keeps this near-linear: within one container the
+    free space only shrinks, so once a box TYPE has failed against every
+    point, every later box of that type must fail too and is skipped in O(1).
+    """
+    L, W, H = cdims
+    free_vol = L * W * H
+    points = [(0, 0, 0)]        # extreme points as (z, y, x), kept sorted
+    placed = []                 # (x, y, z, dx, dy, dz)
+    failed = set()
+    chosen = []
+    packed_vol = 0
+
+    for j in candidates:
+        box = boxes[j]
+        t = box["type"]
+        if t in failed:
+            continue
+        if box["vol"] > free_vol:
+            continue
+        orients = orients_for_type[t]
+        nr = len(orients)
+        if nr == 0:
+            failed.add(t)
+            continue
+
+        start = orient_pref[box["tidx"]] % nr
+        hit = None
+        truncated = False
+        for scanned, (z, y, x) in enumerate(points):
+            if ep_limit and scanned >= ep_limit:
+                truncated = True
+                break
+            for i in range(nr):
+                dx, dy, dz = orients[(start + i) % nr]
+                if x + dx > L or y + dy > W or z + dz > H:
+                    continue
+                ok = True
+                for qx, qy, qz, qdx, qdy, qdz in placed:
+                    if (x < qx + qdx and qx < x + dx
+                            and y < qy + qdy and qy < y + dy
+                            and z < qz + qdz and qz < z + dz):
+                        ok = False
+                        break
+                if ok:
+                    hit = (x, y, z, dx, dy, dz)
+                    break
+            if hit is not None:
+                break
+
+        if hit is None:
+            if not truncated:
+                failed.add(t)
+            continue
+
+        x, y, z, dx, dy, dz = hit
+        chosen.append((j, (x, y, z), (dx, dy, dz)))
+        packed_vol += box["vol"]
+        free_vol -= box["vol"]
+        placed.append((x, y, z, dx, dy, dz))
+        points.remove((z, y, x))
+
+        # The three extreme points this box opens up. A point strictly inside
+        # an already placed box can never host anything, so drop it at once
+        # instead of rescanning it for every later box.
+        for nx, ny, nz in ((x + dx, y, z), (x, y + dy, z), (x, y, z + dz)):
+            if nx >= L or ny >= W or nz >= H:
+                continue
+            p = (nz, ny, nx)
+            if p in points:
+                continue
+            inside = False
+            for qx, qy, qz, qdx, qdy, qdz in placed:
+                if (qx <= nx < qx + qdx and qy <= ny < qy + qdy
+                        and qz <= nz < qz + qdz):
+                    inside = True
+                    break
+            if not inside:
+                insort(points, p)
+
+    return chosen, packed_vol
+
+
+def _selection_score(rule, container, packed_vol):
+    """Score a candidate opening; LOWER is preferred."""
+    if rule == "volume":
+        return -packed_vol
+    if rule == "cheap":
+        return container["cost"]
+    # "efficiency": cost bought per unit of volume actually stowed.
+    return container["cost"] / packed_vol
+
+
+# =========================================================================
+# Decoder: priority order -> a set of loaded containers
+# =========================================================================
+def decode(sol, inst, ep_limit=EP_LIMIT):
+    """Open containers until every box is packed; return the opened list.
+
+    Returns (opened, total_cost, total_container_volume) where `opened` is a
+    list of dicts describing each container actually used.
+    """
+    boxes = inst["boxes"]
+    containers = inst["containers"]
+    orient_pref = sol["orient"]
+    strategy = sol["strategy"]
+    use_dest = inst["use_dest"]
+
+    unplaced = list(sol["order"])
+    opened = []
+    total_cost = 0.0
+    total_cvol = 0
+    k = 0
+
+    while unplaced:
+        if use_dest:
+            dests = []
+            for j in unplaced:
+                d = boxes[j]["dest"]
+                if d not in dests:
+                    dests.append(d)
+        else:
+            dests = [None]
+
+        rule = strategy[k % len(strategy)]
+        best = None
+        best_score = None
+        for ci, container in enumerate(containers):
+            for d in dests:
+                if d is None:
+                    cand = unplaced
+                else:
+                    cand = [j for j in unplaced if boxes[j]["dest"] == d]
+                chosen, packed_vol = pack_container(
+                    container["dims"], cand, boxes, orient_pref,
+                    inst["orients"][ci], ep_limit)
+                if not chosen:
+                    continue
+                score = _selection_score(rule, container, packed_vol)
+                if best_score is None or score < best_score:
+                    best_score = score
+                    best = (ci, d, chosen, packed_vol)
+
+        if best is None:
+            # build_instance() rules this out, so reaching here means the
+            # packer refused a box it earlier accepted - a bug, not an input.
+            raise RuntimeError(f"{inst['name']}: no container can take any of "
+                               f"the {len(unplaced)} remaining boxes")
+
+        ci, dest, chosen, packed_vol = best
+        container = containers[ci]
+        opened.append({
+            "ctype_index": ci,
+            "ctype": container["type"],
+            "dims": container["dims"],
+            "cost": container["cost"],
+            "cvol": container["vol"],
+            "dest": dest,
+            "boxes": chosen,
+            "packed_vol": packed_vol,
+        })
+        total_cost += container["cost"]
+        total_cvol += container["vol"]
+
+        taken = {j for (j, _, _) in chosen}
+        unplaced = [j for j in unplaced if j not in taken]
+        k += 1
+
+    return opened, total_cost, total_cvol
+
+
+def evaluate(sol, inst, ep_limit=EP_LIMIT):
+    """Decode `sol` in place and return its cost (the minimised objective)."""
+    opened, total_cost, total_cvol = decode(sol, inst, ep_limit=ep_limit)
+    sol["opened"] = opened
+    sol["cost"] = total_cost
+    sol["cvol"] = total_cvol
+    return total_cost
+
+
+def copy_solution(sol):
+    return {
+        "order": list(sol["order"]),
+        "orient": list(sol["orient"]),
+        "strategy": list(sol["strategy"]),
+        "opened": sol.get("opened"),
+        "cost": sol.get("cost", 0.0),
+        "cvol": sol.get("cvol", 0),
+    }
+
+
+def build_initial_solution(inst, ep_limit=EP_LIMIT):
+    """Largest boxes first - the decreasing-size start every bin-packing
+    heuristic uses, and the analogue of 3DMHKP-SA.py's value-density decode.
+    """
+    boxes = inst["boxes"]
+    order = sorted(range(len(boxes)), key=lambda j: -boxes[j]["vol"])
+    sol = {
+        "order": order,
+        "orient": [0] * inst["n_types"],
+        "strategy": ["efficiency"] * STRATEGY_LEN,
+        "opened": None,
+        "cost": 0.0,
+        "cvol": 0,
+    }
+    evaluate(sol, inst, ep_limit=ep_limit)
+    return sol
+
+
+# =========================================================================
+# Moves
+# =========================================================================
+def _key(sol, inst, pos):
+    """What the decoder can actually tell apart at a position in the order.
+
+    Orientation is now a per-type gene, so two boxes of one type are wholly
+    interchangeable and the key is just the type: reordering them cannot
+    change a single placement, and such draws are filtered out rather than
+    burning an iteration on a re-decode of the solution we already have.
+    """
+    return inst["boxes"][sol["order"][pos]]["type"]
+
+
+def sample_swap(sol, inst):
+    n = len(sol["order"])
+    if n < 2:
+        return None
+    for _ in range(_SAMPLE_TRIES):
+        a, b = random.randrange(n), random.randrange(n)
+        if a == b or _key(sol, inst, a) == _key(sol, inst, b):
+            continue
+        return ("swap", a, b)
+    return None
+
+
+def sample_relocate(sol, inst):
+    n = len(sol["order"])
+    if n < 2:
+        return None
+    for _ in range(_SAMPLE_TRIES):
+        src, dst = random.randrange(n), random.randrange(n)
+        if src == dst:
+            continue
+        lo, hi = (src + 1, dst) if dst > src else (dst, src - 1)
+        key = _key(sol, inst, src)
+        if all(_key(sol, inst, p) == key for p in range(lo, hi + 1)):
+            continue        # jumps only over indistinguishable boxes
+        return ("relocate", src, dst)
+    return None
+
+
+def sample_orient(sol, inst):
+    """Re-orient one whole box TYPE (see pack_container's docstring)."""
+    n_types = inst["n_types"]
+    for _ in range(_SAMPLE_TRIES):
+        ti = random.randrange(n_types)
+        nr = inst["orient_choices"][ti]
+        if nr < 2:
+            continue
+        return ("orient", ti, (sol["orient"][ti] + random.randrange(1, nr)) % nr)
+    return None
+
+
+def sample_strategy(sol, inst):
+    if len(STRATEGIES) < 2:
+        return None
+    k = random.randrange(len(sol["strategy"]))
+    current = sol["strategy"][k]
+    choices = [s for s in STRATEGIES if s != current]
+    return ("strategy", k, random.choice(choices))
+
+
+_SAMPLERS = {
+    "swap": sample_swap,
+    "relocate": sample_relocate,
+    "orient": sample_orient,
+    "strategy": sample_strategy,
+}
+
+
+def sample_random_move(sol, inst, move_weights=None):
+    """Draw ONE random neighbour: pick an operator by weight, then a move.
+
+    Operators are drawn without replacement so that an operator unable to
+    produce a move does not waste the whole iteration.
+    """
+    if move_weights is None:
+        move_weights = MOVE_WEIGHTS
+    pool = [(name, w) for name, w in move_weights.items()
+            if w > 0 and name in _SAMPLERS]
+    while pool:
+        total = sum(w for _, w in pool)
+        r = random.uniform(0.0, total)
+        upto = 0.0
+        pick = len(pool) - 1
+        for idx, (_, w) in enumerate(pool):
+            upto += w
+            if r <= upto:
+                pick = idx
+                break
+        name, _ = pool.pop(pick)
+        move = _SAMPLERS[name](sol, inst)
+        if move is not None:
+            return move
+    return None
+
+
+def apply_move(sol, move):
+    kind = move[0]
+    if kind == "swap":
+        _, a, b = move
+        order = sol["order"]
+        order[a], order[b] = order[b], order[a]
+    elif kind == "relocate":
+        _, src, dst = move
+        order = sol["order"]
+        order.insert(dst, order.pop(src))
+    elif kind == "orient":
+        _, j, pref = move
+        sol["orient"][j] = pref
+    elif kind == "strategy":
+        _, k, rule = move
+        sol["strategy"][k] = rule
+
+
+def diversify(sol, inst, ep_limit=EP_LIMIT):
+    """Shake the incumbent: scramble a block and reshuffle the rule gene."""
+    order = sol["order"]
+    n = len(order)
+    if n >= 4:
+        seg = max(2, n // 5)
+        i = random.randrange(n - seg + 1)
+        block = order[i:i + seg]
+        random.shuffle(block)
+        order[i:i + seg] = block
+    for k in range(len(sol["strategy"])):
+        if random.random() < 0.5:
+            sol["strategy"][k] = random.choice(STRATEGIES)
+    evaluate(sol, inst, ep_limit=ep_limit)
+
+
+# =========================================================================
+# Temperature calibration
+# =========================================================================
+def calibrate_t_init(sol, inst, samples=CALIBRATE_SAMPLES, ep_limit=EP_LIMIT,
+                     target_accept=TARGET_ACCEPT_INITIAL, deadline=None):
+    """Estimate T0 from the cost deltas this instance actually produces.
+
+    Draws random neighbours, keeps the worsening ones and inverts the
+    Metropolis criterion on their MEDIAN magnitude, as in 3DMHKP-SA.py. The
+    median rather than the mean: the distribution is right-skewed, and a mean
+    dragged up by a rare large jump sets T0 high enough to accept the common
+    small ones almost always.
+
+    Returns (t_init, t_floor, n_worsening); (None, None, 0) when no worsening
+    draw was found, leaving the caller to fall back on a fraction of f(S_0).
+    """
+    probe = copy_solution(sol)
+    base = sol["cost"]
+    deltas = []
+    for _ in range(samples):
+        if deadline is not None and time.time() >= deadline:
+            break
+        move = sample_random_move(probe, inst)
+        if move is None:
+            continue
+        trial = copy_solution(probe)
+        apply_move(trial, move)
+        delta = evaluate(trial, inst, ep_limit=ep_limit) - base
+        if delta > 0:
+            deltas.append(delta)
+
+    if not deltas:
+        return None, None, 0
+    ref = statistics.median(deltas)
+    t_init = -ref / math.log(target_accept)
+    t_floor = -ref / math.log(TARGET_ACCEPT_FINAL)
+    return t_init, t_floor, len(deltas)
+
+
+# =========================================================================
+# Simulated annealing
+# =========================================================================
+def simulated_annealing(inst, time_limit=TIME_LIMIT,
+                        max_iterations=MAX_ITERATIONS, ep_limit=EP_LIMIT,
+                        reheat_threshold=REHEAT_THRESHOLD,
+                        reheat_fraction=REHEAT_FRACTION,
+                        reheat_decay=REHEAT_DECAY, verbose=True):
+    """Minimise total container cost; every box is packed by construction."""
+    t_start = time.time()
+    deadline = t_start + time_limit
+
+    current = build_initial_solution(inst, ep_limit=ep_limit)
+    initial_cost = current["cost"]
+    initial_cvol = current["cvol"]
+    if verbose:
+        print(f"  initial (largest-first) decode: {len(current['opened'])} "
+              f"containers, cost {initial_cost:.1f}, "
+              f"utilisation {100.0 * inst['total_box_vol'] / current['cvol']:.1f}%")
+
+    best = copy_solution(current)
+
+    # Calibration shares the instance's time budget: on a slow instance it
+    # must not eat the whole run before the first annealing step.
+    t_cal, t_floor, n_cal = calibrate_t_init(
+        current, inst, ep_limit=ep_limit,
+        deadline=t_start + min(0.25 * time_limit, max(1.0, 0.25 * time_limit)))
+    if t_cal is not None:
+        t_init, t_end = t_cal, max(T_MIN, min(t_floor, t_cal))
+        t_init_source = (f"calibrated, {n_cal} worsening draws, "
+                         f"target accept {TARGET_ACCEPT_INITIAL:.0%}")
+    else:
+        t_init = max(1e-6, 0.05 * initial_cost)
+        t_end = T_MIN
+        t_init_source = "5% of f(S_0), no worsening draw sampled"
+    if verbose:
+        print(f"  T0 = {t_init:.2f} ({t_init_source})")
+        print(f"  schedule: time-based, T0 -> {t_end:.4f} over {time_limit:.0f}s")
+
+    log_span = math.log(t_end / t_init) if t_init > 0 and t_end > 0 else 0.0
+    reheat_ceiling = reheat_fraction * t_init
+    reheat_floor = 0.0
+
+    iteration = accepted = rejected = neutral = no_move = reheats = 0
+    no_improve = 0
+    best_iteration, best_time = 0, 0.0
+    stopped_on = "time limit"
+
+    while iteration < max_iterations:
+        now = time.time()
+        if now >= deadline:
+            break
+        p = min(1.0, (now - t_start) / time_limit)
+        T = max(t_init * math.exp(log_span * p), reheat_floor)
+        if reheat_floor and T <= reheat_floor:
+            reheat_floor *= 0.999      # let the floor bleed back to the curve
+
+        iteration += 1
+        move = sample_random_move(current, inst)
+        if move is None:
+            no_move += 1
+            continue
+
+        trial = copy_solution(current)
+        apply_move(trial, move)
+        trial_cost = evaluate(trial, inst, ep_limit=ep_limit)
+        delta = trial_cost - current["cost"]
+
+        if delta < 0 or (delta == 0 and random.random() < 0.5):
+            current = trial
+            accepted += 1
+            if delta == 0:
+                neutral += 1
+            if trial_cost < best["cost"]:
+                best = copy_solution(trial)
+                best_iteration, best_time = iteration, time.time() - t_start
+                no_improve = 0
+            else:
+                no_improve += 1
+        elif delta > 0 and T > 0 and random.random() < math.exp(-delta / T):
+            current = trial
+            accepted += 1
+            no_improve += 1
+        else:
+            rejected += 1
+            no_improve += 1
+
+        if no_improve >= reheat_threshold:
+            reheats += 1
+            reheat_floor = reheat_ceiling
+            reheat_ceiling *= reheat_decay
+            current = copy_solution(best)
+            diversify(current, inst, ep_limit=ep_limit)
+            no_improve = 0
+            if verbose:
+                print(f"    reheat {reheats} at iteration {iteration} "
+                      f"(T floor {reheat_floor:.2f})")
+    else:
+        stopped_on = "iteration limit"
+
+    elapsed = time.time() - t_start
+    stats = {
+        "iterations": iteration,
+        "accepted": accepted,
+        "rejected": rejected,
+        "neutral": neutral,
+        "no_move": no_move,
+        "reheats": reheats,
+        "elapsed": elapsed,
+        "iters_per_sec": iteration / elapsed if elapsed else 0.0,
+        "initial_cost": initial_cost,
+        "initial_cvol": initial_cvol,
+        "t_init": t_init,
+        "t_end": t_end,
+        "t_init_source": t_init_source,
+        "calib_samples": n_cal,
+        "time_limit": time_limit,
+        "reheat_threshold": reheat_threshold,
+        "reheat_fraction": reheat_fraction,
+        "reheat_decay": reheat_decay,
+        "ep_limit": ep_limit,
+        "stopped_on": stopped_on,
+        "best_iteration": best_iteration,
+        "best_time": best_time,
+    }
+    return best, stats
+
+
+# =========================================================================
+# Verification and reporting
+# =========================================================================
+def verify(sol, inst):
+    """Check the solution really is one: every box shipped, nothing overlapping,
+    nothing outside its container, destination restriction respected.
+
+    Returns a list of problems; empty means the solution is sound.
+    """
+    problems = []
+    boxes = inst["boxes"]
+    seen = {}
+    for ci, cont in enumerate(sol["opened"]):
+        L, W, H = cont["dims"]
+        placed = []
+        dest = None
+        for (j, (x, y, z), (dx, dy, dz)) in cont["boxes"]:
+            if j in seen:
+                problems.append(f"box {j} packed twice (containers "
+                                f"{seen[j]} and {ci})")
+            seen[j] = ci
+            if x < 0 or y < 0 or z < 0 or x + dx > L or y + dy > W or z + dz > H:
+                problems.append(f"box {j} sticks out of container {ci}")
+            if sorted((dx, dy, dz)) != sorted(boxes[j]["dims"]):
+                problems.append(f"box {j} has dims {(dx, dy, dz)}, not an "
+                                f"orientation of {boxes[j]['dims']}")
+            for (qj, qx, qy, qz, qdx, qdy, qdz) in placed:
+                if (x < qx + qdx and qx < x + dx and y < qy + qdy
+                        and qy < y + dy and z < qz + qdz and qz < z + dz):
+                    problems.append(f"boxes {j} and {qj} overlap in "
+                                    f"container {ci}")
+            placed.append((j, x, y, z, dx, dy, dz))
+            if inst["use_dest"]:
+                d = boxes[j]["dest"]
+                if dest is None:
+                    dest = d
+                elif d != dest:
+                    problems.append(f"container {ci} mixes destinations "
+                                    f"{dest} and {d}")
+
+    missing = [j for j in range(len(boxes)) if j not in seen]
+    if missing:
+        problems.append(f"{len(missing)} box(es) never packed - a solution "
+                        f"must ship every box")
+    return problems
+
+
+def solution_metrics(sol, inst):
+    """The figures Bortfeldt's Table 1 reports, plus a few diagnostics."""
+    opened = sol["opened"]
+    per_type = {}
+    for cont in opened:
+        per_type[cont["ctype"]] = per_type.get(cont["ctype"], 0) + 1
+    total_cvol = sol["cvol"]
+    util = inst["total_box_vol"] / total_cvol if total_cvol else 0.0
+    per_container = [c["packed_vol"] / c["cvol"] for c in opened]
+    return {
+        "containers": len(opened),
+        "per_type": per_type,
+        "total_cost": sol["cost"],
+        "total_cvol": total_cvol,
+        "utilisation": util,
+        "mean_per_container": (sum(per_container) / len(per_container)
+                               if per_container else 0.0),
+    }
+
+
+def write_report(path, inst, sol, stats, metrics, args, command):
+    lines = []
+    lines.append(f"Instance: {inst['name']}")
+    lines.append("Solver: simulated annealing (Bortfeldt MCLP: minimise "
+                 "container cost, every box packed)")
+    lines.append(f"Destination restriction: "
+                 f"{'ENFORCED' if inst['use_dest'] else 'none (unrestricted)'}")
+    lines.append(f"Boxes: {len(inst['boxes'])} ({len(inst['box_types'])} types), "
+                 f"total box volume {inst['total_box_vol']}")
+    lines.append(f"Container types: {len(inst['containers'])} "
+                 f"(unlimited supply per type)")
+    for c in inst["containers"]:
+        lines.append(f"  type {c['type']}: {c['dims'][0]}x{c['dims'][1]}x"
+                     f"{c['dims'][2]}, volume {c['vol']}, cost {c['cost']:.1f}")
+    lines.append("")
+    lines.append(f"Run started: {stats['started']}")
+    lines.append(f"Command: {command}")
+    lines.append(f"Time limit: {stats['time_limit']:.1f} s per instance")
+    lines.append(f"Runtime: {stats['elapsed']:.2f} s "
+                 f"(stopped on {stats['stopped_on']})")
+    lines.append("")
+    lines.append("RESULT (the figures Bortfeldt (2000) Table 1 reports)")
+    lines.append(f"  Containers used: {metrics['containers']}")
+    per_type = metrics["per_type"]
+    counts = " ".join(
+        f"Typ{c['type']}={per_type.get(c['type'], 0)}"
+        for c in inst["containers"])
+    lines.append(f"  Containers by type: {counts}")
+    lines.append(f"  Total container volume: {metrics['total_cvol']}")
+    lines.append(f"  Total container cost: {metrics['total_cost']:.1f}")
+    lines.append(f"  Volume utilization: {inst['total_box_vol']} / "
+                 f"{metrics['total_cvol']} = {metrics['utilisation']:.1%}")
+    lines.append(f"  Mean per-container utilization: "
+                 f"{metrics['mean_per_container']:.1%}")
+    lines.append("")
+    lines.append(f"Greedy (initial decode) cost: {stats['initial_cost']:.1f}")
+    lines.append(f"SA improvement over greedy: "
+                 f"-{stats['initial_cost'] - metrics['total_cost']:.1f}")
+    lines.append(f"Best found at iteration {stats['best_iteration']} "
+                 f"({stats['best_time']:.1f} s)")
+    lines.append("")
+    lines.append("SA parameters:")
+    lines.append(f"  T0: {stats['t_init']:.2f} ({stats['t_init_source']})")
+    lines.append(f"  schedule: time-based, T0 -> {stats['t_end']:.4f} over "
+                 f"{stats['time_limit']:.0f}s")
+    lines.append(f"  reheat threshold: {stats['reheat_threshold']} it, "
+                 f"fraction {stats['reheat_fraction']} decaying x"
+                 f"{stats['reheat_decay']} per reheat")
+    lines.append(f"  ep limit: {stats['ep_limit']} (0 = unlimited)")
+    lines.append(f"  move weights: "
+                 f"{', '.join(f'{k}={v:g}' for k, v in MOVE_WEIGHTS.items())}")
+    lines.append(f"  selection rules: {', '.join(STRATEGIES)}")
+    lines.append(f"  seed: {stats['seed']}")
+    lines.append("")
+    lines.append("SA statistics:")
+    lines.append(f"  iterations: {stats['iterations']} in "
+                 f"{stats['elapsed']:.2f} s "
+                 f"({stats['iters_per_sec']:.1f} it/s)")
+    lines.append(f"  accepted: {stats['accepted']} "
+                 f"(of which neutral {stats['neutral']}), "
+                 f"rejected: {stats['rejected']}, "
+                 f"no-move draws: {stats['no_move']}")
+    lines.append(f"  reheats: {stats['reheats']}")
+    lines.append(f"  verification: {stats['verification']}")
+    lines.append("")
+    lines.append("Containers (index, type, dims, destination, boxes, "
+                 "packed volume, utilization):")
+    for ci, cont in enumerate(sol["opened"]):
+        L, W, H = cont["dims"]
+        dest = "-" if cont["dest"] is None else cont["dest"]
+        lines.append(f"  container {ci:3d} type {cont['ctype']} "
+                     f"{L}x{W}x{H} dest {dest}: {len(cont['boxes'])} boxes, "
+                     f"volume {cont['packed_vol']}/{cont['cvol']} "
+                     f"({cont['packed_vol'] / cont['cvol']:.1%})")
+    lines.append("")
+    lines.append("Placements (box, type, container, position, oriented dims):")
+    for ci, cont in enumerate(sol["opened"]):
+        for (j, pos, dims) in cont["boxes"]:
+            lines.append(f"  box {j:4d} type {inst['boxes'][j]['type']} "
+                         f"-> container {ci} pos {pos} dims {dims}")
+
+    path.write_text("\n".join(lines) + "\n")
+
+
+# =========================================================================
+# Driver
+# =========================================================================
+def solve_instance(path, args, command=""):
+    inst = build_instance(path, cost_mode=args.cost_mode,
+                          use_dest=(False if args.ignore_destinations else None))
+    for (t, dims, cost, expected) in inst["cost_warnings"]:
+        print(f"  WARNING: container type {t} {dims} has cost {cost:.1f} but "
+              f"volume/10 = {expected:.1f}; Bortfeldt sets cost = volume. "
+              f"Use --cost-mode volume to override.", file=sys.stderr)
+
+    print(f"\n{'=' * 70}")
+    print(f"{inst['name']}: {len(inst['boxes'])} boxes "
+          f"({len(inst['box_types'])} types), "
+          f"{len(inst['containers'])} container types (unlimited supply), "
+          f"destinations {'ENFORCED' if inst['use_dest'] else 'off'}")
+    print(f"  total box volume: {inst['total_box_vol']}")
+
+    started = datetime.now()
+    t0 = time.time()
+
+    if args.greedy_only:
+        best = build_initial_solution(inst, ep_limit=args.ep_limit)
+        stats = {
+            "iterations": 0, "accepted": 0, "rejected": 0, "neutral": 0,
+            "no_move": 0, "reheats": 0, "elapsed": time.time() - t0,
+            "iters_per_sec": 0.0, "initial_cost": best["cost"],
+            "initial_cvol": best["cvol"],
+            "t_init": 0.0, "t_end": 0.0, "t_init_source": "n/a",
+            "calib_samples": 0, "time_limit": args.time_limit,
+            "reheat_threshold": 0, "reheat_fraction": 0.0,
+            "reheat_decay": 0.0, "ep_limit": args.ep_limit,
+            "stopped_on": "greedy only, SA not run",
+            "best_iteration": 0, "best_time": 0.0,
+        }
+    else:
+        best, stats = simulated_annealing(
+            inst,
+            time_limit=args.time_limit,
+            max_iterations=args.max_iterations,
+            ep_limit=args.ep_limit,
+            reheat_threshold=args.reheat_threshold,
+            reheat_fraction=args.reheat_fraction,
+            verbose=not args.quiet,
+        )
+
+    problems = verify(best, inst)
+    stats["verification"] = "ok" if not problems else "; ".join(problems[:5])
+    stats["started"] = started.strftime("%Y-%m-%d %H:%M:%S")
+    stats["seed"] = args.seed
+    if problems:
+        print(f"  VERIFICATION FAILED: {stats['verification']}",
+              file=sys.stderr)
+
+    metrics = solution_metrics(best, inst)
+    per_type = metrics["per_type"]
+    counts = " ".join(f"Typ{c['type']}={per_type.get(c['type'], 0)}"
+                      for c in inst["containers"])
+    print(f"  SA: {metrics['containers']} containers ({counts}), "
+          f"cost {metrics['total_cost']:.1f}, "
+          f"utilisation {metrics['utilisation']:.1%} "
+          f"(greedy {100.0 * inst['total_box_vol'] / stats['initial_cvol']:.1f}%)")
+
+    if not args.no_report:
+        results_dir = Path(args.results_dir)
+        results_dir.mkdir(parents=True, exist_ok=True)
+        dest_marker = "-dest" if inst["use_dest"] else ""
+        tag = f"-{args.tag}" if args.tag else ""
+        name = (f"{inst['name']}-Bortfeldt-SA{dest_marker}"
+                f"-t{args.time_limit:g}s{tag}.txt")
+        report = results_dir / name
+        write_report(report, inst, best, stats, metrics, args, command)
+        print(f"  report -> {report}")
+
+    return inst, best, stats, metrics
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(
+        description="Simulated annealing for Bortfeldt's (2000) multiple "
+                    "container loading problem: unlimited containers per "
+                    "type, every box packed, minimise total container cost.")
+    parser.add_argument("--instance-files", nargs="+", required=True,
+                        help="instance files in Ivancic/Bortfeldt format")
+    parser.add_argument("--results-dir", default="results_Bortfeldt_SA")
+    parser.add_argument("--time-limit", "--timelimit", dest="time_limit",
+                        type=float, default=TIME_LIMIT,
+                        help=f"SA seconds per instance (default: {TIME_LIMIT:g}; "
+                             f"MCL averaged 73.3 s on this set)")
+    parser.add_argument("--max-iterations", type=int, default=MAX_ITERATIONS)
+    parser.add_argument("--ep-limit", type=int, default=EP_LIMIT,
+                        help="max extreme points scanned per box (0 = all)")
+    parser.add_argument("--reheat-threshold", type=int,
+                        default=REHEAT_THRESHOLD)
+    parser.add_argument("--reheat-fraction", type=float,
+                        default=REHEAT_FRACTION)
+    parser.add_argument("--cost-mode", choices=("file", "volume"),
+                        default="file",
+                        help="'file' uses the instance's cost column; "
+                             "'volume' derives cost = volume/10, which is what "
+                             "Bortfeldt specifies (identical ranking, and "
+                             "immune to a mis-transcribed cost)")
+    parser.add_argument("--ignore-destinations", action="store_true",
+                        help="ignore the destination column even when present, "
+                             "turning a Bortfeldt/ file into its unrestricted "
+                             "Ivancic/ equivalent")
+    parser.add_argument("--seed", type=int, default=None)
+    parser.add_argument("--tag", default="")
+    parser.add_argument("--greedy-only", action="store_true")
+    parser.add_argument("--no-report", action="store_true")
+    parser.add_argument("--quiet", action="store_true")
+    args = parser.parse_args(argv)
+
+    if args.seed is None:
+        args.seed = random.randrange(1 << 30)
+    random.seed(args.seed)
+
+    command = "Bortfeldt-SA.py " + " ".join(shlex.quote(a) for a in
+                                            (argv if argv is not None
+                                             else sys.argv[1:]))
+
+    print("=" * 70)
+    print("Bortfeldt (2000) multiple container loading problem - "
+          "simulated annealing")
+    print("Objective: MINIMISE total container cost, every box packed, "
+          "unlimited supply per type")
+    print(f"Time limit: {args.time_limit:g}s per instance, seed {args.seed}")
+    print("=" * 70, flush=True)
+
+    rows = []
+    for spec in args.instance_files:
+        path = Path(spec)
+        if not path.exists():
+            print(f"missing instance file: {path}", file=sys.stderr)
+            return 1
+        inst, best, stats, metrics = solve_instance(path, args, command)
+        rows.append((inst, best, stats, metrics))
+
+    if len(rows) > 1:
+        print("\n" + "=" * 96)
+        print("SUMMARY")
+        print("=" * 96)
+        print(f"{'instance':<14} {'boxes':>6} {'cont':>5} {'by type':>14} "
+              f"{'cost':>12} {'util':>7} {'iters':>8} {'time':>7}")
+        print("-" * 96)
+        for inst, best, stats, metrics in rows:
+            per_type = metrics["per_type"]
+            counts = "/".join(str(per_type.get(c["type"], 0))
+                              for c in inst["containers"])
+            print(f"{inst['name']:<14} {len(inst['boxes']):>6} "
+                  f"{metrics['containers']:>5} {counts:>14} "
+                  f"{metrics['total_cost']:>12.1f} "
+                  f"{metrics['utilisation']:>6.1%} "
+                  f"{stats['iterations']:>8} {stats['elapsed']:>6.1f}s")
+        print("-" * 96)
+        mean_util = sum(m["utilisation"] for _, _, _, m in rows) / len(rows)
+        total_cont = sum(m["containers"] for _, _, _, m in rows)
+        print(f"instances: {len(rows)}, containers used in total: {total_cont}")
+        print(f"mean volume utilization: {mean_util:.2%}")
+
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

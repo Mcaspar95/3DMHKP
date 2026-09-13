@@ -1,0 +1,47 @@
+Instance: problem05b
+Solver: simulated annealing (sequence decoder)
+Value model: v_i = c_i * volume_i (volume)
+Boxes: 95 (3 types)
+Containers: 1 (1 types)
+
+Run started: 2026-09-13 17:57:30
+Command: 3DMHKP-SA.py --instance-files /home/mcaspar/3DMHKP/Bortfeldt_converted/problem05b.txt --value-mode volume --time-limit 90.0 --results-dir /home/mcaspar/3DMHKP/results_3DMHKP_bortfeldt   [launched by: main_slurm_bortfeldt.py --id 16 --num_cpu 1 --time-limit 90]
+Time limit: 90.0 s per instance
+Runtime: 90.00 s (SA loop 90.00 s, stopped on time limit)
+Packed value (SA incumbent / lower bound): 21000.0
+0-1 knapsack bound (1D, valid under rotation): 21000.0
+Continuous-knapsack relaxation: 21000.0
+Gap to the 0-1 bound: 0.00%
+Greedy (initial decode) value: 15000.0
+SA improvement over greedy: +6000.0
+
+SA parameters:
+  time limit: 90.0 s, max iterations: 500000000
+  T0: 750.00 (5% of f(S_0))
+  schedule: time-based, T0 -> 0.00 over 90s (alpha unused)
+  reheat threshold: 5753 it, ceiling 187.50 (25% of T0) decaying x0.9 per reheat
+  ep limit: 0 (unlimited), value mode: volume
+  move weights: swap=1, promote=1.5, demote=1.5, orient=1, container=0.5 (disabled: relocate, 2opt)
+  seed: 1005568839
+
+SA statistics:
+  iterations: 3070243 in 90.00 s (34114 it/s)
+  stopped on: time limit
+  accepted: 2523590, rejected: 546652, no-move draws: 0, reheats: 533
+  acceptance rate: 82.2%
+  T at exit: 0.001
+  last improvement: iteration 318 at 0.0 s, 0% into the run
+  verification: ok
+
+Boxes packed: 6 / 95
+Volume utilization: 21000 / 21000 = 100.0%
+
+Container 0 (type 1, 35x30x20): 6 boxes, value 21000.0, utilization 100.0%
+
+Placements (box, type, container, position, oriented dims):
+  box    4 type 1 -> container 0 pos (0, 15, 0) dims (25, 15, 20)
+  box   24 type 1 -> container 0 pos (0, 0, 0) dims (25, 15, 20)
+  box   35 type 2 -> container 0 pos (25, 0, 0) dims (10, 15, 10)
+  box   36 type 2 -> container 0 pos (25, 0, 10) dims (10, 15, 10)
+  box   43 type 2 -> container 0 pos (25, 15, 0) dims (10, 15, 10)
+  box   48 type 2 -> container 0 pos (25, 15, 10) dims (10, 15, 10)
