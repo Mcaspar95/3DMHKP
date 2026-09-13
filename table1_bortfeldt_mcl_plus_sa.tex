@@ -1,111 +1,116 @@
-\begin{longtable}{lrrrrr}
+\begin{longtable}{lrrrrrr}
   \caption{Results of Bortfeldt's (2000) comparison test on the 64
     Ivancic et al. problems (Table 1): MCL heuristic columns only, with
     \emph{Bortfeldt-SA.py} (our simulated annealing for his actual
     problem -- unlimited containers per type, every box packed,
-    minimise total container cost) at 90\,s added. Container counts
+    minimise total container cost) at 90\,s and 900\,s added. The 90\,s
+    column is the current build (contact-area best-fit placement,
+    adaptive move weights, stagnation restarts); the 900\,s column
+    predates those and is shown for the time-budget trend only. MCL's own
+    mean runtime on this set is 73.3\,s, so the 90\,s column is the
+    like-for-like comparison. Container counts
     of ``--'' mean that container type was not available in that
     problem. The Ivancic et al.\ comparison columns and both papers'
     ``Optimum'' marker columns are omitted here.}
   \label{tab:bortfeldt-mcl} \\
   \toprule
-  Problem & \multicolumn{3}{c}{MCL containers used (Typ 1/2/3)} & MCL Vol.\ (\%) & Our SA (90s, \%) \\
+  Problem & \multicolumn{3}{c}{MCL containers used (Typ 1/2/3)} & MCL Vol.\ (\%) & SA 90s (\%) & SA 900s (\%) \\
   \midrule
   \endfirsthead
 
-  \multicolumn{6}{c}{{\tablename\ \thetable{} -- continued from previous page}} \\
+  \multicolumn{7}{c}{{\tablename\ \thetable{} -- continued from previous page}} \\
   \toprule
-  Problem & \multicolumn{3}{c}{MCL containers used (Typ 1/2/3)} & MCL Vol.\ (\%) & Our SA (90s, \%) \\
+  Problem & \multicolumn{3}{c}{MCL containers used (Typ 1/2/3)} & MCL Vol.\ (\%) & SA 90s (\%) & SA 900s (\%) \\
   \midrule
   \endhead
 
   \midrule
-  \multicolumn{6}{r}{\emph{Continued on next page}} \\
+  \multicolumn{7}{r}{\emph{Continued on next page}} \\
   \endfoot
 
   \bottomrule
   \endlastfoot
 
-  1a & 25 & 0 & - & 74.7 & 74.7 \\
-  1b & 25 & - & - & 74.7 & 74.7 \\
-  1c & - & 10 & - & 65.3 & 65.3 \\
+  1a & 25 & 0 & - & 74.7 & 74.7 & 74.7 \\
+  1b & 25 & - & - & 74.7 & 74.7 & 74.7 \\
+  1c & - & 10 & - & 65.3 & 65.3 & 65.3 \\
   \addlinespace
-  2a & 1 & 19 & 11 & 95.1 & 99.9 \\
-  2b & 20 & - & - & 90.7 & 95.5 \\
-  2c & - & 28 & - & 90.0 & 97.0 \\
-  2d & - & - & 51 & 89.0 & 89.0 \\
+  2a & 1 & 19 & 11 & 95.1 & 99.9 & 99.9 \\
+  2b & 20 & - & - & 90.7 & 95.5 & 95.5 \\
+  2c & - & 28 & - & 90.0 & 97.0 & 97.0 \\
+  2d & - & - & 51 & 89.0 & 89.0 & 89.0 \\
   \addlinespace
-  3a & 4 & 1 & 2 & 99.7 & 99.6 \\
-  3b & 10 & - & - & 93.7 & 93.7 \\
-  3c & - & 16 & - & 97.6 & 97.6 \\
-  3d & - & - & 4 & 97.6 & 97.6 \\
+  3a & 4 & 1 & 2 & 99.7 & 99.6 & 99.6 \\
+  3b & 10 & - & - & 93.7 & 93.7 & 93.7 \\
+  3c & - & 16 & - & 97.6 & 97.6 & 97.6 \\
+  3d & - & - & 4 & 97.6 & 97.6 & 97.6 \\
   \addlinespace
-  4a & 16 & 0 & 2 & 86.8 & 84.2 \\
-  4b & 19 & - & - & 83.6 & 83.6 \\
-  4c & - & 55 & - & 66.7 & 66.7 \\
-  4d & - & - & 18 & 76.4 & 80.9 \\
+  4a & 16 & 0 & 2 & 86.8 & 87.1 & 87.1 \\
+  4b & 19 & - & - & 83.6 & 83.6 & 83.6 \\
+  4c & - & 55 & - & 66.7 & 66.7 & 66.7 \\
+  4d & - & - & 18 & 76.4 & 85.9 & 80.9 \\
   \addlinespace
-  5a & 7 & 0 & 23 & 97.9 & 98.0 \\
-  5b & 53 & - & - & 83.8 & 83.8 \\
-  5c & - & 25 & - & 76.1 & 76.1 \\
-  5d & - & - & 28 & 95.1 & 95.2 \\
+  5a & 7 & 0 & 23 & 97.9 & 99.4 & 98.0 \\
+  5b & 53 & - & - & 83.8 & 83.8 & 83.8 \\
+  5c & - & 25 & - & 76.1 & 76.1 & 76.1 \\
+  5d & - & - & 28 & 95.1 & 98.7 & 95.2 \\
   \addlinespace
-  6a & 8 & 5 & 0 & 96.6 & 94.4 \\
-  6b & 11 & - & - & 92.2 & 92.2 \\
-  6c & - & 26 & - & 78.0 & 78.0 \\
-  6d & - & - & 7 & 92.8 & 92.8 \\
+  6a & 8 & 5 & 0 & 96.6 & 96.6 & 96.1 \\
+  6b & 11 & - & - & 92.2 & 92.2 & 92.2 \\
+  6c & - & 26 & - & 78.0 & 78.0 & 78.0 \\
+  6d & - & - & 7 & 92.8 & 92.8 & 92.8 \\
   \addlinespace
-  7a & 1 & 0 & 2 & 90.6 & 90.6 \\
-  7b & 2 & - & - & 84.4 & 84.4 \\
-  7c & - & 3 & - & 73.3 & 73.3 \\
-  7d & - & - & 5 & 78.2 & 78.2 \\
+  7a & 1 & 0 & 2 & 90.6 & 90.6 & 90.6 \\
+  7b & 2 & - & - & 84.4 & 84.4 & 84.4 \\
+  7c & - & 3 & - & 73.3 & 73.3 & 73.3 \\
+  7d & - & - & 5 & 78.2 & 78.2 & 78.2 \\
   \addlinespace
-  8a & 0 & 4 & 10 & 85.9 & 87.7 \\
-  8b & 21 & - & - & 78.0 & 81.9 \\
-  8c & - & 9 & - & 79.7 & 89.6 \\
-  8d & - & - & 20 & 82.5 & 82.5 \\
+  8a & 0 & 4 & 10 & 85.9 & 85.9 & 87.7 \\
+  8b & 21 & - & - & 78.0 & 81.9 & 81.9 \\
+  8c & - & 9 & - & 79.7 & 79.7 & 79.7 \\
+  8d & - & - & 20 & 82.5 & 82.5 & 82.5 \\
   \addlinespace
-  9a & 2 & 1 & 1 & 90.2 & 86.5 \\
-  9b & 6 & - & - & 77.3 & 92.7 \\
-  9c & - & 5 & - & 78.6 & 78.6 \\
-  9d & - & - & 3 & 78.9 & 78.9 \\
+  9a & 2 & 1 & 1 & 90.2 & 89.5 & 87.2 \\
+  9b & 6 & - & - & 77.3 & 77.3 & 92.7 \\
+  9c & - & 5 & - & 78.6 & 78.6 & 78.6 \\
+  9d & - & - & 3 & 78.9 & 78.9 & 78.9 \\
   \addlinespace
-  10a & 2 & 5 & - & 87.3 & 84.9 \\
-  10b & 5 & - & - & 76.0 & 74.9 \\
-  10c & - & 10 & - & 80.8 & 79.6 \\
+  10a & 2 & 5 & - & 87.3 & 86.0 & 84.9 \\
+  10b & 5 & - & - & 76.0 & 74.9 & 74.9 \\
+  10c & - & 10 & - & 80.8 & 79.6 & 79.6 \\
   \addlinespace
-  11a & 14 & 1 & 1 & 87.8 & 80.8 \\
-  11b & 17 & - & - & 83.6 & 83.6 \\
-  11c & - & 22 & - & 79.1 & 79.1 \\
-  11d & - & - & 13 & 79.9 & 79.9 \\
+  11a & 14 & 1 & 1 & 87.8 & 81.9 & 81.8 \\
+  11b & 17 & - & - & 83.6 & 83.6 & 83.6 \\
+  11c & - & 22 & - & 79.1 & 79.1 & 79.1 \\
+  11d & - & - & 13 & 79.9 & 79.9 & 79.9 \\
   \addlinespace
-  12a & 2 & 1 & 1 & 94.0 & 90.3 \\
-  12b & 4 & - & - & 77.8 & 77.8 \\
-  12c & - & 5 & - & 72.0 & 72.0 \\
-  12d & - & - & 8 & 87.5 & 87.5 \\
+  12a & 2 & 1 & 1 & 94.0 & 86.6 & 90.3 \\
+  12b & 4 & - & - & 77.8 & 77.8 & 77.8 \\
+  12c & - & 5 & - & 72.0 & 72.0 & 72.0 \\
+  12d & - & - & 8 & 87.5 & 87.5 & 87.5 \\
   \addlinespace
-  13a & 2 & 0 & - & 92.2 & 87.3 \\
-  13b & 2 & - & - & 92.2 & 92.2 \\
-  13c & - & 14 & - & 71.1 & 71.1 \\
+  13a & 2 & 0 & - & 92.2 & 87.3 & 92.2 \\
+  13b & 2 & - & - & 92.2 & 92.2 & 92.2 \\
+  13c & - & 14 & - & 71.1 & 71.1 & 71.1 \\
   \addlinespace
-  14a & 3 & 3 & 10 & 79.1 & 79.6 \\
-  14b & 23 & - & - & 49.5 & 49.5 \\
-  14c & - & 45 & - & 54.7 & 54.7 \\
-  14d & - & - & 15 & 75.9 & 75.9 \\
+  14a & 3 & 3 & 10 & 79.1 & 79.6 & 79.6 \\
+  14b & 23 & - & - & 49.5 & 49.5 & 49.5 \\
+  14c & - & 45 & - & 54.7 & 54.7 & 54.7 \\
+  14d & - & - & 15 & 75.9 & 75.9 & 75.9 \\
   \addlinespace
-  15a & 0 & 15 & - & 89.0 & 89.7 \\
-  15b & 9 & - & - & 75.7 & 75.7 \\
-  15c & - & 15 & - & 89.0 & 89.0 \\
+  15a & 0 & 15 & - & 89.0 & 89.7 & 89.7 \\
+  15b & 9 & - & - & 75.7 & 85.1 & 85.1 \\
+  15c & - & 15 & - & 89.0 & 89.0 & 89.0 \\
   \addlinespace
-  16a & 2 & 1 & 0 & 91.6 & 82.7 \\
-  16b & 4 & - & - & 82.7 & 82.7 \\
-  16c & - & 3 & - & 68.5 & 68.5 \\
-  16d & - & - & 3 & 79.9 & 59.9 \\
+  16a & 2 & 1 & 0 & 91.6 & 82.7 & 82.7 \\
+  16b & 4 & - & - & 82.7 & 82.7 & 82.7 \\
+  16c & - & 3 & - & 68.5 & 68.5 & 68.5 \\
+  16d & - & - & 3 & 79.9 & 79.9 & 79.9 \\
   \addlinespace
-  17a & 0 & 0 & 3 & 84.7 & 84.7 \\
-  17b & 3 & - & - & 65.3 & 65.3 \\
-  17c & - & 2 & - & 71.6 & 71.6 \\
-  17d & - & - & 3 & 84.7 & 84.7 \\
+  17a & 0 & 0 & 3 & 84.7 & 84.7 & 84.7 \\
+  17b & 3 & - & - & 65.3 & 65.3 & 65.3 \\
+  17c & - & 2 & - & 71.6 & 71.6 & 71.6 \\
+  17d & - & - & 3 & 84.7 & 84.7 & 84.7 \\
   \midrule
-  Average & & & & 82.4 & 82.3 \\
+  Average & & & & 82.4 & 82.6 & 82.8 \\
 \end{longtable}

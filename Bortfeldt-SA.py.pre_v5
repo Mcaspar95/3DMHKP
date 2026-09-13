@@ -124,18 +124,6 @@ REHEAT_FRACTION = 0.25     # reheat ceiling as a fraction of T0
 REHEAT_DECAY = 0.90        # that ceiling decays per reheat, so runs converge
 REHEAT_THRESHOLD = 3000    # iterations without improvement before a reheat
 
-# The configurations --portfolio runs, in order, splitting the time budget
-# evenly between them. "legacy" is the pre-v4 behaviour (first-fit placement,
-# fixed move weights, no restarts), "tuned" is the v4 one. They win on
-# different instances - legacy on 13b/9b/8c, tuned on 16d/15b/4d/5a/5d/6a and
-# more - so running both beats committing to either.
-PORTFOLIO = [
-    ("legacy", {"best_fit_orient": False, "adaptive": False,
-                "restart_after": 10 ** 9}),
-    ("tuned",  {"best_fit_orient": True,  "adaptive": True,
-                "restart_after": 3}),
-]
-
 STRATEGY_LEN = 8           # length of the cyclic selection-rule gene
 STRATEGIES = ("efficiency", "volume", "cheap")
 
@@ -982,14 +970,12 @@ def simulated_annealing(inst, time_limit=TIME_LIMIT,
                         max_iterations=MAX_ITERATIONS, ep_limit=EP_LIMIT,
                         reheat_threshold=REHEAT_THRESHOLD,
                         reheat_fraction=REHEAT_FRACTION,
-                        reheat_decay=REHEAT_DECAY, verbose=True,
-                        adaptive=True, restart_after=RESTART_AFTER_REHEATS,
-                        start=None):
+                        reheat_decay=REHEAT_DECAY, verbose=True):
     """Minimise total container cost; every box is packed by construction."""
     t_start = time.time()
     deadline = t_start + time_limit
 
-    current = copy_solution(start) if start is not None         else build_initial_solution(inst, ep_limit=ep_limit)
+    current = build_initial_solution(inst, ep_limit=ep_limit)
     initial_cost = current["cost"]
     initial_score = current["score"]
     initial_cvol = current["cvol"]
@@ -1078,7 +1064,7 @@ def simulated_annealing(inst, time_limit=TIME_LIMIT,
             rejected += 1
             no_improve += 1
 
-        if adaptive and iteration % ADAPT_INTERVAL == 0:
+        if iteration % ADAPT_INTERVAL == 0:
             # Re-weight by credit earned per draw, then decay towards the
             # floor so a move that stopped paying can recover if the search
             # moves into a region where it works again.
@@ -1095,7 +1081,7 @@ def simulated_annealing(inst, time_limit=TIME_LIMIT,
             reheats += 1
             fruitless_reheats += 1
             reheat_floor = reheat_ceiling
-            if fruitless_reheats >= restart_after:
+            if fruitless_reheats >= RESTART_AFTER_REHEATS:
                 # Several reheats running have failed to beat the incumbent:
                 # this basin is spent, so leave it entirely rather than shake
                 # the same solution again. The global best is kept, so a
@@ -1280,9 +1266,6 @@ def write_report(path, inst, sol, stats, metrics, args, command):
                  f"no-move draws: {stats['no_move']}")
     lines.append(f"  reheats: {stats['reheats']}, "
                  f"restarts: {stats['restarts']}")
-    if stats.get("winning_config"):
-        lines.append(f"  portfolio: {', '.join(stats['portfolio'])}"
-                     f" -> won by '{stats['winning_config']}'")
     if stats.get("final_weights"):
         lines.append(f"  adapted move weights: "
                      + ", ".join(f"{k}={v:g}"
@@ -1346,36 +1329,6 @@ def solve_instance(path, args, command=""):
             "stopped_on": "greedy only, SA not run",
             "best_iteration": 0, "best_time": 0.0,
         }
-    elif args.portfolio:
-        # Run several configurations inside ONE budget and keep the best.
-        # Motivation, measured on these 64 instances: the tuned build wins on
-        # 10 of them and the legacy build on 4, and neither dominates - the
-        # best-of the two averages 83.09% against 82.21% and 82.35% for the
-        # builds alone, and against MCL's 82.42%. Selecting per instance AFTER
-        # seeing the results would be an oracle and not a real algorithm, so
-        # the same set of configurations is run on every instance and the
-        # total time is charged honestly.
-        share = args.time_limit / len(PORTFOLIO)
-        best, stats = None, None
-        for cfg_name, cfg in PORTFOLIO:
-            inst["best_fit_orient"] = cfg["best_fit_orient"]
-            cand, cand_stats = simulated_annealing(
-                inst,
-                time_limit=share,
-                max_iterations=args.max_iterations,
-                ep_limit=args.ep_limit,
-                reheat_threshold=args.reheat_threshold,
-                reheat_fraction=args.reheat_fraction,
-                adaptive=cfg["adaptive"],
-                restart_after=cfg["restart_after"],
-                verbose=not args.quiet,
-            )
-            if not args.quiet:
-                print(f"  [portfolio] {cfg_name}: cost {cand['cost']:.1f}")
-            if best is None or cand["score"] < best["score"]:
-                best, stats = cand, cand_stats
-                stats["winning_config"] = cfg_name
-        stats["portfolio"] = [c for c, _ in PORTFOLIO]
     else:
         best, stats = simulated_annealing(
             inst,
@@ -1408,7 +1361,6 @@ def solve_instance(path, args, command=""):
         results_dir = Path(args.results_dir)
         results_dir.mkdir(parents=True, exist_ok=True)
         dest_marker = "-dest" if inst["use_dest"] else ""
-        dest_marker += "-pf" if args.portfolio else ""
         tag = f"-{args.tag}" if args.tag else ""
         name = (f"{inst['name']}-Bortfeldt-SA{dest_marker}"
                 f"-t{args.time_limit:g}s{tag}.txt")
@@ -1444,12 +1396,6 @@ def main(argv=None):
                              "'volume' derives cost = volume/10, which is what "
                              "Bortfeldt specifies (identical ranking, and "
                              "immune to a mis-transcribed cost)")
-    parser.add_argument("--portfolio", action="store_true",
-                        help="split the time budget across the configurations "
-                             "in PORTFOLIO (legacy + tuned) and keep the best "
-                             "result. Neither build dominates the other across "
-                             "the 64 instances, so this beats committing to "
-                             "one; the whole budget is still --time-limit.")
     parser.add_argument("--placement", choices=("best-fit", "first-fit"),
                         default="best-fit",
                         help="how to pick among the orientations that fit at a "

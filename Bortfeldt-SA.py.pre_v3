@@ -124,37 +124,8 @@ REHEAT_FRACTION = 0.25     # reheat ceiling as a fraction of T0
 REHEAT_DECAY = 0.90        # that ceiling decays per reheat, so runs converge
 REHEAT_THRESHOLD = 3000    # iterations without improvement before a reheat
 
-# The configurations --portfolio runs, in order, splitting the time budget
-# evenly between them. "legacy" is the pre-v4 behaviour (first-fit placement,
-# fixed move weights, no restarts), "tuned" is the v4 one. They win on
-# different instances - legacy on 13b/9b/8c, tuned on 16d/15b/4d/5a/5d/6a and
-# more - so running both beats committing to either.
-PORTFOLIO = [
-    ("legacy", {"best_fit_orient": False, "adaptive": False,
-                "restart_after": 10 ** 9}),
-    ("tuned",  {"best_fit_orient": True,  "adaptive": True,
-                "restart_after": 3}),
-]
-
 STRATEGY_LEN = 8           # length of the cyclic selection-rule gene
 STRATEGIES = ("efficiency", "volume", "cheap")
-
-# Length of the cyclic container-TYPE gene. A single global "use type k" is
-# too coarse: MCL's good answers mix (16a is 2x type 1 + 1x type 2, 11a is
-# 14/1/1), and with one scalar the search collapses onto a single type -
-# our 16a result was byte-identical to our type-1-only 16b result, 8.9pp
-# behind MCL. One entry per opening, cycled, makes such mixes reachable.
-CTYPE_LEN = 8
-
-# Reheating returns to the incumbent and shakes it, which keeps the search in
-# the same basin. After this many reheats in a row that fail to improve the
-# global best, the basin is judged exhausted and the walk restarts from a
-# fresh random solution instead. Measured motivation: problem13a reaches
-# MCL's 92.2% from 1 seed in 3 at only 25 s but sticks at 84.4% from the
-# other 2, so a stuck run is worth abandoning - while problem16d improves
-# only late and must NOT be abandoned, which is why the trigger is
-# stagnation rather than a fixed budget split.
-RESTART_AFTER_REHEATS = 3
 
 MOVE_WEIGHTS = {
     "swap": 1.0,
@@ -171,22 +142,6 @@ MOVE_WEIGHTS = {
     "ctype": 0.5,
 }
 _SAMPLE_TRIES = 12
-
-# Adaptive move weights (an ALNS-style credit scheme). Whether a given move
-# helps is instance-dependent and we have direct evidence of it: "eliminate"
-# rescues problem13b (61.4% -> 92.2%) but coincides with problem16d falling
-# from the 79.9% a build without it reached to 59.9% on 4 seeds out of 4. A
-# fixed weight has to be wrong for one of them, so the weights are instead
-# earned during the run: every move banks credit for what it actually
-# achieves, and the mix is re-normalised periodically. A move that never pays
-# off decays towards MOVE_WEIGHT_FLOOR instead of consuming a fifth of the
-# draws, and one that is carrying the run gets more of them.
-ADAPT_INTERVAL = 400       # iterations between re-weightings
-ADAPT_RATE = 0.3           # how fast weights follow recent credit
-MOVE_WEIGHT_FLOOR = 0.05   # a move is never killed off entirely
-CREDIT_NEW_BEST = 4.0      # found a new global best
-CREDIT_IMPROVED = 2.0      # improved on the incumbent
-CREDIT_ACCEPTED = 0.3      # accepted sideways/uphill (keeps the walk moving)
 
 
 # =========================================================================
@@ -266,8 +221,7 @@ def fits(dims, container_dims):
     return dx <= L and dy <= W and dz <= H
 
 
-def build_instance(path, cost_mode="file", use_dest=None,
-                   best_fit_orient=True):
+def build_instance(path, cost_mode="file", use_dest=None):
     """Expand box types into individual boxes and precompute fit tables."""
     box_types, container_types, saw_dest = parse_instance(path)
     if use_dest is None:
@@ -346,7 +300,6 @@ def build_instance(path, cost_mode="file", use_dest=None,
         # Tilt size for the concentration bonus in evaluate(): strictly below
         # the cheapest container divided by any plausible container count, so
         # the bonus can never outweigh one genuinely saved container.
-        "best_fit_orient": best_fit_orient,
         "tilt_eps": min(c["cost"] for c in containers) / (2.0 * (len(boxes) + 2)),
         # Container types that can hold EVERY box type, and so can legally be
         # used on their own. Restricting to one of these is always feasible.
@@ -378,41 +331,8 @@ def build_instance(path, cost_mode="file", use_dest=None,
 # =========================================================================
 # Packing one container (deepest-bottom-left extreme points)
 # =========================================================================
-def _contact_score(x, y, z, dx, dy, dz, L, W, H, placed):
-    """Area of this placement's faces lying flush against a wall or a box.
-
-    A placement that touches more leaves less unusable sliver behind. Contact
-    maximisation is the standard fill-rate heuristic in the container-loading
-    literature and is the cheapest way to raise the packer's ceiling.
-    """
-    score = 0
-    if x == 0:
-        score += dy * dz
-    if y == 0:
-        score += dx * dz
-    if z == 0:
-        score += dx * dy
-    if x + dx == L:
-        score += dy * dz
-    if y + dy == W:
-        score += dx * dz
-    if z + dz == H:
-        score += dx * dy
-    for qx, qy, qz, qdx, qdy, qdz in placed:
-        ox = min(x + dx, qx + qdx) - max(x, qx)
-        oy = min(y + dy, qy + qdy) - max(y, qy)
-        oz = min(z + dz, qz + qdz) - max(z, qz)
-        if oy > 0 and oz > 0 and (x + dx == qx or qx + qdx == x):
-            score += oy * oz
-        if ox > 0 and oz > 0 and (y + dy == qy or qy + qdy == y):
-            score += ox * oz
-        if ox > 0 and oy > 0 and (z + dz == qz or qz + qdz == z):
-            score += ox * oy
-    return score
-
-
 def pack_container(cdims, candidates, boxes, orient_pref, orients_for_type,
-                   ep_limit=EP_LIMIT, best_fit_orient=True):
+                   ep_limit=EP_LIMIT):
     """Fill ONE container with boxes drawn from `candidates`, in that order.
 
     Identical in mechanics to 3DMHKP-SA.py's decoder, but for a single
@@ -460,7 +380,6 @@ def pack_container(cdims, candidates, boxes, orient_pref, orients_for_type,
             if ep_limit and scanned >= ep_limit:
                 truncated = True
                 break
-            best_fit = None
             for i in range(nr):
                 dx, dy, dz = orients[(start + i) % nr]
                 if x + dx > L or y + dy > W or z + dz > H:
@@ -472,25 +391,9 @@ def pack_container(cdims, candidates, boxes, orient_pref, orients_for_type,
                             and z < qz + qdz and qz < z + dz):
                         ok = False
                         break
-                if not ok:
-                    continue
-                if not best_fit_orient:
+                if ok:
                     hit = (x, y, z, dx, dy, dz)
                     break
-                # Best-fit: among the orientations that DO fit at this point,
-                # take the one sitting most flush against what is already
-                # there. First-fit takes whichever the gene's cyclic order
-                # reaches first, which leaves ragged surfaces and caps the
-                # achievable fill: problem16a needs a 91.6% pack to match MCL
-                # (2x type 1 + 1x type 2) and first-fit never gets near it,
-                # settling for 82.7% on four containers instead. Scoring only
-                # at the first point that fits anything keeps the extra cost
-                # to roughly the overlap test already being done.
-                fit = _contact_score(x, y, z, dx, dy, dz, L, W, H, placed)
-                if best_fit is None or fit > best_fit[0]:
-                    best_fit = (fit, (x, y, z, dx, dy, dz))
-            if hit is None and best_fit is not None:
-                hit = best_fit[1]
             if hit is not None:
                 break
 
@@ -569,8 +472,7 @@ def decode(sol, inst, ep_limit=EP_LIMIT):
             dests = [None]
 
         rule = strategy[k % len(strategy)]
-        ctype_seq = sol.get("ctype_seq")
-        forced = ctype_seq[k % len(ctype_seq)] if ctype_seq else None
+        forced = sol.get("force_ctype")
         best = None
         best_score = None
         for ci, container in enumerate(containers):
@@ -583,31 +485,13 @@ def decode(sol, inst, ep_limit=EP_LIMIT):
                     cand = [j for j in unplaced if boxes[j]["dest"] == d]
                 chosen, packed_vol = pack_container(
                     container["dims"], cand, boxes, orient_pref,
-                    inst["orients"][ci], ep_limit, inst["best_fit_orient"])
+                    inst["orients"][ci], ep_limit)
                 if not chosen:
                     continue
                 score = _selection_score(rule, container, packed_vol)
                 if best_score is None or score < best_score:
                     best_score = score
                     best = (ci, d, chosen, packed_vol)
-
-        if best is None and forced is not None:
-            # This opening's gene named a type that cannot take any of the
-            # boxes still outstanding. Fall back to the full choice rather
-            # than dead-ending: the gene is a preference, not a constraint.
-            for ci, container in enumerate(containers):
-                for d in dests:
-                    cand = (unplaced if d is None
-                            else [j for j in unplaced if boxes[j]["dest"] == d])
-                    chosen, packed_vol = pack_container(
-                        container["dims"], cand, boxes, orient_pref,
-                        inst["orients"][ci], ep_limit, inst["best_fit_orient"])
-                    if not chosen:
-                        continue
-                    score = _selection_score(rule, container, packed_vol)
-                    if best_score is None or score < best_score:
-                        best_score = score
-                        best = (ci, d, chosen, packed_vol)
 
         if best is None:
             # build_instance() rules this out, so reaching here means the
@@ -669,7 +553,7 @@ def copy_solution(sol):
         "order": list(sol["order"]),
         "orient": list(sol["orient"]),
         "strategy": list(sol["strategy"]),
-        "ctype_seq": list(sol["ctype_seq"]) if sol.get("ctype_seq") else None,
+        "force_ctype": sol.get("force_ctype"),
         "opened": sol.get("opened"),
         "cost": sol.get("cost", 0.0),
         "score": sol.get("score", 0.0),
@@ -689,7 +573,7 @@ def build_initial_solution(inst, ep_limit=EP_LIMIT):
             "order": list(order),
             "orient": [0] * inst["n_types"],
             "strategy": ["efficiency"] * STRATEGY_LEN,
-            "ctype_seq": [force_ctype] * CTYPE_LEN,
+            "force_ctype": force_ctype,
             "opened": None,
             "cost": 0.0,
             "score": 0.0,
@@ -804,18 +688,12 @@ def sample_ctype(sol, inst):
     opening on fill ratio - and cascade into 10 containers at 65.3% instead of
     25 cheap ones at 74.7%.
     """
-    seq = sol.get("ctype_seq")
-    if not seq:
-        return None
-    # Any type may be named for a single opening - decode() falls back to the
-    # full choice if that type cannot take what is left - so the alphabet is
-    # every type plus "let the selection rule decide".
-    choices = [None] + list(range(len(inst["containers"])))
+    choices = [None] + list(inst["viable_forced"])
     if len(choices) < 2:
         return None
-    k = random.randrange(len(seq))
-    choices = [c for c in choices if c != seq[k]]
-    return ("ctype", k, random.choice(choices))
+    current = sol.get("force_ctype")
+    choices = [c for c in choices if c != current]
+    return ("ctype", random.choice(choices))
 
 
 _SAMPLERS = {
@@ -881,8 +759,8 @@ def apply_move(sol, move):
             rest.insert(random.randrange(head + 1), j)
         sol["order"] = rest
     elif kind == "ctype":
-        _, k, value = move
-        sol["ctype_seq"][k] = value
+        _, value = move
+        sol["force_ctype"] = value
 
 
 def diversify(sol, inst, ep_limit=EP_LIMIT):
@@ -899,41 +777,6 @@ def diversify(sol, inst, ep_limit=EP_LIMIT):
         if random.random() < 0.5:
             sol["strategy"][k] = random.choice(STRATEGIES)
     evaluate(sol, inst, ep_limit=ep_limit)
-
-
-def random_solution(inst, ep_limit=EP_LIMIT):
-    """A fresh solution for restarting into a different basin.
-
-    Deliberately a WARM restart: the largest-first order is kept as the spine
-    and only lightly perturbed, while the genes (orientation, selection rule,
-    container type) are drawn fresh. A cold random permutation was tried first
-    and is too destructive at these budgets - the run spends what iterations
-    it has left climbing back to where the greedy decode already starts, and
-    problem13a came back at 84.4% instead of its 87.3% baseline. What actually
-    differs between a lucky and an unlucky seed on these instances is the gene
-    draw, not the box order, so that is what a restart should re-roll.
-    """
-    boxes = inst["boxes"]
-    order = sorted(range(len(boxes)), key=lambda j: -boxes[j]["vol"])
-    seg = max(2, len(order) // 4)
-    i = random.randrange(max(1, len(order) - seg + 1))
-    block = order[i:i + seg]
-    random.shuffle(block)
-    order[i:i + seg] = block
-    sol = {
-        "order": order,
-        "orient": [random.randrange(max(1, c))
-                   for c in inst["orient_choices"]],
-        "strategy": [random.choice(STRATEGIES) for _ in range(STRATEGY_LEN)],
-        "ctype_seq": [random.choice([None] + list(range(len(inst["containers"]))))
-                      for _ in range(CTYPE_LEN)],
-        "opened": None,
-        "cost": 0.0,
-        "score": 0.0,
-        "cvol": 0,
-    }
-    evaluate(sol, inst, ep_limit=ep_limit)
-    return sol
 
 
 # =========================================================================
@@ -982,14 +825,12 @@ def simulated_annealing(inst, time_limit=TIME_LIMIT,
                         max_iterations=MAX_ITERATIONS, ep_limit=EP_LIMIT,
                         reheat_threshold=REHEAT_THRESHOLD,
                         reheat_fraction=REHEAT_FRACTION,
-                        reheat_decay=REHEAT_DECAY, verbose=True,
-                        adaptive=True, restart_after=RESTART_AFTER_REHEATS,
-                        start=None):
+                        reheat_decay=REHEAT_DECAY, verbose=True):
     """Minimise total container cost; every box is packed by construction."""
     t_start = time.time()
     deadline = t_start + time_limit
 
-    current = copy_solution(start) if start is not None         else build_initial_solution(inst, ep_limit=ep_limit)
+    current = build_initial_solution(inst, ep_limit=ep_limit)
     initial_cost = current["cost"]
     initial_score = current["score"]
     initial_cvol = current["cvol"]
@@ -1021,13 +862,7 @@ def simulated_annealing(inst, time_limit=TIME_LIMIT,
     reheat_ceiling = reheat_fraction * t_init
     reheat_floor = 0.0
 
-    weights = dict(inst.get("move_weights", MOVE_WEIGHTS))
-    credit = {k: 0.0 for k in weights}
-    draws = {k: 0 for k in weights}
-
     iteration = accepted = rejected = neutral = no_move = reheats = 0
-    restarts = 0
-    fruitless_reheats = 0
     no_improve = 0
     best_iteration, best_time = 0, 0.0
     stopped_on = "time limit"
@@ -1042,12 +877,10 @@ def simulated_annealing(inst, time_limit=TIME_LIMIT,
             reheat_floor *= 0.999      # let the floor bleed back to the curve
 
         iteration += 1
-        move = sample_random_move(current, inst, weights)
+        move = sample_random_move(current, inst)
         if move is None:
             no_move += 1
             continue
-        kind = move[0]
-        draws[kind] = draws.get(kind, 0) + 1
 
         trial = copy_solution(current)
         apply_move(trial, move)
@@ -1057,65 +890,32 @@ def simulated_annealing(inst, time_limit=TIME_LIMIT,
         if delta < 0 or (delta == 0 and random.random() < 0.5):
             current = trial
             accepted += 1
-            credit[kind] = credit.get(kind, 0.0) + (
-                CREDIT_IMPROVED if delta < 0 else CREDIT_ACCEPTED)
             if delta == 0:
                 neutral += 1
             if trial_cost < best["score"]:
-                credit[kind] = credit.get(kind, 0.0) + CREDIT_NEW_BEST
                 best = copy_solution(trial)
                 best_iteration, best_time = iteration, time.time() - t_start
                 no_improve = 0
-                fruitless_reheats = 0
             else:
                 no_improve += 1
         elif delta > 0 and T > 0 and random.random() < math.exp(-delta / T):
             current = trial
             accepted += 1
-            credit[kind] = credit.get(kind, 0.0) + CREDIT_ACCEPTED
             no_improve += 1
         else:
             rejected += 1
             no_improve += 1
 
-        if adaptive and iteration % ADAPT_INTERVAL == 0:
-            # Re-weight by credit earned per draw, then decay towards the
-            # floor so a move that stopped paying can recover if the search
-            # moves into a region where it works again.
-            for k in list(weights):
-                if draws.get(k):
-                    earned = credit[k] / draws[k]
-                    weights[k] = max(
-                        MOVE_WEIGHT_FLOOR,
-                        (1.0 - ADAPT_RATE) * weights[k] + ADAPT_RATE * earned)
-                credit[k] = 0.0
-                draws[k] = 0
-
         if no_improve >= reheat_threshold:
             reheats += 1
-            fruitless_reheats += 1
             reheat_floor = reheat_ceiling
-            if fruitless_reheats >= restart_after:
-                # Several reheats running have failed to beat the incumbent:
-                # this basin is spent, so leave it entirely rather than shake
-                # the same solution again. The global best is kept, so a
-                # restart can only cost time, never quality.
-                restarts += 1
-                fruitless_reheats = 0
-                reheat_ceiling = reheat_fraction * t_init
-                reheat_floor = reheat_ceiling
-                current = random_solution(inst, ep_limit=ep_limit)
-                if verbose:
-                    print(f"    restart {restarts} at iteration {iteration} "
-                          f"(basin exhausted after {reheats} reheats)")
-            else:
-                reheat_ceiling *= reheat_decay
-                current = copy_solution(best)
-                diversify(current, inst, ep_limit=ep_limit)
-                if verbose:
-                    print(f"    reheat {reheats} at iteration {iteration} "
-                          f"(T floor {reheat_floor:.2f})")
+            reheat_ceiling *= reheat_decay
+            current = copy_solution(best)
+            diversify(current, inst, ep_limit=ep_limit)
             no_improve = 0
+            if verbose:
+                print(f"    reheat {reheats} at iteration {iteration} "
+                      f"(T floor {reheat_floor:.2f})")
     else:
         stopped_on = "iteration limit"
 
@@ -1127,8 +927,6 @@ def simulated_annealing(inst, time_limit=TIME_LIMIT,
         "neutral": neutral,
         "no_move": no_move,
         "reheats": reheats,
-        "restarts": restarts,
-        "final_weights": {k: round(v, 3) for k, v in weights.items()},
         "elapsed": elapsed,
         "iters_per_sec": iteration / elapsed if elapsed else 0.0,
         "initial_cost": initial_cost,
@@ -1278,15 +1076,7 @@ def write_report(path, inst, sol, stats, metrics, args, command):
                  f"(of which neutral {stats['neutral']}), "
                  f"rejected: {stats['rejected']}, "
                  f"no-move draws: {stats['no_move']}")
-    lines.append(f"  reheats: {stats['reheats']}, "
-                 f"restarts: {stats['restarts']}")
-    if stats.get("winning_config"):
-        lines.append(f"  portfolio: {', '.join(stats['portfolio'])}"
-                     f" -> won by '{stats['winning_config']}'")
-    if stats.get("final_weights"):
-        lines.append(f"  adapted move weights: "
-                     + ", ".join(f"{k}={v:g}"
-                                 for k, v in stats["final_weights"].items()))
+    lines.append(f"  reheats: {stats['reheats']}")
     lines.append(f"  verification: {stats['verification']}")
     lines.append("")
     lines.append("Containers (index, type, dims, destination, boxes, "
@@ -1313,8 +1103,7 @@ def write_report(path, inst, sol, stats, metrics, args, command):
 # =========================================================================
 def solve_instance(path, args, command=""):
     inst = build_instance(path, cost_mode=args.cost_mode,
-                          use_dest=(False if args.ignore_destinations else None),
-                          best_fit_orient=(args.placement == "best-fit"))
+                          use_dest=(False if args.ignore_destinations else None))
     for (t, dims, cost, expected) in inst["cost_warnings"]:
         print(f"  WARNING: container type {t} {dims} has cost {cost:.1f} but "
               f"volume/10 = {expected:.1f}; Bortfeldt sets cost = volume. "
@@ -1334,9 +1123,7 @@ def solve_instance(path, args, command=""):
         best = build_initial_solution(inst, ep_limit=args.ep_limit)
         stats = {
             "iterations": 0, "accepted": 0, "rejected": 0, "neutral": 0,
-            "no_move": 0, "reheats": 0, "restarts": 0,
-            "final_weights": {},
-            "elapsed": time.time() - t0,
+            "no_move": 0, "reheats": 0, "elapsed": time.time() - t0,
             "iters_per_sec": 0.0, "initial_cost": best["cost"],
             "initial_cvol": best["cvol"],
             "t_init": 0.0, "t_end": 0.0, "t_init_source": "n/a",
@@ -1346,36 +1133,6 @@ def solve_instance(path, args, command=""):
             "stopped_on": "greedy only, SA not run",
             "best_iteration": 0, "best_time": 0.0,
         }
-    elif args.portfolio:
-        # Run several configurations inside ONE budget and keep the best.
-        # Motivation, measured on these 64 instances: the tuned build wins on
-        # 10 of them and the legacy build on 4, and neither dominates - the
-        # best-of the two averages 83.09% against 82.21% and 82.35% for the
-        # builds alone, and against MCL's 82.42%. Selecting per instance AFTER
-        # seeing the results would be an oracle and not a real algorithm, so
-        # the same set of configurations is run on every instance and the
-        # total time is charged honestly.
-        share = args.time_limit / len(PORTFOLIO)
-        best, stats = None, None
-        for cfg_name, cfg in PORTFOLIO:
-            inst["best_fit_orient"] = cfg["best_fit_orient"]
-            cand, cand_stats = simulated_annealing(
-                inst,
-                time_limit=share,
-                max_iterations=args.max_iterations,
-                ep_limit=args.ep_limit,
-                reheat_threshold=args.reheat_threshold,
-                reheat_fraction=args.reheat_fraction,
-                adaptive=cfg["adaptive"],
-                restart_after=cfg["restart_after"],
-                verbose=not args.quiet,
-            )
-            if not args.quiet:
-                print(f"  [portfolio] {cfg_name}: cost {cand['cost']:.1f}")
-            if best is None or cand["score"] < best["score"]:
-                best, stats = cand, cand_stats
-                stats["winning_config"] = cfg_name
-        stats["portfolio"] = [c for c, _ in PORTFOLIO]
     else:
         best, stats = simulated_annealing(
             inst,
@@ -1408,7 +1165,6 @@ def solve_instance(path, args, command=""):
         results_dir = Path(args.results_dir)
         results_dir.mkdir(parents=True, exist_ok=True)
         dest_marker = "-dest" if inst["use_dest"] else ""
-        dest_marker += "-pf" if args.portfolio else ""
         tag = f"-{args.tag}" if args.tag else ""
         name = (f"{inst['name']}-Bortfeldt-SA{dest_marker}"
                 f"-t{args.time_limit:g}s{tag}.txt")
@@ -1444,19 +1200,6 @@ def main(argv=None):
                              "'volume' derives cost = volume/10, which is what "
                              "Bortfeldt specifies (identical ranking, and "
                              "immune to a mis-transcribed cost)")
-    parser.add_argument("--portfolio", action="store_true",
-                        help="split the time budget across the configurations "
-                             "in PORTFOLIO (legacy + tuned) and keep the best "
-                             "result. Neither build dominates the other across "
-                             "the 64 instances, so this beats committing to "
-                             "one; the whole budget is still --time-limit.")
-    parser.add_argument("--placement", choices=("best-fit", "first-fit"),
-                        default="best-fit",
-                        help="how to pick among the orientations that fit at a "
-                             "point: 'best-fit' (default) takes the one lying "
-                             "most flush against walls and placed boxes; "
-                             "'first-fit' takes whichever the gene's cyclic "
-                             "order reaches first (pre-v4 behaviour).")
     parser.add_argument("--ignore-destinations", action="store_true",
                         help="ignore the destination column even when present, "
                              "turning a Bortfeldt/ file into its unrestricted "
