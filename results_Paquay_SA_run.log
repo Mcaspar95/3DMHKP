@@ -1,0 +1,24 @@
+
+     n   inst     ULDs    vol[m3]     fill%  maxfill%      sec
+    10     30       43      14.95     38.81     63.98    12.00
+    20     30       49      26.92     47.25     74.42    12.00
+    30     30       64      33.69     51.55     71.38    12.00
+    40     30       71      43.80     52.30     70.79    12.00
+    50     30       77      52.91     51.94     76.79    12.00
+    60     30       92      63.60     52.12     80.21    12.00
+    70     30       98      71.89     54.79     75.50    37.01
+    80     30      113      80.89     55.64     78.02    12.00
+    90     30      116      89.46     54.81     78.63    12.00
+   100     30      134      99.84     55.96     75.74    12.01
+  --------------------------------------------------------------
+  total ULDs used: 857   mean filling rate: 52.86%   max: 80.21%
+  runtime: 4351.0 s total, 759.95 s max per instance
+  filling-rate quartiles: Q1 45.47  median 52.96  Q3 61.87
+
+  CG diagnostics (NOT enforced, see module docstring):
+    ULDs 857 | CG above half height: 32 (3.7%) | CG >10% off centre in XY: 429 (50.1%)
+
+  Paper reference point: Paquay et al. (2018) use 1010 ULDs over
+  these same 300 instances, max 12 s per instance (Sec. 6.3.1/6.3.3).
+  Ours: 857 ULDs. Note our CG constraints are NOT enforced, so this
+  is not yet a like-for-like comparison -- see module docstring.
