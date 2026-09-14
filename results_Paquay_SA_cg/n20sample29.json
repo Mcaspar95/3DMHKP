@@ -6,9 +6,10 @@
  "fills": [
   46.644440231602
  ],
- "seconds": 12.005012035369873,
- "iters": 6467,
+ "seconds": 12.005817413330078,
+ "iters": 4542,
  "types": [
   "PG"
- ]
+ ],
+ "cg_enforced": true
 }

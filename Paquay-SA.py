@@ -872,7 +872,8 @@ def main():
             row = {"n": n, "sample": k, "ulds": len(bins), "obj": res["obj"],
                    "fills": fills, "seconds": res["seconds"],
                    "iters": res["iters"],
-                   "types": [b.uld.code for b in bins]}
+                   "types": [b.uld.code for b in bins],
+                   "cg_enforced": bool(args.cg)}
             rows.append(row)
             if args.verbose or args.sample is not None:
                 print("n%-4d sample %-3d ULDs %2d  %-22s vol %7.2f m3  "
