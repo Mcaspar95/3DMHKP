@@ -1,0 +1,55 @@
+
+An exact algorithm for the three-dimensional bin packing problem
+================================================================
+
+The code consists of two parts:
+
+  3dbpp.c    : The callable C-code which solves a three-dimensional
+               bin packing problem.
+
+  test3dbpp.c: A main algorithm which generates 10 instances of a
+               given size/type, and calls 3dbpp.c for the solution. 
+
+To compile the code use one of the following commands
+
+  gcc -ansi -o 3dbpp -O3 3dbpp.c test3dbpp.c -lm  (gnu C)
+  cc  -Aa   -o 3dbpp +O4 3dbpp.c test3dbpp.c -lm  (HP-UX C)
+
+The generated executable file "3dbpp" prompts for 
+
+  n      The size of the instance, i.e. number of boxes.
+
+  bindim The size of the bin, typically 40-100.
+
+  type   A value between 1-9 selecting one of the instance types
+         described in the corresponding paper.
+
+Output from the test program is appended to the file "3dbpp.out".
+
+Thus for instance choosing n=10, bindim=100 and type=1 one should get
+the following output:
+
+  3DBPP PROBLEM 10 100 1
+   1 : lb  3 z  3 time   0.02
+   2 : lb  4 z  4 time   0.00
+   3 : lb  2 z  2 time   0.09
+   4 : lb  4 z  4 time   0.00
+   5 : lb  4 z  4 time   0.00
+   6 : lb  3 z  3 time   0.14
+   7 : lb  3 z  3 time   0.01
+   8 : lb  3 z  3 time   0.01
+   9 : lb  3 z  3 time   0.06
+  10 : lb  4 z  4 time   0.01
+
+where "lb" is the lower bound, "z" is the objective of the found solution
+and "time" is the CPU-time used for solving the problem.
+
+(c) Copyright 1998
+
+  David Pisinger                        Silvano Martello, Daniele Vigo
+  DIKU, University of Copenhagen        DEIS, University of Bologna
+  Universitetsparken 1                  Viale Risorgimento 2
+  Copenhagen, Denmark                   Bologna, Italy
+
+This code can be used free of charge for research and academic purposes only.
+
