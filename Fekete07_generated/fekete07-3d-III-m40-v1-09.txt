@@ -1,0 +1,53 @@
+# Newly generated instance inspired by Fekete, Schepers & van der Veen (2007),
+# Section 6.2 and Table 5; not an original published benchmark instance.
+# Class III, m=40, multiplicity=1, replicate=09, seed=2007.
+# Container: 100 x 100 x 100. Profit = box volume * random integer in {1,2,3}.
+# Dimensions sampled uniformly on the paper's intervals then rounded up.
+# Original paper assumes fixed box orientation; 3DMHKP-SA.py allows rotations.
+# Use --value-mode flat: the last BOXES field contains the full box profit.
+#! value-mode: flat
+
+BOXES
+1 1 98 22 90 388080
+2 1 24 21 18 9072
+3 1 46 23 41 130134
+4 1 23 34 26 40664
+5 1 11 99 89 96921
+6 1 97 41 90 357930
+7 1 30 8 5 3600
+8 1 7 25 37 6475
+9 1 15 3 23 2070
+10 1 83 20 93 463140
+11 1 32 45 16 23040
+12 1 14 22 18 5544
+13 1 12 16 32 18432
+14 1 79 31 89 435922
+15 1 40 25 2 6000
+16 1 34 83 99 838134
+17 1 39 37 33 47619
+18 1 22 27 19 11286
+19 1 16 87 100 278400
+20 1 22 47 40 41360
+21 1 34 90 98 899640
+22 1 80 85 23 312800
+23 1 94 21 76 150024
+24 1 37 20 2 1480
+25 1 8 40 21 6720
+26 1 48 26 6 14976
+27 1 91 18 82 268632
+28 1 10 5 4 400
+29 1 31 30 12 22320
+30 1 16 2 8 256
+31 1 93 70 53 690060
+32 1 33 86 82 232716
+33 1 30 87 84 657720
+34 1 22 6 14 3696
+35 1 95 72 98 1340640
+36 1 88 87 48 734976
+37 1 18 43 49 75852
+38 1 21 38 14 33516
+39 1 45 14 10 12600
+40 1 28 39 47 102648
+
+CONTAINERS
+1 1 100 100 100
