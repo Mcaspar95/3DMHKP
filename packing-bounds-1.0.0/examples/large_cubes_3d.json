@@ -1,0 +1,10 @@
+{
+  "name": "Three pairwise-incompatible cubes",
+  "container": [11, 11, 11],
+  "allow_rotations": true,
+  "items": [
+    {"id": "a", "dimensions": [6, 6, 6], "profit": 8},
+    {"id": "b", "dimensions": [6, 6, 6], "profit": 7},
+    {"id": "c", "dimensions": [6, 6, 6], "profit": 6}
+  ]
+}

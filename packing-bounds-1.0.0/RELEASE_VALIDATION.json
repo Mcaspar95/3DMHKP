@@ -1,0 +1,21 @@
+{
+  "package": "orthogonal-packing-bounds",
+  "version": "1.0.0",
+  "clean_wheel_install": true,
+  "isolated_installed_tests_passed": 15,
+  "cli_entrypoint_ip_lp_wall_guard": "passed",
+  "normalized_model_parity_checks": 15,
+  "benchmark_integer_lp_comparisons": 6,
+  "dimensions": [
+    2,
+    3
+  ],
+  "dependencies": {
+    "numpy": "2.5.5",
+    "scipy": "1.18.1",
+    "highspy": "1.16.0"
+  },
+  "benchmark_scope": "Three sampled Egeblad instances; not a full benchmark rerun.",
+  "external_project_dependencies": false,
+  "contents": "Source, tests, examples, docs, wheel, sdist. Numerical dependencies installed separately."
+}

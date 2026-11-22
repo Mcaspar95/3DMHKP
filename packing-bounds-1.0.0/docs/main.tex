@@ -1,0 +1,32 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=27mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\title{Classes and Combination of Upper Bounds for\protect\\
+Two- and Three-Dimensional Knapsack Packing}
+\author{}
+\date{}
+\begin{document}
+\maketitle
+\begin{abstract}
+We describe a unified family of geometric relaxations for orthogonal
+knapsack packing with permitted rotations and rectangular containers.
+The formulation combines volume capacity, transformed-volume inequalities,
+data-dependent scale tightening, grouped dissection inequalities, and
+orientation incompatibilities. We give validity proofs, distinguish
+integer geometric relaxations from their continuous relaxations, and
+establish the dominance relations obtained by combining their constraints.
+A final extension transfers the per-bin inequalities to bin-packing
+lower bounds. The presentation specifies the implemented constructions
+without asserting novelty for the underlying dual-feasible functions.
+\end{abstract}
+\input{bounds_section}
+\bibliographystyle{plain}
+\bibliography{references}
+\end{document}

@@ -1,0 +1,7 @@
+{
+  "sources": {
+    "packing_bounds.py": "b95c1d5a569422d5a41994fedcc2378fe18836fc9bf5f73de56d73412bae55c7",
+    "packing_bound_stack.py": "661d5a8cfcef185ab876303f40d5264c8c502da77fdcc1c2a48fed8a667952dc"
+  },
+  "adaptation": "Standalone package, 2D/3D input and model API, CLI, independent tests; no external project imports."
+}

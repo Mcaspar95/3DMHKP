@@ -1,0 +1,54 @@
+{
+  "unit_tests": 15,
+  "unit_tests_passed": true,
+  "normalized_matrix_parity_checks": 15,
+  "benchmark_results": [
+    {
+      "instance": "ep2-30-D-C-25.2kp",
+      "dimension": 2,
+      "mode": "ip",
+      "upper_bound": 6432.0,
+      "expected": 6432
+    },
+    {
+      "instance": "ep2-30-D-C-25.2kp",
+      "dimension": 2,
+      "mode": "lp",
+      "upper_bound": 6435.000000000001,
+      "expected": 6435.000000000003
+    },
+    {
+      "instance": "ep3-20-C-C-50",
+      "dimension": 3,
+      "mode": "ip",
+      "upper_bound": 65308.0,
+      "expected": 65308
+    },
+    {
+      "instance": "ep3-20-C-C-50",
+      "dimension": 3,
+      "mode": "lp",
+      "upper_bound": 65308.00000000001,
+      "expected": 65308.0
+    },
+    {
+      "instance": "ep3-20-D-C-50",
+      "dimension": 3,
+      "mode": "ip",
+      "upper_bound": 13192.0,
+      "expected": 13192
+    },
+    {
+      "instance": "ep3-20-D-C-50",
+      "dimension": 3,
+      "mode": "lp",
+      "upper_bound": 13192.000000000002,
+      "expected": 13192.0
+    }
+  ],
+  "python": "3.14.6",
+  "numpy": "2.5.2",
+  "scipy": "1.18.1",
+  "highs": "1.16.0",
+  "scope": "Sampled benchmark regression, not a full rerun of 140 instances."
+}

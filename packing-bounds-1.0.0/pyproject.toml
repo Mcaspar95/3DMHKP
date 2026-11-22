@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "orthogonal-packing-bounds"
+version = "1.0.0"
+description = "Complete 2D and 3D orthogonal knapsack upper-bound stack"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24,<3", "scipy>=1.11,<2"]
+
+[project.optional-dependencies]
+highs = ["highspy>=1.16,<2"]
+
+[project.scripts]
+packing-bounds = "packing_bounds.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

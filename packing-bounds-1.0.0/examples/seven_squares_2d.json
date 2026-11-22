@@ -1,0 +1,6 @@
+{
+  "name": "Seven squares: floor products improve the baseline",
+  "container": [10, 7],
+  "allow_rotations": true,
+  "items": [{"id": "square", "dimensions": [3, 3], "profit": 1, "copies": 7}]
+}

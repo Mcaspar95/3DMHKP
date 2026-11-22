@@ -1,0 +1,173 @@
+# Orthogonal Packing Bounds 1.0.0
+
+Standalone Python package for the complete **2D and 3D single-container knapsack
+upper-bound stack**. It needs no GUI, repository checkout, external project
+files, or benchmark data. It supports orthogonal rotations, rectangular/cuboid
+containers, integer and LP relaxations, and item multiplicities.
+
+## Install and run
+
+Python 3.10 or later is required (tested on Python 3.14). From the extracted
+package directory:
+
+```sh
+python -m venv .venv
+# macOS / Linux:
+source .venv/bin/activate
+# Windows PowerShell instead: .venv\Scripts\Activate.ps1
+python -m pip install '.[highs]'
+packing-bounds examples/seven_squares_2d.json --stage all --mode both -o results.json
+packing-bounds examples/large_cubes_3d.json --stage full --time-limit 30
+```
+
+`python -m pip install .` installs the SciPy-only variant; integer solves then
+use SciPy's bundled HiGHS. The `highs` extra adds standalone `highspy>=1.16`,
+preferred for the four extended integer stages. LP and legacy-stage solves use
+SciPy/HiGHS. No commercial solver or solver license is required.
+
+The release also contains a wheel and source distribution. Install a wheel with
+`python -m pip install 'orthogonal_packing_bounds-1.0.0-py3-none-any.whl[highs]'`.
+The CLI is also available as `python -m packing_bounds`.
+
+## All bound families
+
+| Stage | Content |
+| --- | --- |
+| `volume` | Original area/volume capacity |
+| `fragments` | Grouped squares (2D) or cubes (3D), including projection/residual-space rows |
+| `shapes` | Threshold products on original shapes, shared orientation variables |
+| `baseline` | Combined fragment and original-shape inequalities |
+| `floor_mixed` | Baseline plus mixed threshold/floor products |
+| `rounding_mixed` | Previous stages plus strengthened rounding products |
+| `data_mixed` | Previous stages plus exact axis-domain capacity tightening |
+| `full` | All stages plus orientation conflicts and greedy item-clique cuts |
+
+The last five stages form a cumulative sequence. All retain the original
+area/volume inequality. Map and product dominance comparisons use exact integer
+arithmetic. Data tightening uses an exact unbounded-knapsack dynamic program on
+the union of all lengths in feasible orientations. Unit fragments are omitted
+from fragment cuts while original volume remains intact.
+
+The 2D fragment family contains grouped CUTSQ tall-width, tall-count and
+residual-space rows. It does not implement every construction in Dell'Amico et
+al., nor the complete Clautiaux--Jouglet--El Hayek square-bin duplication bound.
+The displayed fragment rows are valid outside the restricted benchmark domain
+as well, by the geometric proofs in the included write-up. The 3D family uses
+recursive cube partitions, projection and clique rows, and threshold products.
+
+## JSON input
+
+```json
+{
+  "name": "Example",
+  "container": [10, 7],
+  "allow_rotations": true,
+  "items": [
+    {"id": "square", "dimensions": [3, 3], "profit": 1, "copies": 7}
+  ]
+}
+```
+
+- Container and item dimensions have length two or three, consistently.
+- Dimensions are positive integers, each at most 1,000,000, with item/container
+  volume at most 2**50. These are numerical limits, not performance guarantees.
+- Profits are finite and nonnegative; decimal profits are allowed. Total retained
+  profit is at most 2**50. Positive integer `copies` defaults to one.
+- `allow_rotations` defaults to true: every distinct fitting axis permutation is
+  available. False preserves the input axis order. Free-angle rotation is not
+  supported. Square/cubic containers are not required.
+- `items: []` is valid. Individually unfit items are excluded and counted.
+- IDs and names are optional; model metadata maps columns to expanded item copies.
+
+## Python API
+
+```python
+from packing_bounds import solve, solve_all, build_model
+
+instance = {
+    "container": [10, 7],
+    "items": [{"dimensions": [3, 3], "profit": 1, "copies": 7}],
+}
+result = solve(instance, stage="full", mode="ip", time_limit=30)
+assert result["upper_bound"] == 6
+
+lp = solve(instance, stage="full", mode="lp")
+all_results = solve_all(instance, mode="ip", time_limit=30)
+model = build_model(instance, stage="full")
+model.export("matrix_export")
+```
+
+`Model` exposes `profits`, sparse CSR `A`, RHS `b`, `owners`, `orientations` and
+`metadata`. Its formulation is `max profits @ y`, subject to `A @ y <= b` and
+`0 <= y <= 1`, with binary variables for IP. Item-orientation group rows are
+already included. `owners` indexes the filtered, expanded items described by
+`metadata['item_ids']`. For volume/fragment stages, each column is an item and
+`orientations` contains its original dimensions, not a selected orientation.
+
+`model.export()` writes `A.npz`, `vectors.npz` and `metadata.json`. Load `A.npz`
+with `scipy.sparse.load_npz`, and vectors with `numpy.load`.
+
+Optional progress callbacks receive dictionaries with `phase` and `detail`:
+`solve(instance, progress=print)`. The direct API does not spawn processes.
+
+## Time limits and result interpretation
+
+- `mode='ip'` solves an integer **geometric relaxation**; `mode='lp'` also relaxes
+  selection and orientation integrality. Neither constructs a feasible packing.
+- `upper_bound` bounds maximum packing profit. `model_value` is an incumbent of
+  the necessary-condition model, not a geometrically feasible packing profit.
+- `Optimal` means the relaxation was solved to optimality, not the packing problem.
+- A time-limited upper bound uses a finite global solver dual bound, an available
+  LP dual bound, or the fractional-volume fallback. An incumbent alone is never
+  used as an upper bound. Integer-profit IP upper bounds are rounded down with
+  numerical tolerance; decimal-profit bounds are not rounded to integers.
+- Extended integer stages use row generation: a restricted optimum is accepted
+  only after checking every full-model row. All internal solves share one time
+  budget. `row_generation_rounds` and `active_rows` describe that process.
+- `time_limit` excludes model construction and is enforced by the native solver;
+  it is not a hard operating-system wall-time limit. Very large capacities or
+  numbers of orientations can make construction expensive.
+- `--wall-time-limit 60` runs each model in an isolated process and bounds its
+  construction/solve queue wait, plus startup/cleanup overhead. A timeout returns
+  the original volume fallback with an explicit status. In Python, use
+  `solve_isolated(instance, wall_time_limit=60)` inside a
+  `if __name__ == '__main__':` guard. This API requires a spawn-capable process.
+- Separately time-limited stages can return nonmonotone reported bounds, although
+  their optimal values obey the theoretical dominance relations.
+
+Results include stage, dimension, mode, rotation policy, exclusions, bound
+source, solver backend, model size, stage metadata and timings. JSON output is
+written to stdout by default; solver banners are directed to stderr. Use
+`--output results.json` to save it. `--mode both` and `--stage all` return lists.
+`--matrix directory` exports a single selected-stage matrix; this optional
+export is a separate build and is not covered by the solve wall-time limit.
+
+These are numerical floating-point solver bounds, not exact rational
+certificates. Routing, weight restrictions, and multiple containers are not
+modeled. The included write-up explains the theoretical transfer to bin-packing
+lower bounds, but this package's solver computes knapsack upper bounds only.
+
+## Validation and contents
+
+```sh
+python -m unittest discover -s tests -v
+```
+
+Tests cover 2D/3D examples, rotations, integer/LP distinctions, fractional profits,
+finite pattern validity, domain tightening, row generation, invalid inputs,
+CLI JSON output, matrix export, and wall-time fallback. Release validation also
+compares sampled Egeblad benchmark models/results with the original implementations;
+see `docs/validation.json`. Full benchmark data are not bundled.
+
+- `src/packing_bounds/api.py`: validation and public solving API.
+- `models.py`: grouped squares/cubes and cumulative sparse models.
+- `scales.py`: threshold/floor/rounding maps, domain tightening and conflicts.
+- `baselines.py`: original cube/shape helpers.
+- `solvers.py`: HiGHS/SciPy solves and row generation.
+- `cli.py`: command-line interface.
+- `examples/`: self-contained 2D and 3D instances and an API example.
+- `docs/`: mathematical PDF, reusable LaTeX, bibliography and source provenance.
+
+The mathematical ingredients build on Dell'Amico, Martello and Vigo (2002),
+Fekete and Schepers (2004), and Carlier, Clautiaux and Moukrim (2007). Full
+references and validity proofs are included in `docs/knapsack_bounds.pdf`.

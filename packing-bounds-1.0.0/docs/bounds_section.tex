@@ -1,0 +1,440 @@
+% Reusable manuscript section. See main.tex for packages and theorem declarations.
+\section{Upper bounds for orthogonal knapsack packing with rotations}
+\label{sec:kp-bounds}
+
+\subsection{Problem definition and notation}
+Let $d\in\{2,3\}$ and let $C=(C_1,\ldots,C_d)$ be the dimensions of a
+rectangular container, with $V=\prod_{j=1}^d C_j$. Each item $i\in I$ has
+positive dimensions $a_i=(a_{i1},\ldots,a_{id})$, volume
+$v_i=\prod_j a_{ij}$, and profit $p_i\geq0$. Multiplicities are represented
+by distinct copies. A feasible solution selects items and places them
+axis-parallel inside the container, with disjoint interiors. Let
+$\mathcal O_i$ contain the distinct permitted axis permutations that fit
+individually into $C$; items with $\mathcal O_i=\varnothing$ are removed.
+Write $a_{ioj}$ for the extent of item $i$ along axis $j$ in orientation
+$o\in\mathcal O_i$. Thus the formulation covers fixed orientations,
+restricted rotations, and all orthogonal rotations. No equality between
+the container dimensions is assumed.
+
+The binary variable $y_{io}$ selects item $i$ in orientation $o$, and
+\begin{equation}
+ x_i=\sum_{o\in\mathcal O_i}y_{io},\qquad
+ \sum_{o\in\mathcal O_i}y_{io}\leq1.                 \label{eq:orientation}
+\end{equation}
+The objective is $\sum_i p_i x_i$. Denote the optimal geometric packing
+profit by $z^\star$. All models below omit placement coordinates and
+impose necessary conditions for packing. Consequently their maximization
+optima are \emph{upper} bounds on $z^\star$, even when their variables
+remain binary. The term \emph{integer geometric relaxation} is used for
+this distinction; its LP relaxation additionally drops integrality.
+
+\subsection{Area or volume bounds}
+The basic necessary condition is
+\begin{equation}
+ \sum_i v_i x_i\leq V.                             \label{eq:volume}
+\end{equation}
+Maximizing profit under \eqref{eq:volume} and $x_i\in\{0,1\}$ defines
+$U_{\mathrm{vol}}^{\mathrm{IP}}$, an ordinary one-dimensional knapsack
+bound. Replacing the binary domain by $0\leq x_i\leq1$ defines the
+continuous bound $U_{\mathrm{vol}}^{\mathrm{LP}}$.
+In two dimensions ``volume'' means area. Both versions retain the
+original item volumes, irrespective of any subsequent dissection.
+
+\subsection{Conservative scales and transformed-volume inequalities}
+\label{subsec:scales}
+For axis $j$, define the full candidate length domain
+\begin{equation}
+ S_j=\{a_{ioj}:i\in I,\ o\in\mathcal O_i\}.
+\end{equation}
+A nonnegative map $f_j:S_j\to\mathbb R_+$ with positive capacity $B_j$
+is admissible if
+\begin{equation}
+ \sum_{s\in S_j}s n_s\leq C_j
+ \quad\Longrightarrow\quad
+ \sum_{s\in S_j} f_j(s)n_s\leq B_j
+ \qquad(n\in\mathbb Z_+^{S_j}).                    \label{eq:admissible}
+\end{equation}
+The normalized map is $g_j(s)=f_j(s)/B_j$. Requiring the same property
+on all lengths in $[0,C_j]$ gives the usual scaled dual-feasible-function
+(DFF) condition. Property \eqref{eq:admissible} on the finite candidate
+domain is sufficient here. It allows arbitrary repetitions of lengths,
+and hence includes every actual pattern of selected items.
+
+For a tuple $t$ of admissible axis maps define
+\begin{equation}
+ A^t_{io}=\prod_{j=1}^d f^t_j(a_{ioj}),\qquad
+ b_t=\prod_{j=1}^d B^t_j,\qquad
+ \alpha^t_{io}=\frac{A^t_{io}}{b_t}.
+                                                               \label{eq:coefficients}
+\end{equation}
+Here $b_t$ is the \emph{right-hand-side capacity of row $t$}; it is not
+a number of bins. We use $m$ for a bin count below.
+
+\begin{proposition}[Transformed-volume condition]
+Every feasible packing satisfies, for every tuple $t$,
+\begin{equation}
+ \sum_i\sum_{o\in\mathcal O_i} A^t_{io}y_{io}\leq b_t,
+ \quad\text{equivalently}\quad
+ \sum_i\sum_{o\in\mathcal O_i}\alpha^t_{io}y_{io}\leq1.
+                                                               \label{eq:product}
+\end{equation}
+\end{proposition}
+\begin{proof}
+Fix a feasible packing and its chosen orientations. For each axis $j$,
+put a directed arc from item $i$ to item $h$ whenever the end of $i$'s
+projection precedes or equals the start of $h$'s projection. This graph
+is acyclic because the original lengths are positive. Every directed
+path consists of disjoint intervals and has total original length at
+most $C_j$. By \eqref{eq:admissible}, its total transformed length is at
+most one when item lengths are replaced by $g_j(a_{ioj})$.
+
+Place each transformed interval at the maximum total transformed length
+of a path of predecessors ending immediately before it, or at zero
+when there is no predecessor. Its endpoint is at most one. Every arc
+still separates the corresponding intervals. Any two original boxes
+were separated along at least one axis, so the transformed boxes also
+have disjoint interiors. They lie in the unit $d$-cube and therefore
+the sum of their volumes is at most one. This is \eqref{eq:product}.
+Zero transformed lengths cause no difficulty, since the corresponding
+boxes have zero volume.
+\end{proof}
+This argument is an instance of the conservative-scale framework of
+Fekete and Schepers~\cite{FeketeSchepers2004}. It applies after fixing
+the orientations in any feasible solution; consequently the same rows
+are valid when orientations are decision variables.
+
+\paragraph{Threshold maps.}
+For $0\leq q\leq C/2$, use capacity $B=C$ and
+\begin{equation}
+ T_{C,q}(s)=
+ \begin{cases}
+ 0,&0\leq s<q,\\
+ s,&q\leq s\leq C-q,\\
+ C,&C-q<s\leq C.
+ \end{cases}                                                   \label{eq:threshold}
+\end{equation}
+If a feasible one-dimensional pattern contains a length exceeding
+$C-q$, every other length is less than $q$ and receives zero weight.
+Otherwise each transformed length is at most its original value.
+Thus the map is admissible. The case $q=0$ is the identity and recovers
+\eqref{eq:volume}. For integer dimensions the implementation enumerates
+$q\in\{0,\tfrac12,1,\ldots,C/2\}$ and removes duplicate maps.
+
+\paragraph{Floor maps.}
+For integer $C\geq1$ and $k\in\{1,\ldots,C\}$, put
+$K=\lfloor C/k\rfloor$ and use
+\begin{equation}
+ F_{C,k}(s)=\left\lfloor s/k\right\rfloor,
+ \qquad B=K.                                                   \label{eq:floor}
+\end{equation}
+Admissibility follows from
+$\sum_\ell\lfloor s_\ell/k\rfloor\leq
+\lfloor\sum_\ell s_\ell/k\rfloor\leq K$.
+
+\paragraph{Strengthened rounding maps.}
+With the same $C,k,K$, use capacity $B=2K$ and
+\begin{equation}
+ R_{C,k}(s)=
+ \begin{cases}
+ 2\lfloor s/k\rfloor,&2s<C,\\
+ K,&2s=C,\\
+ 2\bigl(K-\lfloor(C-s)/k\rfloor\bigr),&2s>C.
+ \end{cases}                                                   \label{eq:rounding}
+\end{equation}
+\begin{proposition}
+The map in \eqref{eq:rounding} is admissible. Moreover,
+$R_{C,k}(s)/(2K)\geq F_{C,k}(s)/K$ for every $s\in[0,C]$.
+\end{proposition}
+\begin{proof}
+A pattern contains at most one length $s>C/2$. If it contains one,
+the remaining lengths are less than $C/2$, and their total floor
+weight is at most $\lfloor(C-s)/k\rfloor$. The total rounding weight
+is therefore at most $2K$. Without a length greater than $C/2$,
+consider the number of lengths equal to $C/2$. With none, the ordinary
+floor-sum inequality gives the result. With one, the other lengths
+contribute at most $2\lfloor C/(2k)\rfloor\leq K$. With two, these
+lengths contribute exactly $2K$, and only zero lengths can remain.
+For dominance, the maps coincide after normalization below $C/2$;
+at equality use $2\lfloor C/(2k)\rfloor\leq K$, and above $C/2$ use
+$\lfloor s/k\rfloor+\lfloor(C-s)/k\rfloor\leq K$.
+\end{proof}
+These explicit maps are used as DFF-based ingredients, not asserted
+to be new function families. Related strengthened bounds for fixed
+orientations are developed by Carlier et al.~\cite{CarlierEtAl2007}.
+The formula and proof above specify precisely the variant used here.
+
+\paragraph{Mixed products.}
+The axes may use different families and parameters. For example, a
+three-dimensional row can use a threshold map on axis 1, a rounding
+map on axis 2, and a floor map on axis 3. All coefficients in a row
+are evaluated for the \emph{same} orientation variable $y_{io}$.
+Likewise all rows share that variable. Allowing each row to choose a
+different orientation for an item would discard this consistency
+and generally weaken the relaxation.
+
+\subsection{Data-dependent capacity tightening}
+For an admissible map $f$ on an axis domain $S$, define
+\begin{equation}
+ B^*(f;S,C)=\max\left\{\sum_{s\in S}f(s)n_s:
+        \sum_{s\in S}s n_s\leq C,\quad n\in\mathbb Z_+^S\right\}.
+                                                               \label{eq:tight-capacity}
+\end{equation}
+For a nonzero map, $0<B^*\leq B$. Substituting $B^*$ for $B$ in
+\eqref{eq:admissible} is valid by definition. The product construction
+therefore remains valid, and the normalized coefficients can only
+increase. For positive integer lengths and capacity, the exact value
+is obtained by the unbounded-knapsack recurrence
+\begin{align}
+ D(0)&=0,\nonumber\\
+ D(c)&=\max\left(\{D(c-1)\}\cup
+          \{D(c-s)+f(s):s\in S,\ s\leq c\}\right),\quad 1\leq c\leq C,
+                                                               \label{eq:dp}\\
+ B^*(f;S,C)&=D(C).\nonumber
+\end{align}
+Unbounded multiplicities deliberately enlarge the possible patterns,
+so actual item-copy limits cannot invalidate the resulting capacity.
+Under rotations, $S_j$ must include lengths from \emph{all} feasible
+orientations, rather than only a preferred orientation. This
+construction is a domain-dependent conservative scale; it is not
+claimed to be a DFF for arbitrary lengths outside $S_j$, or to exhaust
+all data-dependent DFF constructions.
+
+\subsection{Grouped dissection bounds}
+\label{subsec:fragments}
+Dissect item $i$ into squares for $d=2$ or cubes for $d=3$. Let
+$\mathcal Q_i$ be the resulting multiset of side lengths. A complete
+dissection satisfies $\sum_{s\in\mathcal Q_i}s^d=v_i$. Any feasible
+packing of the original items induces a packing of their fragments;
+allowing the fragments to move independently is a relaxation.
+Squares and cubes are invariant under orthogonal rotations, so the
+same multiset is usable for every orientation of its parent item.
+
+\begin{proposition}[Grouping]
+Suppose a fragment inequality assigns nonnegative weight $w_r(s)$
+to a fragment of side $s$ and has capacity $\beta_r>0$ in one
+container. Then every feasible original-item packing satisfies
+\begin{equation}
+ \sum_i h_i^r x_i\leq\beta_r,
+ \qquad h_i^r=\sum_{s\in\mathcal Q_i}w_r(s).       \label{eq:grouping}
+\end{equation}
+\end{proposition}
+\begin{proof}
+Apply the fragment inequality to the packing induced by the selected
+original items and collect all terms belonging to each item.
+\end{proof}
+All sums over $\mathcal Q_i$ count multiplicities. Fragments have no
+independent selection variables or profits: every retained fragment
+of item $i$ is controlled by $x_i$, and $p_i$ is counted once. Dropping
+fragments from a nonnegative row only weakens it. In particular, the
+implementation omits unit fragments from these rows while retaining
+\eqref{eq:volume} with the full original volumes.
+
+\paragraph{Two-dimensional square bounds.}
+The CUTSQ construction repeatedly removes the largest squares that
+fit along the longer side of a rectangle and recurses on the residual
+rectangle. This is the square-dissection approach used by
+Dell'Amico et al.~\cite{DellAmicoEtAl2002}. Let $C=(W,H)$ with $W\geq H$.
+The implemented grouped rows include
+\begin{align}
+ \sum_i x_i\sum_{\substack{s\in\mathcal Q_i\\2s>H}}s&\leq W,
+                                                               \label{eq:tall-width}\\
+ \sum_i x_i\,\#\{s\in\mathcal Q_i:2s>H\}
+    &\leq\left\lfloor\frac{W}{\lfloor H/2\rfloor+1}\right\rfloor,
+                                                               \label{eq:tall-count}
+\end{align}
+where \eqref{eq:tall-count} assumes integer side lengths. Tall squares
+must have disjoint horizontal projections. Their widths sum to at
+most $W$, and each width is at least $\lfloor H/2\rfloor+1$.
+For integer $0\leq q\leq\lfloor H/2\rfloor$, a residual-space row is
+\begin{equation}
+ \sum_i x_i\left[
+    \sum_{\substack{s\in\mathcal Q_i\\s\geq q}}s^2
+   +\sum_{\substack{s\in\mathcal Q_i\\s>H-q}}s(H-s)
+             \right]\leq WH.                                 \label{eq:residual}
+\end{equation}
+To verify it, reserve a full-height strip of width $s$ for every
+square with $s>H-q$. These strips are mutually disjoint. No other
+square of side at least $q$ can overlap such a strip horizontally:
+its height plus $s$ exceeds $H$. The strips and the remaining counted
+squares therefore have total area at most $WH$, which gives the row.
+The benchmark implementation uses the single-bin specialization of
+the cited construction under $s\leq W/2$ for all retained squares;
+this condition was checked on its inputs. It does not implement every
+bound in that paper. The direct arguments above establish validity
+of the displayed rows themselves.
+
+\paragraph{Three-dimensional cube bounds.}
+One possible dissection sorts a residual box as $a\geq b\geq s$,
+sets $k_a=\lfloor a/s\rfloor$, $k_b=\lfloor b/s\rfloor$,
+$r_a=a-k_as$, and $r_b=b-k_bs$, and removes $k_ak_b$ cubes of side $s$.
+It recurses on the nonempty residual boxes $(r_a,b,s)$ and
+$(k_as,r_b,s)$. These boxes are disjoint and conserve volume.
+For each axis $j$, the projection inequality is
+\begin{equation}
+ \sum_i x_i\sum_{\substack{s\in\mathcal Q_i\\
+                     2s>C_\ell\ \text{for all }\ell\ne j}}s\leq C_j.
+                                                               \label{eq:cube-projection}
+\end{equation}
+Any two counted cubes overlap in their projections on every other
+axis and must therefore be separated along $j$. Also,
+\begin{equation}
+ \sum_i x_i\,\#\{s\in\mathcal Q_i:2s>\max_j C_j\}\leq1,
+                                                               \label{eq:cube-clique}
+\end{equation}
+since two such cubes cannot be separated along any axis. Finally,
+threshold-product rows on the fragments give
+\begin{equation}
+ \sum_i x_i\sum_{s\in\mathcal Q_i}
+           \prod_{j=1}^3 T_{C_j,q_j}(s)\leq V.                  \label{eq:cube-product}
+\end{equation}
+The same product theorem applies to these cubes. Expanded mixed and
+data-tightened families are applied to the original shapes in the
+implemented stack; the grouped cube baseline uses threshold products.
+
+\subsection{Incompatibility and clique inequalities}
+Two distinct individually fitting items in fixed orientations $(i,o)$
+and $(h,r)$ are incompatible precisely when
+\begin{equation}
+ a_{ioj}+a_{hrj}>C_j\qquad\text{for every }j.                    \label{eq:incompatible}
+\end{equation}
+Necessity follows because any two nonoverlapping axis-parallel boxes
+must be separated along some axis. Conversely, if their lengths sum
+to at most $C_j$ on one axis, placing them consecutively on that axis
+and at the origin on all other axes packs the pair. Thus every pair
+satisfying \eqref{eq:incompatible} yields
+\begin{equation}
+ y_{io}+y_{hr}\leq1.                                           \label{eq:pair-cut}
+\end{equation}
+In the item conflict graph, connect $i$ and $h$ only if every pair
+of their feasible orientations is incompatible. Every clique $Q$
+then yields
+\begin{equation}
+ \sum_{i\in Q}x_i\leq1.                                       \label{eq:item-clique}
+\end{equation}
+A subset of cliques suffices for validity. The implementation includes
+all incompatible orientation pairs and a greedily generated collection
+of maximal item cliques; it does not enumerate all cliques.
+
+\subsection{Combined integer and continuous bounds}
+Let $\mathcal T$ be the selected transformed-volume rows,
+$\mathcal R$ the grouped fragment rows, $\mathcal E$ the incompatible
+orientation pairs, and $\mathcal K$ the selected item cliques. The
+combined integer bound is the optimal value of
+\begin{subequations}\label{eq:combined}
+\begin{align}
+ U^{\mathrm{IP}}=\max\quad&\sum_i p_i x_i                       \label{eq:obj}\\
+ \text{s.t.}\quad
+ &x_i=\sum_{o\in\mathcal O_i}y_{io}\leq1 && i\in I,\\
+ &\sum_i v_i x_i\leq V,\\
+ &\sum_i\sum_{o\in\mathcal O_i}\alpha^t_{io}y_{io}\leq1
+                                      &&t\in\mathcal T,\\
+ &\sum_i h_i^r x_i\leq\beta_r &&r\in\mathcal R,\\
+ &y_{io}+y_{hr}\leq1 &&((i,o),(h,r))\in\mathcal E,\\
+ &\sum_{i\in Q}x_i\leq1 &&Q\in\mathcal K,\\
+ &y_{io}\in\{0,1\} &&i\in I,\ o\in\mathcal O_i.
+\end{align}
+\end{subequations}
+The LP bound $U^{\mathrm{LP}}$ replaces the last line by $y_{io}\geq0$;
+the item constraints already imply $y_{io}\leq1$. The equality defining
+$x_i$ permits its elimination in both models.
+
+\begin{theorem}[Validity and dominance]\label{thm:dominance}
+For any finite selection of the valid rows described above,
+\begin{equation}
+ z^\star\leq U^{\mathrm{IP}}\leq U^{\mathrm{LP}}
+                         \leq U_{\mathrm{vol}}^{\mathrm{LP}},
+ \qquad U^{\mathrm{IP}}\leq U_{\mathrm{vol}}^{\mathrm{IP}}.
+                                                               \label{eq:dominance}
+\end{equation}
+Adding valid rows cannot increase either bound.
+\end{theorem}
+\begin{proof}
+Every geometric solution induces a binary assignment satisfying all
+rows, which proves the first inequality. Relaxing integrality enlarges
+the feasible set, proving the second. Projecting any combined LP
+solution onto $x$ gives a feasible fractional volume-knapsack solution;
+projecting an integer solution gives a feasible binary volume-knapsack
+solution. The objective is preserved, proving both volume comparisons.
+Adding rows restricts the relevant feasible set.
+\end{proof}
+There is no corresponding general claim that $U^{\mathrm{LP}}$ is at
+most $U_{\mathrm{vol}}^{\mathrm{IP}}$, nor that a shape-only relaxation
+dominates every grouped-fragment relaxation. Their intersection is
+used to obtain both sets of restrictions.
+
+\paragraph{Combination by intersection and by minimum.}
+If each class is solved separately to produce $U_k$, then $\min_k U_k$
+is a valid upper bound. Combining their rows in one model gives
+\begin{equation}
+ U_{\cap}^{\mathrm{IP}}\leq\min_k U_k^{\mathrm{IP}},\qquad
+ U_{\cap}^{\mathrm{LP}}\leq\min_k U_k^{\mathrm{LP}}.             \label{eq:intersection}
+\end{equation}
+The inequalities can be strict because separate classes can admit
+different maximizing selections or orientations. Bounds obtained
+separately are not added together.
+
+\paragraph{Nested implementation.}
+The baseline contains the volume row, original-shape threshold products,
+and grouped square or cube rows. The next stages add, in order,
+products from the axis families $\{T,F\}$, products from $\{T,F,R\}$,
+products of capacity-tightened maps, and incompatibility/clique rows.
+Each stage retains all previous constraints. Consequently, for
+$\bullet\in\{\mathrm{IP},\mathrm{LP}\}$,
+\begin{equation}
+ U_0^\bullet\geq U_1^\bullet\geq U_2^\bullet
+                      \geq U_3^\bullet\geq U_4^\bullet\geq z^\star.
+\end{equation}
+A map $f/B$ may be discarded when another map $\widetilde f/\widetilde B$
+is componentwise at least as large on the entire axis domain. With
+nonnegative factors, every product using the former is dominated by
+the corresponding product using the latter. The implementation makes
+these comparisons by integer cross multiplication, tightens the
+retained axis maps, and removes duplicates. This is a finite family
+selection, not optimization over all possible conservative scales.
+
+\paragraph{Certificates and incomplete optimization.}
+After eliminating $x$, normalize all geometric rows to write
+$Ay\leq\mathbf1$ and retain the item constraints separately. The LP
+dual is
+\begin{equation}
+ \min_{\lambda\geq0,\,\nu\geq0}
+ \left\{\sum_t\lambda_t+\sum_i\nu_i:
+       \sum_t A_{t,io}\lambda_t+\nu_i\geq p_i
+                  \quad\forall i,o\right\}.                  \label{eq:dual}
+\end{equation}
+Thus nonnegative multipliers combine the row capacities into an
+explicit upper-bound certificate. For a time-limited integer solve,
+a valid solver global upper bound is usable; its incumbent objective
+alone is not an upper bound. An incumbent need not represent a feasible
+geometric packing. With integer profits, a mathematically valid real
+upper bound $\overline U$ can be replaced by $\lfloor\overline U\rfloor$.
+Floating-point feasibility checks and rounding tolerances should be
+reported separately from exact mathematical certification.
+
+\subsection{Transfer to bin packing}
+\label{subsec:bin-packing}
+The same per-container rows also yield lower bounds when every item
+must be assigned to one of $m$ identical bins. For an orientation-independent
+row $\sum_{i\text{ in one bin}}h_i^r\leq\beta_r$, summing across bins gives
+\begin{equation}
+ m\geq\left\lceil\frac{\sum_i h_i^r}{\beta_r}\right\rceil.
+                                                               \label{eq:bp-simple}
+\end{equation}
+For orientation-dependent rows, let $A_{t,io}$ denote normalized
+coefficients of any selected per-bin inequalities. A consistent
+aggregate relaxation is
+\begin{equation}
+ L^{\mathrm{IP}}=\min\left\{m:
+  \sum_{o\in\mathcal O_i}y_{io}=1\ (i\in I),\quad
+  \sum_{i,o}A_{t,io}y_{io}\leq m\ (t\in\mathcal H),\quad
+  y_{io}\in\{0,1\},\ m\in\mathbb Z_+\right\}.                 \label{eq:bp-model}
+\end{equation}
+Any $m$-bin packing supplies a feasible assignment by using its actual
+orientations and summing each valid row over the bins. Therefore
+$L^{\mathrm{IP}}$ is a lower bound on the optimal bin count. Relaxing
+$y$ and $m$ to nonnegative continuous variables gives $L^{\mathrm{LP}}$,
+and $\lceil L^{\mathrm{LP}}\rceil$ is also a valid lower bound. These
+aggregate models impose necessary total capacities; they do not
+construct bin assignments. The transfer concerns the underlying
+valid inequalities, not an arbitrary conversion of a scalar knapsack
+profit bound into a bin count.
