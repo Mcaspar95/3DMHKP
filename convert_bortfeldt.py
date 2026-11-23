@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Convert the Bortfeldt/problemNNx.txt files (destination-restricted Ivancic
-et al. instances, see BischoffRatcliff-style header comments in those files)
+et al. instances)
 into 3DMHKP-SA.py's BOXES/CONTAINERS text format.
 
 Why a conversion is needed at all: 3DMHKP-SA.py (and 3DMHKPup.py,
@@ -15,9 +15,8 @@ The Bortfeldt/ files use a different, older format instead:
     BOXES      rows: type_id count length width height destination
     CONTAINERS rows: type_id length width height cost
 
-Two real modelling relaxations follow from bridging that gap, and this is a
-DOCUMENTED, NOT free, conversion - exactly the same spirit as convert_br.py's
-own CAUTION about dropped orientation constraints:
+Two real modelling relaxations follow from bridging that gap, so this is a
+documented conversion rather than an equivalent reformulation:
 
   1. Destination restriction DROPPED. Bortfeldt's extension (Sec. 6/7)
      requires every container to hold boxes of only ONE box type ("Kisten
@@ -35,8 +34,8 @@ own CAUTION about dropped orientation constraints:
      subject to a FIXED container supply. Giving each listed container type
      a count of 1 turns every converted instance into a bounded 3D knapsack:
      "pack as much value as fits in exactly these containers" - the same
-     framing already used throughout this project for BR0-BR18, the ep3
-     instances, and the existing Ivancic/-folder problems. It is a
+    framing already used throughout this project for the ep3 instances and
+    the existing Ivancic/-folder problems. It is a
      structurally different problem from Bortfeldt's cost-minimisation one,
      so packed-volume results from these files are NOT comparable to the
      container-cost or volume-utilisation figures Bortfeldt (2000) Table 1
@@ -44,7 +43,7 @@ own CAUTION about dropped orientation constraints:
 
 value_coefficient is set to 1 for every box type, and the converted files
 carry a "#! value-mode: volume" directive, so v_i = volume_i under
---value-mode volume - the same convention as the BR/ep3 conversions.
+--value-mode volume - the same convention as the ep3 conversions.
 
 Usage:
     python3 convert_bortfeldt.py                  # writes Bortfeldt_converted/
@@ -72,7 +71,7 @@ HEADER = """\
 #      type - this turns Bortfeldt's cost-minimising multiple-container
 #      problem (unlimited containers per type, pack every box, minimise
 #      cost) into a bounded 3D knapsack (fixed containers, maximise packed
-#      value) - the same framing used for BR0-BR18 and ep3 elsewhere in this
+#      value) - the same framing used for ep3 elsewhere in this
 #      project. Results here are NOT comparable to Bortfeldt's published
 #      cost/volume-utilisation figures.
 #

@@ -108,11 +108,7 @@ MAX_ITERATIONS = 500000000  # maximum SA iterations
 TIME_LIMIT = 1800.0         # total wall-clock seconds per instance
 EP_LIMIT = 0               # max extreme points scanned per box, 0 = unlimited
 
-# Ceiling on the 0-1 knapsack bound's DP table (see knapsack01_bound). 5e6
-# comfortably covers BR0 (cap ~1.5e6) and BR1 (~3.0e6) uncapped - both keep
-# today's exact bound values - while still cutting BR6-BR18's uncapped ~3e7
-# (gcd(capacity, volumes) == 1 there) down to a runtime of seconds rather
-# than several CPU-minutes per instance.
+# Ceiling on the 0-1 knapsack bound's DP table (see knapsack01_bound).
 MAX_DP_STATES = 5_000_000
 
 # Why T_INIT is derived from the objective rather than fixed at 100 as in
@@ -448,10 +444,8 @@ def knapsack01_bound(inst):
     Volumes are divided through by their gcd to keep the DP table small; on the
     ep3 instances that is the difference between ~4e6 and ~4e3 states. That
     reduction is lossless (the gcd divides every volume exactly), but it is not
-    always enough: gcd(capacity, all box volumes) == 1 on most of the BR6-BR18
-    classes (heterogeneous real-world box dimensions with no common factor),
-    which leaves cap == capacity itself - around 3e7 on the BR set, ~4e9
-    dp[] updates, several CPU-minutes in pure Python. MAX_DP_STATES guards
+    always enough when the capacity and box volumes have no common factor,
+    which leaves cap == capacity itself. MAX_DP_STATES guards
     against that: past the cap, volumes are floored to a coarser unit on top
     of the gcd reduction. Flooring both the per-box weight and the capacity by
     the same extra factor can only make previously-feasible subsets *more*
@@ -1518,10 +1512,8 @@ def main(argv=None):
         args.seed = random.randrange(2 ** 31)
     random.seed(args.seed)
 
-    # The reports record how this solver was invoked. main_slurm.py calls
-    # main(argv) in-process, so sys.argv is the dispatcher's line, not ours -
-    # record the arguments we actually parsed, and the launching command after
-    # them when the two differ.
+    # Record the parsed arguments and, for in-process calls, the launching
+    # command when it differs.
     args.command = shlex.join([Path(__file__).name]
                               + (list(argv) if argv is not None else sys.argv[1:]))
     if argv is not None:

@@ -1278,10 +1278,8 @@ def main(argv=None):
         args.seed = random.randrange(2 ** 31)
     random.seed(args.seed)
 
-    # The reports record how this solver was invoked. main_slurm.py calls
-    # main(argv) in-process, so sys.argv is the dispatcher's line, not ours -
-    # record the arguments we actually parsed, and the launching command after
-    # them when the two differ.
+    # Record the parsed arguments and, for in-process calls, the launching
+    # command when it differs.
     args.command = shlex.join([Path(__file__).name]
                               + (list(argv) if argv is not None else sys.argv[1:]))
     if argv is not None:
