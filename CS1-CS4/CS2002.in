@@ -1,0 +1,12 @@
+InstanceDescription: CSCase-2
+NumContainerTypes: 2
+NumBoxTypes: 2
+NumClients: 2
+
+ContainerTypes: [id quantity (length width height) capacity cost] 
+ct0 1 (235 1203 239) 5000 1
+ct1 1 (235 589 239) 3000 1
+
+BoxTypes: [id quantity (length rot_l lb_l, width rot_w lb_w, height rot_h lb_h) weight client cost] 
+bt0 644 (26 1 0.00245, 35 1 0.0022, 35 1 0.00549) 1 1 1
+bt1 795 (37 1 0.00522, 60 1 0.00725, 38 1 0.00766) 1 0 1

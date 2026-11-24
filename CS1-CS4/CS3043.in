@@ -1,0 +1,15 @@
+InstanceDescription: CS3043
+NumContainerTypes: 2
+NumBoxTypes: 5
+NumClients: 3
+
+ContainerTypes: [id quantity (length width height) capacity cost] 
+ct0 2 (240 1350 290) 1500 1100
+ct1 8 (235 1180 235) 2678 19000
+
+BoxTypes: [id quantity (length rot_l lb_l, width rot_w lb_w, height rot_h lb_h) weight client cost] 
+bt0 5 (90 1 0.02578, 107 1 0.12261, 116 1 0.24922) 160 2 1
+bt1 165 (100 0 0, 118 0 0, 108 1 0.0328) 129 0 1
+bt2 1 (100 0 0, 116 0 0, 129 1 0.0822) 190 1 2
+bt3 1 (113 0 0, 126 0 0, 144 1 0) 248 2 2
+bt4 6 (155 1 0.0677, 168 1 0.10274, 195 1 0.11925) 443 2 1

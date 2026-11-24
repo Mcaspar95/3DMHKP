@@ -1,0 +1,11 @@
+InstanceDescription: CS5005
+NumContainerTypes: 1
+NumBoxTypes: 1
+NumClients: 1
+
+ContainerTypes: [id quantity (length width height) capacity cost] 
+2 100 (240 1340 240) 1400 1
+
+BoxTypes: [id quantity (length rot_l lb_l, width rot_w lb_w, height rot_h lb_h) weight client cost] 
+bt0 4 (142 0 0.11500, 154 0 0.12471, 179 1 0.14496) 317 0 1
+Total volume containers 7718400000, Total volume boxes 15657488 0.20% 

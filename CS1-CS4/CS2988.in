@@ -1,0 +1,21 @@
+InstanceDescription: CS2988
+NumContainerTypes: 3
+NumBoxTypes: 10
+NumClients: 3
+
+ContainerTypes: [id quantity (length width height) capacity cost] 
+ct0 6 (240 1350 245) 1400 1000
+ct1 1 (240 1350 290) 1500 1100
+ct2 3 (235 1180 235) 2678 1100
+
+BoxTypes: [id quantity (length rot_l lb_l, width rot_w lb_w, height rot_h lb_h) weight client cost] 
+bt0 14 (49 0 0, 55 0 0, 54 1 0.05143) 15 1 2
+bt1 107 (54 0 0, 61 0 0, 60 1 0.02823) 31 0 1
+bt2 1 (75 0 0, 86 0 0, 85 1 0.12791) 55 2 1
+bt3 1 (82 0 0, 95 0 0, 92 1 0.10308) 73 1 1
+bt4 5 (92 0 0, 106 0 0, 101 1 0.03733) 91 2 3
+bt5 8 (100 0 0, 116 0 0, 129 1 0.19914) 154 0 1
+bt6 15 (100 1 0.0299, 118 1 0.01176, 108 1 0.0861) 127 1 1
+bt7 2 (113 1 0, 126 1 0, 144 1 0) 211 0 1
+bt8 11 (126 0 0, 137 0 0, 161 1 0.02966) 256 0 2
+bt9 11 (142 0 0, 154 0 0, 179 1 0.04541) 331 2 1
