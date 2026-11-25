@@ -1,0 +1,175 @@
+{
+  "name": "ep3-20-U-R-90",
+  "dimension": 3,
+  "stage": "full",
+  "mode": "ip",
+  "rotations": true,
+  "excluded": 0,
+  "rows": 171670,
+  "variables": 108,
+  "metadata": {
+    "stage": "full",
+    "dimension": 3,
+    "stages": [
+      {
+        "stage": "floor_mixed",
+        "axis_maps": [
+          29,
+          29,
+          25
+        ],
+        "product_candidates": 21025,
+        "retained_product_rows": 20859
+      },
+      {
+        "stage": "rounding_mixed",
+        "axis_maps": [
+          55,
+          55,
+          25
+        ],
+        "product_candidates": 75625,
+        "retained_product_rows": 75334
+      },
+      {
+        "stage": "data_mixed",
+        "axis_maps": [
+          55,
+          55,
+          25
+        ],
+        "product_candidates": 75625,
+        "retained_product_rows": 75334
+      },
+      {
+        "stage": "full",
+        "orientation_pair_cuts": 0,
+        "item_clique_cuts": 0
+      }
+    ],
+    "item_ids": [
+      {
+        "input_index": 0,
+        "id": "1",
+        "copy": 1
+      },
+      {
+        "input_index": 1,
+        "id": "2",
+        "copy": 1
+      },
+      {
+        "input_index": 2,
+        "id": "3",
+        "copy": 1
+      },
+      {
+        "input_index": 3,
+        "id": "4",
+        "copy": 1
+      },
+      {
+        "input_index": 4,
+        "id": "5",
+        "copy": 1
+      },
+      {
+        "input_index": 5,
+        "id": "6",
+        "copy": 1
+      },
+      {
+        "input_index": 6,
+        "id": "7",
+        "copy": 1
+      },
+      {
+        "input_index": 7,
+        "id": "8",
+        "copy": 1
+      },
+      {
+        "input_index": 8,
+        "id": "9",
+        "copy": 1
+      },
+      {
+        "input_index": 9,
+        "id": "10",
+        "copy": 1
+      },
+      {
+        "input_index": 10,
+        "id": "11",
+        "copy": 1
+      },
+      {
+        "input_index": 11,
+        "id": "12",
+        "copy": 1
+      },
+      {
+        "input_index": 12,
+        "id": "13",
+        "copy": 1
+      },
+      {
+        "input_index": 13,
+        "id": "14",
+        "copy": 1
+      },
+      {
+        "input_index": 14,
+        "id": "15",
+        "copy": 1
+      },
+      {
+        "input_index": 15,
+        "id": "16",
+        "copy": 1
+      },
+      {
+        "input_index": 16,
+        "id": "17",
+        "copy": 1
+      },
+      {
+        "input_index": 17,
+        "id": "18",
+        "copy": 1
+      },
+      {
+        "input_index": 18,
+        "id": "19",
+        "copy": 1
+      },
+      {
+        "input_index": 19,
+        "id": "20",
+        "copy": 1
+      }
+    ],
+    "allow_rotations": true,
+    "threshold_products": {
+      "axis_maps": [
+        11,
+        11,
+        1
+      ],
+      "product_candidates": 121,
+      "retained_product_rows": 120
+    },
+    "baseline_rows": 143
+  },
+  "construction_seconds": 9.07581715285778,
+  "solver_time_limit": 900.0,
+  "row_generation_rounds": 10,
+  "active_rows": 597,
+  "upper_bound": 211545.0,
+  "model_value": 211545.0,
+  "status": "Optimal",
+  "seconds": 27.604492033831775,
+  "solver": "SciPy / HiGHS",
+  "bound_source": "MIP global dual bound",
+  "solver_message": "Optimal full relaxation"
+}

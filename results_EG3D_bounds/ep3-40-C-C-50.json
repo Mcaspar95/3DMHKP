@@ -1,0 +1,275 @@
+{
+  "name": "ep3-40-C-C-50",
+  "dimension": 3,
+  "stage": "full",
+  "mode": "ip",
+  "rotations": true,
+  "excluded": 0,
+  "rows": 6520,
+  "variables": 40,
+  "metadata": {
+    "stage": "full",
+    "dimension": 3,
+    "stages": [
+      {
+        "stage": "floor_mixed",
+        "axis_maps": [
+          16,
+          16,
+          14
+        ],
+        "product_candidates": 3584,
+        "retained_product_rows": 1591
+      },
+      {
+        "stage": "rounding_mixed",
+        "axis_maps": [
+          21,
+          21,
+          14
+        ],
+        "product_candidates": 6174,
+        "retained_product_rows": 2909
+      },
+      {
+        "stage": "data_mixed",
+        "axis_maps": [
+          18,
+          18,
+          12
+        ],
+        "product_candidates": 3888,
+        "retained_product_rows": 1974
+      },
+      {
+        "stage": "full",
+        "orientation_pair_cuts": 0,
+        "item_clique_cuts": 0
+      }
+    ],
+    "item_ids": [
+      {
+        "input_index": 0,
+        "id": "1",
+        "copy": 1
+      },
+      {
+        "input_index": 0,
+        "id": "1",
+        "copy": 2
+      },
+      {
+        "input_index": 0,
+        "id": "1",
+        "copy": 3
+      },
+      {
+        "input_index": 0,
+        "id": "1",
+        "copy": 4
+      },
+      {
+        "input_index": 0,
+        "id": "1",
+        "copy": 5
+      },
+      {
+        "input_index": 0,
+        "id": "1",
+        "copy": 6
+      },
+      {
+        "input_index": 0,
+        "id": "1",
+        "copy": 7
+      },
+      {
+        "input_index": 0,
+        "id": "1",
+        "copy": 8
+      },
+      {
+        "input_index": 1,
+        "id": "2",
+        "copy": 1
+      },
+      {
+        "input_index": 1,
+        "id": "2",
+        "copy": 2
+      },
+      {
+        "input_index": 1,
+        "id": "2",
+        "copy": 3
+      },
+      {
+        "input_index": 1,
+        "id": "2",
+        "copy": 4
+      },
+      {
+        "input_index": 1,
+        "id": "2",
+        "copy": 5
+      },
+      {
+        "input_index": 1,
+        "id": "2",
+        "copy": 6
+      },
+      {
+        "input_index": 1,
+        "id": "2",
+        "copy": 7
+      },
+      {
+        "input_index": 1,
+        "id": "2",
+        "copy": 8
+      },
+      {
+        "input_index": 2,
+        "id": "3",
+        "copy": 1
+      },
+      {
+        "input_index": 2,
+        "id": "3",
+        "copy": 2
+      },
+      {
+        "input_index": 2,
+        "id": "3",
+        "copy": 3
+      },
+      {
+        "input_index": 2,
+        "id": "3",
+        "copy": 4
+      },
+      {
+        "input_index": 2,
+        "id": "3",
+        "copy": 5
+      },
+      {
+        "input_index": 2,
+        "id": "3",
+        "copy": 6
+      },
+      {
+        "input_index": 2,
+        "id": "3",
+        "copy": 7
+      },
+      {
+        "input_index": 2,
+        "id": "3",
+        "copy": 8
+      },
+      {
+        "input_index": 3,
+        "id": "4",
+        "copy": 1
+      },
+      {
+        "input_index": 3,
+        "id": "4",
+        "copy": 2
+      },
+      {
+        "input_index": 3,
+        "id": "4",
+        "copy": 3
+      },
+      {
+        "input_index": 3,
+        "id": "4",
+        "copy": 4
+      },
+      {
+        "input_index": 3,
+        "id": "4",
+        "copy": 5
+      },
+      {
+        "input_index": 3,
+        "id": "4",
+        "copy": 6
+      },
+      {
+        "input_index": 3,
+        "id": "4",
+        "copy": 7
+      },
+      {
+        "input_index": 3,
+        "id": "4",
+        "copy": 8
+      },
+      {
+        "input_index": 4,
+        "id": "5",
+        "copy": 1
+      },
+      {
+        "input_index": 4,
+        "id": "5",
+        "copy": 2
+      },
+      {
+        "input_index": 4,
+        "id": "5",
+        "copy": 3
+      },
+      {
+        "input_index": 4,
+        "id": "5",
+        "copy": 4
+      },
+      {
+        "input_index": 4,
+        "id": "5",
+        "copy": 5
+      },
+      {
+        "input_index": 4,
+        "id": "5",
+        "copy": 6
+      },
+      {
+        "input_index": 4,
+        "id": "5",
+        "copy": 7
+      },
+      {
+        "input_index": 4,
+        "id": "5",
+        "copy": 8
+      }
+    ],
+    "allow_rotations": true,
+    "threshold_products": {
+      "axis_maps": [
+        2,
+        2,
+        1
+      ],
+      "product_candidates": 4,
+      "retained_product_rows": 2
+    },
+    "baseline_rows": 46
+  },
+  "construction_seconds": 0.6139913680963218,
+  "solver_time_limit": 900.0,
+  "row_generation_rounds": 1,
+  "active_rows": 42,
+  "upper_bound": 141418.0,
+  "model_value": 141418.0,
+  "status": "Optimal",
+  "seconds": 0.8793005109764636,
+  "solver": "SciPy / HiGHS",
+  "bound_source": "MIP global dual bound",
+  "solver_message": "Optimal full relaxation"
+}
