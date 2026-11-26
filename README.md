@@ -43,6 +43,27 @@ Results and verified placements are saved in `results_EG2D_opt/`. Check
 task exits unsuccessfully after writing its incumbent and dual bound (null if
 unavailable). Larger instances may need substantially more time or memory.
 
+## Beasley 2D exact optimization
+
+Submit `sbatch slurm_beasley2d_opt.sbatch` from the repository root to process
+the 210 instances in `Beasley/ngcutfs1.txt`, one per task. The model uses
+original profits and copy limits, permits non-guillotine packings, and forbids
+rotations. It solves the integral area-only 1D knapsack from Eq. (9) of
+Egeblad and Pisinger (2009), then checks selected sets geometrically and cuts
+only proven-infeasible selections. This is an exact method, but a 24-hour
+Slurm limit (23 hours 50 minutes of optimization time) does not guarantee an
+optimality proof. A greedy packing provides an initial incumbent. Each task
+requests eight CPUs and 16 GB and needs Gurobi.
+
+Per-instance JSON files are written under `results_Beasley2D_opt/<array-job-id>/`.
+They include the exact 1D optimum when proved, incumbent placements, dual bound,
+proof status, and percent deviation `100 * (1D - value) / 1D`. Unproven tasks
+exit unsuccessfully. A dependent summary job writes `summary.json` with the
+mean deviation, timings, proof count and missing instances; it includes
+time-limited incumbents and identifies incomplete results. The paper's Table 3
+time measures time to the best heuristic solution, so exact-solver times are
+not directly comparable.
+
 ## CS instances
 
 Submit `slurm_cs.sbatch` from the repository root to run one SA task per CS

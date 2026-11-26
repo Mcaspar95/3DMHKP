@@ -38,7 +38,7 @@ def read_instance(path):
     return width, height, items
 
 
-def build_model(width, height, items):
+def build_model(width, height, items, allow_rotations=True):
     model = gp.Model("2DKP")
     n = len(items)
     selected = model.addVars(n, vtype=GRB.BINARY, name="selected")
@@ -55,7 +55,7 @@ def build_model(width, height, items):
         h[i] = hi * selected[i] + (wi - hi) * rotated[i]
         model.addConstr(x[i] + w[i] <= width * selected[i])
         model.addConstr(y[i] + h[i] <= height * selected[i])
-        if wi == hi:
+        if not allow_rotations or wi == hi:
             model.addConstr(rotated[i] == 0)
         selected[i].Start = 0
         rotated[i].Start = 0
@@ -91,7 +91,8 @@ def build_model(width, height, items):
     return model, selected, rotated, x, y
 
 
-def verify_placements(width, height, items, placements, tolerance=1e-5):
+def verify_placements(width, height, items, placements, tolerance=1e-5,
+                      allow_rotations=True):
     seen = set()
     for placement in placements:
         i = placement["index"]
@@ -99,6 +100,8 @@ def verify_placements(width, height, items, placements, tolerance=1e-5):
             raise ValueError(f"Duplicate or invalid rectangle index: {i}")
         seen.add(i)
         item = items[i]
+        if placement["rotated"] and not allow_rotations:
+            raise ValueError(f"Rectangle {i} is rotated")
         dims = ((item["height"], item["width"]) if placement["rotated"]
                 else (item["width"], item["height"]))
         px, py = placement["position"]

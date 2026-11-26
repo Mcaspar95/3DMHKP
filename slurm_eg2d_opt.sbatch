@@ -6,6 +6,7 @@
 #SBATCH --mem=16G
 #SBATCH --time=24:00:00
 #SBATCH --mail-type=END,FAIL
+#SBATCH --constraint="XEON_E5_2637v3"
 
 set -euo pipefail
 source /home/mcaspar/3DPCPTP/bin/activate

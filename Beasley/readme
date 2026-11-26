@@ -1,0 +1,17 @@
+Line	Meaning	Example
+1	Number of instances	210
+2	Number of item types in an instance	40
+3	Bin/stock dimensions	100 × 100
+4   onwards	Item data	40 rows per instance
+
+The five columns represent:
+Column	Parameter	Meaning
+1	\(l_i\)	Length of item \(i\)
+2	\(w_i\)	Width of item \(i\)
+3	\(P_i\)	Minimum number of items of type \(i\)
+4	\(Q_i\)	Maximum number of items of type \(i\)
+5	\(v_i\)	Value of item \(i\)
+
+The original problem is the constrained two-dimensional non-guillotine cutting problem.
+
+The objective is to select and position rectangular items inside a single stock rectangle.
